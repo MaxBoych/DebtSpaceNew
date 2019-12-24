@@ -82,7 +82,7 @@ public class DebtListRepository {
                         Map<String, Object> map = documentSnapshot.getData();
                         List<DebtBond> debtBonds = new ArrayList<>();
                         for (String partnerUsername : Objects.requireNonNull(map).keySet()) {
-                            debtBonds.add(new DebtBond(partnerUsername, (String) map.get(partnerUsername)));
+                            debtBonds.add(new DebtBond(partnerUsername,  String.valueOf(map.get(partnerUsername))));
                         }
                         continueDownloadSingleDebts(debtBonds, listener);
                     } else {

@@ -43,16 +43,18 @@ public class StrikeRepository {
     }
 
     private void debtRecount(Map<String, Object> data, String username,
-                             String newDebt, OnUpdateDataListener listener) {
+                             String debtRequest, OnUpdateDataListener listener) {
         if (data.containsKey(username)) {
             Map<String, Object> updatedCurrentUser = new HashMap<>();
-            String debt = Integer.toString(
-                    Integer.parseInt(Objects.requireNonNull(data.get(username)).toString()) +
-                            Integer.parseInt(newDebt));
-            updatedCurrentUser.put(username, debt);
+            double lastDebt = Double.parseDouble(Objects.requireNonNull(data.get(username)).toString());
+            double newDebt = Double.parseDouble(debtRequest);
+
+            double debtCurrentUser = lastDebt - newDebt;
+            double debtFriend = -lastDebt + newDebt;
+            updatedCurrentUser.put(username, Double.toString(debtCurrentUser));
 
             Map<String, Object> updatedFriend = new HashMap<>();
-            updatedFriend.put(mUsername, debt);
+            updatedFriend.put(mUsername, Double.toString(debtFriend));
 
             updateData(updatedCurrentUser, mUsername, listener);
             updateData(updatedFriend, username, listener);
