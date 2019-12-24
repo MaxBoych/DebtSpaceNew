@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "924579598203",
+    "firebase_url": "https://debtspace.firebaseio.com",
+    "project_id": "debtspace",
+    "storage_bucket": "debtspace.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924579598203:android:add5f796567d79236137de",
+        "android_client_info": {
+          "package_name": "com.example.debtspace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924579598203-3c4q4vni6skda63th607becfop3mb1t4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.debtspace",
+            "certificate_hash": "fa5906a1bfdeb46a953999560885d268c963585e"
+          }
+        },
+        {
+          "client_id": "924579598203-2iq0ttk6ln2qbhasenu0ceu194n4gsh0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA3wUVn8STrdMCEEgfBRu4-x6PpP57bwMs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924579598203-2iq0ttk6ln2qbhasenu0ceu194n4gsh0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

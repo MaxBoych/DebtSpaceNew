@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DebtSpace</string>
+    <string name="accept">Aceptar</string>
+    <string name="comment">Comentario</string>
+    <string name="debt">Deuda</string>
+    <string name="email">Email</string>
+    <string name="error">Los datos ingresados ​​no son correctos</string>
+    <string name="first_name">Nombre de pila</string>
+    <string name="history">Historia</string>
+    <string name="home">Casa</string>
+    <string name="last_name">Apellido</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="password">Contraseña</string>
+    <string name="reject">Rechazar</string>
+    <string name="settings">Configuraciones</string>
+    <string name="account">Cuenta</string>
+    <string name="support">Apoyo</string>
+    <string name="language">Idioma</string>
+    <string name="settingsSet">Configuraciones</string>
+    <string name="sing_in">Registrarse</string>
+    <string name="sing_up">Regístrate</string>
+    <string name="strike">Strike</string>
+    <string name="submit_request">Aceptar la solicitud de amistad?</string>
+    <string name="total_debt">Deuda total:</string>
+    <string name="user_search">Búsqueda de usuarios</string>
+    <string name="username">Nombre de usuario</string>
+    <string name="phone">Teléfono:</string>
+    <string name="userID">Identificación:</string>
+    <string name="open_image">Abrir imagen</string>
+    <string name="change_image">Cambiar imagen</string>
+    <string name="delete_image">Eliminar Imagen</string>
+    <string name="update_group">Actualizar grupo</string>
+</resources>

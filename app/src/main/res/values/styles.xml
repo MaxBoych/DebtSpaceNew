@@ -1,0 +1,61 @@
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="actionBarStyle">@style/Toolbar</item>
+        <item name="android:textColor">@color/Dark</item>
+        <item name="android:fontFamily">@font/medium</item>
+
+<!--        <item name="android:font" tools:targetApi="o">@</item>-->
+    </style>
+
+    <style name="SettingElem">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:layout_gravity">start|center</item>
+    </style>
+
+    <style name="Toolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="editAuth">
+        <item name="android:layout_width">320dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:elevation">2dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:paddingStart">16dp</item>
+    </style>
+
+    <style name="buttonAuth">
+        <item name="android:layout_width">320dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:background">@color/Dark</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+<!--        <corners android:radius="5dp"/>-->
+    </style>
+
+    <style name="buttonText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/transColor</item>
+        <item name="android:textColor">@color/white</item>
+        <!--        <corners android:radius="5dp"/>-->
+    </style>
+
+
+
+</resources>

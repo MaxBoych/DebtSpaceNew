@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DebtSpace</string>
+    <string name="accept">Принять</string>
+    <string name="comment">Комментарий</string>
+    <string name="debt">Долг</string>
+    <string name="email">Почта</string>
+    <string name="error">Введённые данные не корректны</string>
+    <string name="first_name">Имя</string>
+    <string name="history">История</string>
+    <string name="home">Главная</string>
+    <string name="last_name">Фамилия</string>
+    <string name="notifications">Уведомления</string>
+    <string name="password">Пароль</string>
+    <string name="reject">Отклонить</string>
+    <string name="settings">Настройки</string>
+    <string name="account">Аккаунт</string>
+    <string name="support">Техническая поддержка</string>
+    <string name="language">Язык</string>
+    <string name="settingsSet">Настройки</string>
+    <string name="sing_in">Вход</string>
+    <string name="sing_up">Регистрация</string>
+    <string name="strike">Страйк</string>
+    <string name="submit_request">Принять запрос в друзья?</string>
+    <string name="total_debt">Общий долг:</string>
+    <string name="user_search">Поиск пользователя</string>
+    <string name="username">Никнейм</string>
+    <string name="phone">Телефон:</string>
+    <string name="userID">Идентификатор:</string>
+    <string name="change_image">Изменить картинку</string>
+    <string name="delete_image">Удалить картинку</string>
+    <string name="open_image">Открыть картинку</string>
+    <string name="update_group">Обновить группу</string>
+</resources>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="10dp"
+    android:background="@color/white"
+    android:elevation="4dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/profile_resume"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:elevation="4dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:padding="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/profile_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start|center"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/strike_bill"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/edit_text"
+                android:gravity="start|center"
+                android:hint="@string/debt"
+                android:inputType="number"
+                android:lines="1"
+                android:maxLength="6" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/strike_comment"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/profile_resume"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/edit_text"
+        android:hint="@string/comment"
+        android:inputType="textMultiLine"
+        android:maxLength="120"
+        android:maxLines="3"
+        android:padding="8dp" />
+
+    <Button
+        android:id="@+id/strike_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_below="@id/strike_comment"
+        android:layout_gravity="bottom"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp"
+        android:text="@string/strike"
+        android:textColor="@color/white" />
+
+    <ProgressBar
+        android:id="@+id/strike_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true" />
+</RelativeLayout>

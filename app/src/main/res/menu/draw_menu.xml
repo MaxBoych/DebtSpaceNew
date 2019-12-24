@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent">
+    <item  android:title="@string/account">
+        <menu>
+            <item android:id="@+id/nav_id"
+                android:title=""/>
+            <item android:id="@+id/nav_phone"
+                android:title="@string/phone"/>
+        </menu>
+    </item>
+
+    <item  android:title="@string/settingsSet">
+        <menu>
+            <item android:id="@+id/nav_sound"
+                android:title="@string/language"
+                android:icon="@drawable/help"/>
+            <item android:id="@+id/nav_lang"
+                android:title="@string/support"
+                android:icon="@drawable/ic_language"/>
+        </menu>
+    </item>
+</menu>

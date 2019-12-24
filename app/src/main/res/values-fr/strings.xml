@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DebtSpace</string>
+    <string name="accept">Acceptez</string>
+    <string name="comment">Commentaire</string>
+    <string name="debt">Dette</string>
+    <string name="email">Email</string>
+    <string name="error">Les données saisies ne sont pas correctes</string>
+    <string name="first_name">Prénom</string>
+    <string name="history">Histoire</string>
+    <string name="home">Accueil</string>
+    <string name="last_name">Nom de famille</string>
+    <string name="notifications">Notifications</string>
+    <string name="password">Mot de passe</string>
+    <string name="reject">Rejeter</string>
+    <string name="settings">Paramètres</string>
+    <string name="account">Compte</string>
+    <string name="support">Soutien</string>
+    <string name="language">La langue</string>
+    <string name="settingsSet">Paramètres</string>
+    <string name="sing_in">se connecter</string>
+    <string name="sing_up">S\'inscrire</string>
+    <string name="strike">La grève</string>
+    <string name="submit_request">Accepter la demande d\'ami?</string>
+    <string name="total_debt">Dette totale:</string>
+    <string name="user_search">Recherche d\'utilisateurs</string>
+    <string name="username">Nom d\'utilisateur</string>
+    <string name="userID">Identifiant:</string>
+    <string name="phone">Téléphone:</string>
+    <string name="open_image">Ouvrir l\'image</string>
+    <string name="delete_image">Supprimer l\'image</string>
+    <string name="change_image">Changer l\'image</string>
+    <string name="update_group">Groupe de mise à jour</string>
+</resources>
