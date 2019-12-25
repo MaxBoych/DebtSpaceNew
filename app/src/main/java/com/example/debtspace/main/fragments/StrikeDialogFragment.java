@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.viewmodels.StrikeViewModel;
+import com.example.debtspace.models.HistoryItem;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.StringUtilities;
 
@@ -68,7 +69,9 @@ public class StrikeDialogFragment extends DialogFragment implements View.OnClick
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.strike_button && !StringUtilities.isEmpty(mBill.getText().toString())) {
-            doStrike(mUsername, mBill.getText().toString());
+            HistoryItem item = new HistoryItem(mUsername, mBill.getText().toString(),
+                    mComment.getText().toString(), "mm/dd/yyyy");
+            doStrike(item);
         }
     }
 
@@ -109,7 +112,7 @@ public class StrikeDialogFragment extends DialogFragment implements View.OnClick
         });
     }
 
-    private void doStrike(String username, String debt) {
-        mViewModel.doStrike(username, debt);
+    private void doStrike(HistoryItem item) {
+        mViewModel.doStrike(item);
     }
 }
