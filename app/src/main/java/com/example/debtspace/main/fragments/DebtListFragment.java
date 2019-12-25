@@ -21,6 +21,7 @@ import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.DebtListViewModel;
 import com.example.debtspace.models.Debt;
 import com.example.debtspace.models.GroupDebt;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class DebtListFragment extends Fragment implements View.OnClickListener {
 
@@ -31,7 +32,7 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
 
     private ProgressBar mProgressBar;
 
-    private Button mCreateDebt;
+    private FloatingActionButton mCreateDebt;
 
     private OnMainStateChangeListener mOnMainStateChangeListener;
 

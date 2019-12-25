@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
     private void initBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById (R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.action_home);
+        onDebtListScreen();
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.action_profile:

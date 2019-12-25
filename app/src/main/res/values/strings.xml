@@ -49,5 +49,8 @@
 
     <!-- Group debt -->
     <string name="update_group">Update group</string>
+    <string name="new_group_debt">New group debt</string>
+    <string name="group_name">Group name</string>
+    <string name="group_debt">Group debt</string>
 
 </resources>

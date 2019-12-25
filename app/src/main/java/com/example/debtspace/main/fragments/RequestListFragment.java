@@ -48,33 +48,10 @@ public class RequestListFragment extends Fragment {
         mList = view.findViewById(R.id.notification_list);
         mProgressBar = view.findViewById(R.id.notification_list_progress_bar);
 
-        TabLayout tablayout = view.findViewById(R.id.TabLayout);
-
         initViewModel();
-
         updateList();
-
         observeList();
-
-        tablayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                switch(tab.getPosition()) {
-                    case 0:
-                    case 1:
-                        mViewModel.downloadRequestList();
-                        break;
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-            }
-        });
+        mViewModel.downloadRequestList();
 
         return view;
     }

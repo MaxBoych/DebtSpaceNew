@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/whiteBlue">
 
     <TextView
+        android:layout_marginTop="24dp"
         android:id="@+id/group_debt_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="New group debt"
+        android:text="@string/new_group_debt"
         android:textSize="20sp" />
 
     <LinearLayout
@@ -27,79 +31,73 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical">
 
             <EditText
+                android:background="@color/whiteBlue"
                 android:id="@+id/group_debt_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:hint="Group name"
-                android:textSize="20sp" />
+                android:hint="@string/group_name"
+                android:textSize="16sp"
+                tools:ignore="NestedWeights" />
 
             <EditText
+                android:background="@color/whiteBlue"
                 android:id="@+id/group_debt_debt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
                 android:layout_gravity="center"
-                android:hint="Group debt"
-                android:textSize="20sp" />
+                android:hint="@string/group_debt"
+                android:textSize="16sp"/>
         </LinearLayout>
     </LinearLayout>
 
     <EditText
+        android:background="@color/whiteBlue"
         android:id="@+id/group_debt_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/group_debt_data"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="48dp"
         android:hint="Add friend"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 
     <LinearLayout
         android:id="@+id/group_debt_lists"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="248dp"
         android:layout_below="@id/group_debt_search"
         android:baselineAligned="false"
         android:orientation="horizontal">
 
-        <FrameLayout
-            android:id="@+id/group_debt_found"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/group_debt_found_list"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/group_debt_found_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/group_debt_added"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/group_debt_added_list"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/group_debt_added_list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
-        </FrameLayout>
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
     <Button
+        style="@style/buttonAuth"
         android:id="@+id/button_submit"
         android:layout_width="150dp"
         android:layout_height="50dp"
         android:layout_below="@id/group_debt_lists"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="Create Group"
-        android:textSize="15sp" />
+        android:text="Create Group"/>
 
     <ProgressBar
         android:id="@+id/group_debt_progress_bar"

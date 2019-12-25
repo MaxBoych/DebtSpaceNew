@@ -6,30 +6,19 @@
     android:background="@color/whiteBlue"
     android:orientation="vertical">
 
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/TabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:elevation="2dp">
+    <android.widget.Toolbar
+        android:id="@+id/toolbar1"
+        style="@style/Toolbar"
+        android:elevation="4dp"
+        app:menu="@menu/toolbar_menu">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/newDebts"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/New_debts"
-            android:textColor="@color/Dark"
-            app:itemTextColor="@drawable/bottom_nav_colors" />
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/newFriends"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/New_friend"
-            app:itemTextColor="@drawable/bottom_nav_colors" />
-    </com.google.android.material.tabs.TabLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/bold"
+            android:text="@string/app_name"
+            android:textSize="24sp" />
+    </android.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notification_list"
