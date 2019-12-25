@@ -18,10 +18,26 @@ public class HistoryItem {
         date = map.get(Configuration.DATE_KEY);
     }
 
-    public HistoryItem(String user, String debt, String comment, String date) {
+    public HistoryItem(String username, String debt, String comment, String date) {
         this.debt = debt;
-        this.username = user;
+        this.username = username;
         this.comment = comment;
+        this.date = date;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setDebt(String debt) {
+        this.debt = debt;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void  setDate(String date) {
         this.date = date;
     }
 
@@ -29,7 +45,7 @@ public class HistoryItem {
         return debt;
     }
 
-    public String getUser() {
+    public String getUsername() {
         return username;
     }
 

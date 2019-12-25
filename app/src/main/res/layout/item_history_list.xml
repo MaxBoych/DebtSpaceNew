@@ -26,7 +26,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:gravity="center|end"
-                android:text="11.12.2019"
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
@@ -43,7 +42,6 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center_vertical"
                     android:minWidth="32dp"
-                    android:text="Артём Голубков"
                     android:textSize="20sp" />
 
                 <TextView
@@ -52,7 +50,7 @@
                     android:layout_height="40dp"
                     android:layout_marginStart="8dp"
                     android:gravity="center|start"
-                    android:text="1200"
+                    android:background="@drawable/rounded_corner"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
@@ -62,7 +60,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:gravity="center|start"
-                    android:text="skdf;kj\dsfsdf\sdfsdffffffffffffffffffffsssssssssssdfsdf"
                     android:textColor="@color/darkTransColor"
                     android:textSize="16sp"
                     android:textStyle="normal" />

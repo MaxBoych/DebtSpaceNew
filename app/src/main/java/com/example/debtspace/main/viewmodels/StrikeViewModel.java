@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.main.repositories.StrikeRepository;
+import com.example.debtspace.models.HistoryItem;
 
 public class StrikeViewModel extends ViewModel {
 
@@ -20,9 +21,9 @@ public class StrikeViewModel extends ViewModel {
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void doStrike(String username, String debt) {
+    public void doStrike(HistoryItem item) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new StrikeRepository().doStrike(username, debt, new OnUpdateDataListener() {
+        new StrikeRepository().doStrike(item, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 mState.setValue(Configuration.LoadStageState.SUCCESS);

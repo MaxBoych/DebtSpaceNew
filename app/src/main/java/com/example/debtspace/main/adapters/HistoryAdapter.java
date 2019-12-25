@@ -1,5 +1,7 @@
 package com.example.debtspace.main.adapters;
 
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,15 +23,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
-        private final TextView friendName;
-        private final TextView friendDebt;
+        private final TextView name;
+        private final TextView debt;
         private final TextView comment;
         private final TextView date;
 
         ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-            friendName = itemView.findViewById(R.id.history_user_name);
-            friendDebt = itemView.findViewById(R.id.history_user_debt);
+            name = itemView.findViewById(R.id.history_user_name);
+            debt = itemView.findViewById(R.id.history_user_debt);
             comment = itemView.findViewById(R.id.history_comment);
             date = itemView.findViewById(R.id.history_date);
         }
@@ -48,10 +50,25 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         HistoryItem item = mList.get(position);
 
-        holder.friendName.setText(item.getUser());
-        holder.friendDebt.setText(item.getDebt());
+        holder.name.setText(item.getUsername());
+        holder.debt.setText(item.getDebt());
         holder.comment.setText(item.getComment());
         holder.date.setText(item.getDate());
+
+        GradientDrawable debtBackground = (GradientDrawable) holder.debt.getBackground();
+        double debtValue = Double.parseDouble(item.getDebt());
+        if (debtValue > 0) {
+            String val = Double.toString(debtValue);
+            holder.debt.setText(val);
+            debtBackground.setColor(Color.RED);
+        } else if (debtValue == 0) {
+            holder.debt.setText("0");
+            debtBackground.setColor(Color.GRAY);
+        } else {
+            String val = Double.toString(-debtValue);
+            holder.debt.setText(val);
+            debtBackground.setColor(Color.GREEN);
+        }
     }
 
     @Override
