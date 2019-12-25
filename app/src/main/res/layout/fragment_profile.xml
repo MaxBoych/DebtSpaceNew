@@ -91,11 +91,4 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:indeterminate="true" />
-
-    <Button
-        android:id="@+id/profile_language"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_below="@id/nav_view"/>
 </RelativeLayout>

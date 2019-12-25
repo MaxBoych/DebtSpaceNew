@@ -30,7 +30,7 @@ import com.example.debtspace.utilities.CircleTransform;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private ImageView mImage;
     private ProfileViewModel mViewModel;
@@ -66,8 +66,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         NavigationView navigationView = view.findViewById(R.id.nav_view);
         mMenu = navigationView.getMenu();
         mUsername = mMenu.getItem(0).getSubMenu().getItem(0);
-
-        Button changeLanguage = view.findViewById(R.id.profile_language);
+        navigationView.setNavigationItemSelectedListener(this);
         mProgressBar = view.findViewById(R.id.profile_progress_bar);
 
         initViewModel();
@@ -75,7 +74,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         mViewModel.downloadUserData();
 
         mImage.setOnClickListener(this);
-        changeLanguage.setOnClickListener(this);
 
         return view;
     }
@@ -84,8 +82,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         if (v.getId() == R.id.profile_image) {
             mOnMainStateChangeListener.onImageManagementScreen(Configuration.NONE_ID);
-        } else if (v.getId() == R.id.profile_language) {
-            showChangeLanguageDialog();
         }
     }
 
@@ -172,5 +168,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            showChangeLanguageDialog();
+        return true;
     }
 }
