@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">DebtSpace</string>
 
-    <!--<string name="full_name" translatable="false">%1$s %2$s</string>-->
+    <!-- Main screen (debt list) -->
 
     <!-- Requests -->
     <string name="accept">Accept</string>
@@ -13,6 +13,7 @@
     <string name="open_image">Open image</string>
     <string name="change_image">Change image</string>
     <string name="delete_image">Delete image</string>
+    <string name="upload_image">Upload image</string>
     <string name="total_debt">Total debt:</string>
     <string name="debt">Debt</string>
     <string name="comment">Comment</string>
@@ -42,15 +43,18 @@
     <string name="username">Username</string>
 
     <!--  Notifications    -->
-    <string name="New_friend">Заявки</string>
-    <string name="New_debts">Сообщения</string>
+    <string name="requests">Заявки</string>
 
-    <string name="Push">Готово</string>
+    <string name="push">Готово</string>
 
     <!-- Group debt -->
     <string name="update_group">Update group</string>
     <string name="new_group_debt">New group debt</string>
     <string name="group_name">Group name</string>
     <string name="group_debt">Group debt</string>
+
+    <!-- Network -->
+    <string name="network_lost_message">Lost Internet connection :(</string>
+    <string name="ok">OK</string>
 
 </resources>

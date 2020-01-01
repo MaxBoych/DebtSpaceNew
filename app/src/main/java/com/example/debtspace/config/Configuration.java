@@ -21,6 +21,20 @@ public class Configuration {
         NONE
     }
 
+    public enum ImageStageState {
+        DOWNLOAD_SUCCESS,
+        UPLOAD_SUCCESS,
+        DELETE_SUCCESS,
+        PROGRESS,
+        FAIL,
+        NONE
+    }
+
+    public enum NetworkState {
+        AVAILABLE,
+        LOST
+    }
+
     public final static String USERS_COLLECTION_NAME = "users";
     public final static String DEBTS_COLLECTION_NAME = "debts";
     public final static String FRIENDS_COLLECTION_NAME = "friends";

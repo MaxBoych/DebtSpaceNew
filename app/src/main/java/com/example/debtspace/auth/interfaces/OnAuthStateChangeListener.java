@@ -10,5 +10,7 @@ public interface OnAuthStateChangeListener {
 
     void onMainScreen();
 
+    void onNetworkLostScreen();
+
     void onFailure(String errorMessage);
 }

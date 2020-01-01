@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="10dp"
+    android:background="@color/white"
+    android:elevation="4dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@id/image_layout"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/upload_image_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/upload_image"
+            android:layout_weight="5"/>
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/image_toolbar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_weight="1"/>
+    </LinearLayout>
+
+
+
+    <RelativeLayout
+        android:id="@+id/image_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/selected_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/selected_image"
+            android:layout_centerInParent="true" />
+
+        <ProgressBar
+            android:id="@+id/image_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminate="true" />
+    </RelativeLayout>
+
+
+
+
+    <!--<Button
+        android:id="@+id/upload_image_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/open_image_button"
+        android:layout_marginBottom="50dp" />
+
+    <Button
+        android:id="@+id/open_image_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/change_image_button"
+        android:text="@string/open_image" />
+
+    <Button
+        android:id="@+id/change_image_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/delete_image_button"
+        android:text="@string/change_image" />
+
+    <Button
+        android:id="@+id/delete_image_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/delete_image"
+        android:textColor="@color/red" />-->
+</RelativeLayout>

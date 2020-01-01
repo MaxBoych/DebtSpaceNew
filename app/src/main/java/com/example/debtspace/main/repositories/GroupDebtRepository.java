@@ -132,7 +132,7 @@ public class GroupDebtRepository {
     }
 
     public void insertGroupToDatabase(String groupName, String debt,
-                                      List<String> members, OnUpdateDataListener listener) {
+                                      List<String> members, Uri uri, OnUpdateDataListener listener) {
         String groupID = mDatabase.collection(Configuration.GROUP_DEBTS_COLLECTION_NAME)
                 .document()
                 .getId();
@@ -146,7 +146,7 @@ public class GroupDebtRepository {
                 .document(groupID)
                 .set(groupData)
                 .addOnSuccessListener(aVoid ->
-                        addGroupDataToUsers(groupID, members, listener))
+                        addGroupDataToUsers(groupID, members, uri, listener))
                 .addOnFailureListener(e ->
                         listener.onFailure(e.getMessage())
                 );
@@ -167,7 +167,7 @@ public class GroupDebtRepository {
                 );
     }
 
-    private void addGroupDataToUsers(String groupID, List<String> users, OnUpdateDataListener listener) {
+    private void addGroupDataToUsers(String groupID, List<String> users, Uri uri, OnUpdateDataListener listener) {
         mSize = users.size();
         for (String username : users) {
             mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
@@ -176,13 +176,30 @@ public class GroupDebtRepository {
                     .addOnSuccessListener(aVoid -> {
                         mCount++;
                         if (mCount == mSize) {
-                            listener.onUpdateSuccessful();
+                            if (uri != null) {
+                                uploadImage(groupID, uri, listener);
+                            } else {
+                                listener.onUpdateSuccessful();
+                            }
                         }
                     })
                     .addOnFailureListener(e ->
                             listener.onFailure(e.getMessage())
                     );
         }
+    }
+
+    private void uploadImage(String groupID, Uri uri, OnUpdateDataListener listener) {
+        mStorage.child(Configuration.GROUP_DEBTS_COLLECTION_NAME)
+                .child(groupID)
+                .putFile(uri)
+                .addOnSuccessListener(taskSnapshot ->
+                        listener.onUpdateSuccessful())
+                .addOnFailureListener(e -> {
+                            Log.d("#DS", Objects.requireNonNull(e.getMessage()));
+                            listener.onFailure("ERROR: Can't upload group image");
+                        }
+                );
     }
 
     public void downloadGroupImage(String groupID, OnDownloadDataListener<Uri> listener) {

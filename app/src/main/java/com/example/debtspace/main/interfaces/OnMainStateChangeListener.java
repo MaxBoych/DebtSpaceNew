@@ -17,7 +17,7 @@ public interface OnMainStateChangeListener {
 
     void onProfileScreen();
 
-    void onImageManagementScreen(String id);
+    void onImageManagementScreen(String id, OnImageSharingListener listener);
 
     void onHistoryScreen();
 
@@ -28,6 +28,8 @@ public interface OnMainStateChangeListener {
     void onRequestConfirmScreen(User user);
 
     void onAuthScreen();
+
+    void onNetworkLostScreen();
 
     void onFailure(String errorMessage);
 }

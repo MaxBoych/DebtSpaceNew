@@ -9,12 +9,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.debtspace.R;
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.auth.fragments.AuthFragment;
 import com.example.debtspace.auth.fragments.SignInFragment;
 import com.example.debtspace.auth.fragments.SignUpFragment;
 import com.example.debtspace.auth.interfaces.OnAuthStateChangeListener;
 import com.example.debtspace.auth.repositories.AuthRepository;
 import com.example.debtspace.main.activities.MainActivity;
+import com.example.debtspace.main.fragments.NetworkLostDialog;
 
 public class AuthActivity extends AppCompatActivity implements OnAuthStateChangeListener {
 
@@ -30,12 +32,25 @@ public class AuthActivity extends AppCompatActivity implements OnAuthStateChange
                 onAuthScreen();
             }
         }
+
+        observeNetworkState();
+    }
+
+    private void observeNetworkState() {
+        DebtSpaceApplication.from(getApplicationContext())
+                .getNetworkState()
+                .observe(this, networkState -> {
+                    if (networkState == com.example.debtspace.config.Configuration.NetworkState.LOST) {
+                        onNetworkLostScreen();
+                    }
+                });
     }
 
     @Override
     public void onAuthScreen() {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.auth_container, new AuthFragment())
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -43,6 +58,7 @@ public class AuthActivity extends AppCompatActivity implements OnAuthStateChange
     public void onSignInScreen() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.auth_container, new SignInFragment())
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -50,6 +66,7 @@ public class AuthActivity extends AppCompatActivity implements OnAuthStateChange
     public void onSignUpScreen() {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.auth_container, new SignUpFragment())
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -59,6 +76,12 @@ public class AuthActivity extends AppCompatActivity implements OnAuthStateChange
 
         finish();
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    @Override
+    public void onNetworkLostScreen() {
+        NetworkLostDialog dialog = new NetworkLostDialog();
+        dialog.show(getSupportFragmentManager(), null);
     }
 
     @Override

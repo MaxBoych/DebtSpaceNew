@@ -31,4 +31,7 @@
     <string name="delete_image">Удалить картинку</string>
     <string name="open_image">Открыть картинку</string>
     <string name="update_group">Обновить группу</string>
+    <string name="group_name">Название группы</string>
+    <string name="group_debt">Групповой долг</string>
+    <string name="new_group_debt">Новый групповой долг</string>
 </resources>

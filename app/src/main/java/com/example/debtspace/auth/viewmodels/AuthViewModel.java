@@ -31,23 +31,23 @@ public class AuthViewModel extends ViewModel {
 
     public void signIn(String email, String password) {
 
-        mSignInState.setValue(Configuration.AuthStageState.PROGRESS);
+        mSignInState.postValue(Configuration.AuthStageState.PROGRESS);
 
         if (StringUtilities.isNotValidEmail(email)) {
-            mSignInState.setValue(Configuration.AuthStageState.ERROR_EMAIL);
+            mSignInState.postValue(Configuration.AuthStageState.ERROR_EMAIL);
 
         } else {
 
             new AuthRepository().signIn(email, password, new OnAuthProgressListener() {
                 @Override
                 public void onSuccessful() {
-                    mSignInState.setValue(Configuration.AuthStageState.SUCCESS);
+                    mSignInState.postValue(Configuration.AuthStageState.SUCCESS);
                 }
 
                 @Override
                 public void onFailure(String errorMessage) {
-                    mErrorMessage.setValue(errorMessage);
-                    mSignInState.setValue(Configuration.AuthStageState.FAIL);
+                    mErrorMessage.postValue(errorMessage);
+                    mSignInState.postValue(Configuration.AuthStageState.FAIL);
                 }
             });
         }
@@ -56,17 +56,17 @@ public class AuthViewModel extends ViewModel {
     public void signUp(String firstName, String lastName,
                        String username, String email, String password) {
 
-        mSignUpState.setValue(Configuration.AuthStageState.PROGRESS);
+        mSignUpState.postValue(Configuration.AuthStageState.PROGRESS);
 
         if (StringUtilities.isEmpty(username)) {
-            mSignUpState.setValue(Configuration.AuthStageState.ERROR_USERNAME);
+            mSignUpState.postValue(Configuration.AuthStageState.ERROR_USERNAME);
             return;
         }
 
         FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
             @Override
             public void onSuccessful(User user) {
-                mSignUpState.setValue(Configuration.AuthStageState.ERROR_USERNAME);
+                mSignUpState.postValue(Configuration.AuthStageState.ERROR_USERNAME);
             }
 
             @Override
@@ -76,8 +76,8 @@ public class AuthViewModel extends ViewModel {
 
             @Override
             public void onFailure(String errorMessage) {
-                mErrorMessage.setValue(errorMessage);
-                mSignUpState.setValue(Configuration.AuthStageState.FAIL);
+                mErrorMessage.postValue(errorMessage);
+                mSignUpState.postValue(Configuration.AuthStageState.FAIL);
             }
         });
     }
@@ -85,16 +85,16 @@ public class AuthViewModel extends ViewModel {
     private void signUpContinue(String firstName, String lastName,
                                 String username, String email, String password) {
         if (StringUtilities.isEmpty(firstName)) {
-            mSignUpState.setValue(Configuration.AuthStageState.ERROR_FIRST_NAME);
+            mSignUpState.postValue(Configuration.AuthStageState.ERROR_FIRST_NAME);
 
         } else if (StringUtilities.isEmpty(lastName)) {
-            mSignUpState.setValue(Configuration.AuthStageState.ERROR_LAST_NAME);
+            mSignUpState.postValue(Configuration.AuthStageState.ERROR_LAST_NAME);
 
         } else if (StringUtilities.isNotValidEmail(email)) {
-            mSignUpState.setValue(Configuration.AuthStageState.ERROR_EMAIL);
+            mSignUpState.postValue(Configuration.AuthStageState.ERROR_EMAIL);
 
         } else if (!StringUtilities.isValidPassword(password)) {
-            mSignUpState.setValue(Configuration.AuthStageState.ERROR_PASSWORD);
+            mSignUpState.postValue(Configuration.AuthStageState.ERROR_PASSWORD);
 
         } else {
 
@@ -104,13 +104,13 @@ public class AuthViewModel extends ViewModel {
                         @Override
                         public void onSuccessful() {
                             Log.d("#DS RESULT", "SUCCESSFUL");
-                            mSignUpState.setValue(Configuration.AuthStageState.SUCCESS);
+                            mSignUpState.postValue(Configuration.AuthStageState.SUCCESS);
                         }
 
                         @Override
                         public void onFailure(String errorMessage) {
-                            mErrorMessage.setValue(errorMessage);
-                            mSignUpState.setValue(Configuration.AuthStageState.FAIL);
+                            mErrorMessage.postValue(errorMessage);
+                            mSignUpState.postValue(Configuration.AuthStageState.FAIL);
                         }
                     });
         }
