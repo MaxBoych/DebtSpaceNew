@@ -3,6 +3,7 @@ package com.example.debtspace.main.repositories;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -13,6 +14,7 @@ public class RequestConfirmRepository {
 
     private FirebaseAuth mFirebaseAuth;
     private FirebaseFirestore mDatabase;
+    private CollectionReference mDebts;
     private String mUsername;
 
     private int mAmount;
@@ -21,6 +23,7 @@ public class RequestConfirmRepository {
     public RequestConfirmRepository() {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseFirestore.getInstance();
+        mDebts = mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME);
 
         mUsername = Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth
                 .getCurrentUser())
@@ -33,18 +36,42 @@ public class RequestConfirmRepository {
     public void acceptFriendRequest(String username, OnUpdateDataListener listener) {
         Map<String, Object> dataCurrentUser = new HashMap<>();
         dataCurrentUser.put(username, Configuration.DEFAULT_DEBT_VALUE);
-        setData(dataCurrentUser, mUsername, listener);
+        updateData(dataCurrentUser, mUsername, listener);
 
         Map<String, Object> dataFriend = new HashMap<>();
         dataFriend.put(mUsername, Configuration.DEFAULT_DEBT_VALUE);
-        setData(dataFriend, username, listener);
+        updateData(dataFriend, username, listener);
 
         deleteNotificationData(username, listener);
     }
 
+    private void checkDebts(Map<String, Object> data, String username, OnUpdateDataListener listener) {
+        mDebts.document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        updateData(data, username, listener);
+                    } else {
+                        setData(data, username, listener);
+                    }
+                })
+                .addOnFailureListener(e ->
+                        listener.onFailure(e.getMessage())
+                );
+    }
+
+    private void updateData(Map<String, Object> data, String username, OnUpdateDataListener listener) {
+        mDebts.document(username)
+                .update(data)
+                .addOnSuccessListener(aVoid ->
+                        readinessCheck(listener))
+                .addOnFailureListener(e ->
+                        listener.onFailure(e.getMessage())
+                );
+    }
+
     private void setData(Map<String, Object> data, String username, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
-                .document(username)
+        mDebts.document(username)
                 .set(data)
                 .addOnSuccessListener(aVoid ->
                         readinessCheck(listener))

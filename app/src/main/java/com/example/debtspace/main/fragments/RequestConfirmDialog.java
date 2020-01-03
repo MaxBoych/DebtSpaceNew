@@ -1,77 +1,82 @@
 package com.example.debtspace.main.fragments;
 
-import androidx.fragment.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
-import com.example.debtspace.main.viewmodels.StrikeViewModel;
-import com.example.debtspace.models.HistoryItem;
+import com.example.debtspace.main.viewmodels.RequestConfirmViewModel;
 import com.example.debtspace.models.User;
-import com.example.debtspace.utilities.StringUtilities;
 
 import java.util.Objects;
 
-public class StrikeDialogFragment extends DialogFragment implements View.OnClickListener {
+public class RequestConfirmDialog extends DialogFragment implements View.OnClickListener {
 
-    private EditText mBill;
-    private Button mStrike;
     private TextView mName;
-    private TextView mComment;
-    private String mUsername;
+    private TextView mUsername;
+    private Button mAccept;
+    private Button mReject;
 
-    private StrikeViewModel mViewModel;
+    private RequestConfirmViewModel mViewModel;
+
     private ProgressBar mProgressBar;
 
-    public StrikeDialogFragment newInstance(User user) {
+    public RequestConfirmDialog newInstance(User user) {
         Bundle args = new Bundle();
+        RequestConfirmDialog fragment = new RequestConfirmDialog();
+
         args.putString(Configuration.NAME_KEY, user.getFirstName() + " " + user.getLastName());
         args.putString(Configuration.USERNAME_KEY, user.getUsername());
-        StrikeDialogFragment fragment = new StrikeDialogFragment();
         fragment.setArguments(args);
+
         return fragment;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_strike, container, false);
-        mName = view.findViewById(R.id.profile_name);
-        mComment = view.findViewById(R.id.strike_comment);
-        mBill = view.findViewById(R.id.strike_bill);
-        mStrike = view.findViewById(R.id.strike_button);
-        mProgressBar = view.findViewById(R.id.strike_progress_bar);
 
-        mUsername = Objects.requireNonNull(getArguments()).getString(Configuration.USERNAME_KEY);
-        mName.setText(Objects.requireNonNull(getArguments()).getString(Configuration.NAME_KEY));
+        View view = inflater.inflate(R.layout.dialog_request_confirm, container, false);
+
+        mName = view.findViewById(R.id.request_name);
+        mUsername = view.findViewById(R.id.request_username);
+        mAccept = view.findViewById(R.id.request_accept);
+        mReject = view.findViewById(R.id.request_reject);
+        mProgressBar = view.findViewById(R.id.request_progress_bar);
+
+        String name = Objects.requireNonNull(getArguments()).getString(Configuration.NAME_KEY);
+        mName.setText(name);
+        String username = getArguments().getString(Configuration.USERNAME_KEY);
+        mUsername.setText(username);
 
         initViewModel();
-        observeStrikeState();
+        observeState();
 
-        mStrike.setOnClickListener(this);
+        mAccept.setOnClickListener(this);
+        mReject.setOnClickListener(this);
 
         return view;
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.strike_button && !StringUtilities.isEmpty(mBill.getText().toString())) {
-            HistoryItem item = new HistoryItem(mUsername, mBill.getText().toString(),
-                    mComment.getText().toString(), "mm/dd/yyyy");
-            doStrike(item);
+        if (v.getId() == R.id.request_accept) {
+            acceptRequest(mUsername.getText().toString());
+        } else if (v.getId() == R.id.request_reject) {
+            rejectRequest(mUsername.getText().toString());
+            dismiss();
         }
     }
 
@@ -84,13 +89,13 @@ public class StrikeDialogFragment extends DialogFragment implements View.OnClick
     }
 
     private void initViewModel() {
-        mViewModel = ViewModelProviders.of(this).get(StrikeViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(RequestConfirmViewModel.class);
     }
 
-    private void observeStrikeState() {
+    private void observeState() {
 
-        mViewModel.getState().observe(this, listStageState -> {
-            switch (listStageState) {
+        mViewModel.getState().observe(this, stageState -> {
+            switch (stageState) {
                 case SUCCESS:
                     mProgressBar.setVisibility(View.GONE);
                     dismiss();
@@ -112,7 +117,11 @@ public class StrikeDialogFragment extends DialogFragment implements View.OnClick
         });
     }
 
-    private void doStrike(HistoryItem item) {
-        mViewModel.doStrike(item);
+    private void acceptRequest(String username) {
+        mViewModel.acceptFriendRequest(username);
+    }
+
+    private void rejectRequest(String username) {
+        mViewModel.rejectFriendRequest(username);
     }
 }

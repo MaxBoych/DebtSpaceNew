@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,6 +22,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.activities.MainActivity;
+import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.ProfileViewModel;
 import com.example.debtspace.models.User;
@@ -30,7 +30,9 @@ import com.example.debtspace.utilities.CircleTransform;
 import com.google.android.material.navigation.NavigationView;
 import com.squareup.picasso.Picasso;
 
-public class ProfileFragment extends Fragment implements View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener,
+        NavigationView.OnNavigationItemSelectedListener,
+        OnImageSharingListener {
 
     private ImageView mImage;
     private ProfileViewModel mViewModel;
@@ -81,8 +83,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, N
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.profile_image) {
-            mOnMainStateChangeListener.onImageManagementScreen(Configuration.NONE_ID);
+            mOnMainStateChangeListener.onImageManagementScreen(Configuration.NONE_ID, this);
         }
+    }
+
+    @Override
+    public void onUploaded(Uri uri) {
+        drawImage(uri);
     }
 
     private void initViewModel() {

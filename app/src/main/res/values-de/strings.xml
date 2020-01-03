@@ -31,4 +31,7 @@
     <string name="delete_image">Lösche Bild</string>
     <string name="open_image">Bild öffnen</string>
     <string name="update_group">Gruppe aktualisieren</string>
+    <string name="group_name">Gruppenname</string>
+    <string name="group_debt">Konzernverschuldung</string>
+    <string name="new_group_debt">Neue Konzernverschuldung</string>
 </resources>

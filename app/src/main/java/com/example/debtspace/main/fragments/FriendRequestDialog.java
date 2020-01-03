@@ -22,7 +22,7 @@ import com.example.debtspace.models.User;
 
 import java.util.Objects;
 
-public class FriendRequestDialogFragment extends DialogFragment implements View.OnClickListener {
+public class FriendRequestDialog extends DialogFragment implements View.OnClickListener {
 
     private TextView mUserName;
     private TextView mUserUsername;
@@ -33,11 +33,11 @@ public class FriendRequestDialogFragment extends DialogFragment implements View.
 
     private ProgressBar mProgressBar;
 
-    public FriendRequestDialogFragment newInstance(User user) {
+    public FriendRequestDialog newInstance(User user) {
         Bundle args = new Bundle();
         args.putString(Configuration.NAME_KEY, user.getFirstName() + " " + user.getLastName());
         args.putString(Configuration.USERNAME_KEY, user.getUsername());
-        FriendRequestDialogFragment fragment = new FriendRequestDialogFragment();
+        FriendRequestDialog fragment = new FriendRequestDialog();
         fragment.setArguments(args);
 
         return fragment;
@@ -61,7 +61,6 @@ public class FriendRequestDialogFragment extends DialogFragment implements View.
         mUserUsername.setText(username);
 
         initViewModel();
-
         observeState();
 
         mYes.setOnClickListener(this);

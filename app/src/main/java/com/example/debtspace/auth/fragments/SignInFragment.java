@@ -104,6 +104,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                     editTextSetNull();
                     buttonsSetEnabled(false);
                     mProgressBar.setVisibility(View.VISIBLE);
+                    break;
                 case ERROR_EMAIL:
                     errorEmail();
                     buttonsSetEnabled(true);

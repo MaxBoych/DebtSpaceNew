@@ -155,7 +155,7 @@ public class GroupDebtViewModel extends ViewModel {
         return found;
     }
 
-    public void createGroup(String groupName, String debt) {
+    public void createGroup(String groupName, String debt, Uri uri) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
         List<User> users = mAddedList.getValue();
         if (Objects.requireNonNull(users).size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
@@ -163,7 +163,7 @@ public class GroupDebtViewModel extends ViewModel {
             for (User user : users) {
                 members.add(user.getUsername());
             }
-            new GroupDebtRepository().insertGroupToDatabase(groupName, debt, members, new OnUpdateDataListener() {
+            new GroupDebtRepository().insertGroupToDatabase(groupName, debt, members, uri, new OnUpdateDataListener() {
                 @Override
                 public void onUpdateSuccessful() {
                     mIsSubmit = true;

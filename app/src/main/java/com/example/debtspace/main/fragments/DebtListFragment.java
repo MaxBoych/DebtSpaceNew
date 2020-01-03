@@ -5,23 +5,27 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
+import com.example.debtspace.application.DebtSpaceApplication;
+import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.adapters.DebtListAdapter;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.DebtListViewModel;
 import com.example.debtspace.models.Debt;
 import com.example.debtspace.models.GroupDebt;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.Objects;
 
 public class DebtListFragment extends Fragment implements View.OnClickListener {
 
@@ -32,7 +36,7 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
 
     private ProgressBar mProgressBar;
 
-    private FloatingActionButton mCreateDebt;
+    private FloatingActionButton mCreateGroupDebt;
 
     private OnMainStateChangeListener mOnMainStateChangeListener;
 
@@ -46,9 +50,12 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup viewGroup, Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_debt_list, viewGroup, false);
+
+
+
         mList = view.findViewById(R.id.debt_list);
         mProgressBar = view.findViewById(R.id.debt_list_progress_bar);
-        mCreateDebt = view.findViewById(R.id.button_create_group_debt);
+        mCreateGroupDebt = view.findViewById(R.id.button_create_group_debt);
 
         initViewModel();
         observeDebtList();
@@ -56,7 +63,7 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
 
         view.findViewById(R.id.button_sign_out).setOnClickListener(this);
         view.findViewById(R.id.button_to_user_search).setOnClickListener(this);
-        mCreateDebt.setOnClickListener(this);
+        mCreateGroupDebt.setOnClickListener(this);
 
         return view;
     }
@@ -117,6 +124,5 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
                     break;
             }
         });
-
     }
 }

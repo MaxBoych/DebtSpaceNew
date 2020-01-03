@@ -31,4 +31,7 @@
     <string name="change_image">Cambiar imagen</string>
     <string name="delete_image">Eliminar Imagen</string>
     <string name="update_group">Actualizar grupo</string>
+    <string name="group_name">Nombre del grupo</string>
+    <string name="group_debt">Deuda colectiva</string>
+    <string name="new_group_debt">Nueva deuda grupal</string>
 </resources>

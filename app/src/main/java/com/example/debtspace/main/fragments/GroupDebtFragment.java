@@ -25,6 +25,7 @@ import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.adapters.GroupDebtAddedListAdapter;
 import com.example.debtspace.main.adapters.GroupDebtFoundListAdapter;
+import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.GroupDebtViewModel;
 import com.example.debtspace.models.GroupDebt;
@@ -32,9 +33,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class GroupDebtFragment extends Fragment implements View.OnClickListener {
+public class GroupDebtFragment extends Fragment implements View.OnClickListener, OnImageSharingListener {
 
     private ImageView mImage;
+    private Uri mImageUri;
     private EditText mName;
     private EditText mFriendSearch;
     private EditText mDebt;
@@ -117,8 +119,14 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener 
                 updateGroup();
             }
         } else if (v.getId() == R.id.group_debt_image) {
-            mOnMainStateChangeListener.onImageManagementScreen(mID);
+            mOnMainStateChangeListener.onImageManagementScreen(mID, this);
         }
+    }
+
+    @Override
+    public void onUploaded(Uri uri) {
+        mImageUri = uri;
+        drawImage();
     }
 
     private void initViewModel() {
@@ -171,7 +179,8 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener 
 
                     Uri uri = mViewModel.getUriImage();
                     if (uri != null) {
-                        drawImage(uri);
+                        mImageUri = uri;
+                        drawImage();
                     }
 
                     setEnabled(true);
@@ -219,14 +228,15 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener 
         });
     }
 
-    private void drawImage(Uri uri) {
-        Picasso.get()
-                .load(uri)
-                .into(mImage);
+    private void drawImage() {
+        if (mImageUri != null) {
+            Picasso.get().load(mImageUri)
+                    .into(mImage);
+        }
     }
 
     private void createGroup() {
-        mViewModel.createGroup(mName.getText().toString(), mDebt.getText().toString());
+        mViewModel.createGroup(mName.getText().toString(), mDebt.getText().toString(), mImageUri);
     }
 
     private void updateGroup() {
