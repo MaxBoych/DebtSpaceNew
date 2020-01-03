@@ -4,7 +4,9 @@
     android:layout_height="wrap_content"
     android:elevation="4dp"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:layout_margin="8dp"
+    android:padding="8dp"
+    android:background="@drawable/rounded_light">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/added_list_item"
