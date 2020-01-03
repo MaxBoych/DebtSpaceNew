@@ -65,6 +65,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         mScore = view.findViewById(R.id.profile_total_debt_value);
         mImage = view.findViewById(R.id.profile_image);
 
+
         NavigationView navigationView = view.findViewById(R.id.nav_view);
         mMenu = navigationView.getMenu();
         mUsername = mMenu.getItem(0).getSubMenu().getItem(0);
@@ -76,6 +77,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         mViewModel.downloadUserData();
 
         mImage.setOnClickListener(this);
+        view.findViewById(R.id.button_sign_out).setOnClickListener(this);
 
         return view;
     }
@@ -84,6 +86,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     public void onClick(View v) {
         if (v.getId() == R.id.profile_image) {
             mOnMainStateChangeListener.onImageManagementScreen(Configuration.NONE_ID, this);
+        } else if (v.getId() == R.id.button_sign_out) {
+            mOnMainStateChangeListener.onAuthScreen();
         }
     }
 

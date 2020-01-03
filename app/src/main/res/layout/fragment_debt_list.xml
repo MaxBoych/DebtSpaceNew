@@ -23,30 +23,25 @@
                 android:textSize="24sp" />
 
             <Button
+                style="@style/buttonText"
+                android:drawableStart="@drawable/ic_search"
                 android:id="@+id/button_to_user_search"
-                style="@android:style/MediaButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="end"
-                android:icon="@drawable/ic_search"
-                android:text="@string/user_search"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
+                />
         </android.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/debt_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolbar1">
-
+            android:layout_below="@id/toolbar1"
+            android:layout_marginBottom="56dp"
+            android:clipToPadding="false"
+            android:paddingBottom="64dp">
         </androidx.recyclerview.widget.RecyclerView>
-
-        <Button
-            android:id="@+id/button_sign_out"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="260dp" />
 
         <ProgressBar
             android:id="@+id/debt_list_progress_bar"

@@ -19,6 +19,16 @@
             android:fontFamily="@font/bold"
             android:text="@string/app_name"
             android:textSize="24sp" />
+
+        <Button
+            style="@style/buttonText"
+            android:drawableStart="@drawable/ic_exit"
+            android:id="@+id/button_sign_out"
+            android:padding="8dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="end"
+            />
     </Toolbar>
 
     <LinearLayout

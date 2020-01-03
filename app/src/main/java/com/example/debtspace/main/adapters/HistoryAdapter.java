@@ -2,12 +2,15 @@ package com.example.debtspace.main.adapters;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
@@ -54,6 +57,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         holder.debt.setText(item.getDebt());
         holder.comment.setText(item.getComment());
         holder.date.setText(item.getDate());
+        Log.i("testing", String.valueOf(holder.itemView.getId()));
+        //RelativeLayout.LayoutParams Params = (RelativeLayout.LayoutParams) holder.itemView.getLayoutParams();
+        //Params.bottomMargin = 40;
 
         GradientDrawable debtBackground = (GradientDrawable) holder.debt.getBackground();
         double debtValue = Double.parseDouble(item.getDebt());

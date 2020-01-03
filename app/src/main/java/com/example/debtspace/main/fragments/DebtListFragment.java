@@ -61,7 +61,6 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
         observeDebtList();
         mViewModel.uploadDebtList();
 
-        view.findViewById(R.id.button_sign_out).setOnClickListener(this);
         view.findViewById(R.id.button_to_user_search).setOnClickListener(this);
         mCreateGroupDebt.setOnClickListener(this);
 
@@ -70,9 +69,7 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.button_sign_out) {
-            mOnMainStateChangeListener.onAuthScreen();
-        } else if (v.getId() == R.id.button_to_user_search) {
+        if (v.getId() == R.id.button_to_user_search) {
             mOnMainStateChangeListener.onUserSearchListScreen();
         } else if (v.getId() == R.id.button_create_group_debt) {
             mOnMainStateChangeListener.onGroupDebtScreen();
