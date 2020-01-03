@@ -7,22 +7,30 @@ import java.util.Map;
 public class HistoryItem implements Comparable<HistoryItem> {
 
     private String debt;
+    private String name;
     private String username;
     private String date;
     private String comment;
 
     public HistoryItem(Map<String, String> map) {
         debt = map.get(Configuration.DEBT_KEY);
-        username = map.get(Configuration.USERNAME_KEY);
+        name = map.get(Configuration.NAME_KEY);
         comment = map.get(Configuration.COMMENT_KEY);
         date = map.get(Configuration.DATE_KEY);
     }
 
-    public HistoryItem(String username, String debt, String comment, String date) {
+    public HistoryItem(String debt, String comment, String date) {
         this.debt = debt;
-        this.username = username;
         this.comment = comment;
         this.date = date;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getUsername() {
+        return username;
     }
 
     public void setUsername(String username) {
@@ -45,8 +53,8 @@ public class HistoryItem implements Comparable<HistoryItem> {
         return debt;
     }
 
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
 
     public String getDate() {

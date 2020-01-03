@@ -58,7 +58,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         HistoryItem item = mList.get(position);
 
-        holder.name.setText(item.getUsername());
+        holder.name.setText(item.getName());
         holder.debt.setText(item.getDebt());
         holder.comment.setText(item.getComment());
         holder.date.setText(item.getDate());

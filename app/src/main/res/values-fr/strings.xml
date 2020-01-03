@@ -24,7 +24,7 @@
     <string name="submit_request">Accepter la demande d\'ami?</string>
     <string name="total_debt">Dette totale:</string>
     <string name="user_search">Recherche d\'utilisateurs</string>
-    <string name="username">Nom d\'utilisateur</string>
+    <string name="name">Nom d\'utilisateur</string>
     <string name="userID">Identifiant:</string>
     <string name="phone">Téléphone:</string>
     <string name="open_image">Ouvrir l\'image</string>

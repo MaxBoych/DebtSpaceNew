@@ -24,7 +24,7 @@
     <string name="submit_request">"Freundschaftsanfrage annehmen? "</string>
     <string name="total_debt">"Gesamtschulden: "</string>
     <string name="user_search">"Benutzersuche "</string>
-    <string name="username">Nutzername</string>
+    <string name="name">Nutzername</string>
     <string name="phone">Telefon:</string>
     <string name="userID">Identifikation:</string>
     <string name="change_image">Bild ändern</string>

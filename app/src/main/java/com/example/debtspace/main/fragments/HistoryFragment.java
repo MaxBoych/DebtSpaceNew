@@ -15,9 +15,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.debtspace.R;
 import com.example.debtspace.main.adapters.HistoryAdapter;
 import com.example.debtspace.main.viewmodels.HistoryViewModel;
-import com.google.common.collect.Lists;
-
-import java.util.Objects;
 
 public class HistoryFragment extends Fragment {
     private RecyclerView mList;

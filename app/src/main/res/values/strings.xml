@@ -43,7 +43,7 @@
     <string name="error">The entered data is not correct</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
-    <string name="username">Username</string>
+    <string name="name">Username</string>
 
     <!--  Notifications    -->
     <!--<string name="requests">Заявки</string>
