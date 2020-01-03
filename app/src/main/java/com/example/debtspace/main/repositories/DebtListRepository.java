@@ -1,7 +1,9 @@
 package com.example.debtspace.main.repositories;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
@@ -10,10 +12,8 @@ import com.example.debtspace.models.DebtBond;
 import com.example.debtspace.models.GroupDebt;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.FirebaseUtilities;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
@@ -24,7 +24,6 @@ import java.util.Objects;
 
 public class DebtListRepository {
 
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseFirestore mDatabase;
     private StorageReference mStorage;
     private String mUsername;
@@ -33,13 +32,10 @@ public class DebtListRepository {
     private int mSize;
     private int mCount;
 
-    public DebtListRepository() {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseFirestore.getInstance();
-        mStorage = FirebaseStorage.getInstance().getReference();
-        mUsername = Objects.requireNonNull(mFirebaseAuth
-                .getCurrentUser())
-                .getDisplayName();
+    public DebtListRepository(Context context) {
+        mDatabase = DebtSpaceApplication.from(context).getDatabase();
+        mStorage = DebtSpaceApplication.from(context).getStorage();
+        mUsername = DebtSpaceApplication.from(context).getUsername();
 
         mList = new ArrayList<>();
     }

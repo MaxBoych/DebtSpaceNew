@@ -1,5 +1,6 @@
 package com.example.debtspace.main.adapters;
 
+import android.content.Context;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,23 +11,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.User;
-import com.example.debtspace.utilities.CircleTransform;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class GroupDebtFoundListAdapter extends RecyclerView.Adapter<GroupDebtFoundListAdapter.GroupDebtFoundListViewHolder> {
 
     private List<User> mList;
+    private Context mContext;
 
     private OnListItemClickListener mOnListItemClickListener;
 
-    public GroupDebtFoundListAdapter(List<User> list) {
-        this.mList = list;
+    public GroupDebtFoundListAdapter(List<User> list, Context context) {
+        mList = list;
+        mContext = context;
     }
 
     public void setOnListItemClickListener(OnListItemClickListener listener) {
@@ -46,11 +47,9 @@ public class GroupDebtFoundListAdapter extends RecyclerView.Adapter<GroupDebtFou
     public void onBindViewHolder(@NonNull GroupDebtFoundListViewHolder holder, int position) {
         User user = mList.get(position);
         Uri uri = user.getImageUri();
-        Picasso.get()
+        Glide.with(mContext)
                 .load(uri)
-                .resize(Configuration.IMAGE_SIZE_64, Configuration.IMAGE_SIZE_64)
                 .centerCrop()
-                .transform(new CircleTransform())
                 .into(holder.image);
 
         String fullUserName = user.getFirstName() + " " + user.getLastName();

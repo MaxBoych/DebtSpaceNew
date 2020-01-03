@@ -23,6 +23,9 @@ import com.example.debtspace.models.HistoryItem;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.StringUtilities;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class StrikeDialog extends DialogFragment implements View.OnClickListener {
@@ -69,8 +72,9 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.strike_button && !StringUtilities.isEmpty(mBill.getText().toString())) {
+            String date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date());
             HistoryItem item = new HistoryItem(mUsername, mBill.getText().toString(),
-                    mComment.getText().toString(), "mm/dd/yyyy");
+                    mComment.getText().toString(), date);
             doStrike(item);
         }
     }
@@ -113,6 +117,6 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
     }
 
     private void doStrike(HistoryItem item) {
-        mViewModel.doStrike(item);
+        mViewModel.doStrike(item, getContext());
     }
 }

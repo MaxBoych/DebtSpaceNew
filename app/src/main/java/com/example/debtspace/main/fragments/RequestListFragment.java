@@ -19,7 +19,6 @@ import com.example.debtspace.main.adapters.RequestListAdapter;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.RequestListViewModel;
 import com.example.debtspace.models.User;
-import com.google.android.material.tabs.TabLayout;
 
 public class RequestListFragment extends Fragment {
 
@@ -51,7 +50,7 @@ public class RequestListFragment extends Fragment {
         initViewModel();
         updateList();
         observeList();
-        mViewModel.downloadRequestList();
+        mViewModel.downloadRequestList(getContext());
 
         return view;
     }
@@ -67,7 +66,7 @@ public class RequestListFragment extends Fragment {
     }
 
     private void updateList() {
-        mAdapter = new RequestListAdapter(mViewModel.getList().getValue());
+        mAdapter = new RequestListAdapter(mViewModel.getList().getValue(), getContext());
         mAdapter.setOnListItemClickListener(position -> {
             User item = mViewModel.getRequest(position);
             mOnMainStateChangeListener.onRequestConfirmScreen(item);

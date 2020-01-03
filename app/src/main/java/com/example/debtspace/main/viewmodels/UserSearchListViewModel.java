@@ -1,5 +1,7 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -30,12 +32,12 @@ public class UserSearchListViewModel extends ViewModel {
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void downloadUserSearchList(CharSequence s) {
+    public void downloadUserSearchList(CharSequence s, Context context) {
         String string = s.toString().toLowerCase();
         if (!StringUtilities.isEmpty(string)) {
             mState.setValue(Configuration.LoadStageState.PROGRESS);
 
-            new UserSearchListRepository().getUsersBySubstring(string, new OnGetFirestoreDataListener() {
+            new UserSearchListRepository(context).getUsersBySubstring(string, new OnGetFirestoreDataListener() {
                 @Override
                 public void onGetSuccessful(List<Map<String, Map<String, Object>>> data) {
                     List<Map<String, String>> list = new ArrayList<>();

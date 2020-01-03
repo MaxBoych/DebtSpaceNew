@@ -1,5 +1,6 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
 import android.net.Uri;
 import android.widget.ProgressBar;
 
@@ -28,9 +29,9 @@ public class ImageManagementViewModel extends ViewModel {
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void uploadImage(Uri uri, ProgressBar progressBar, String id) {
+    public void uploadImage(Uri uri, ProgressBar progressBar, String id, Context context) {
         mState.setValue(Configuration.ImageStageState.PROGRESS);
-        new ImageManagementRepository(id).uploadImage(uri, progressBar, new OnUpdateDataListener() {
+        new ImageManagementRepository(id, context).uploadImage(uri, progressBar, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 setImageUri(null);
@@ -45,9 +46,9 @@ public class ImageManagementViewModel extends ViewModel {
         });
     }
 
-    public void downloadImage(String id) {
+    public void downloadImage(String id, Context context) {
         mState.setValue(Configuration.ImageStageState.PROGRESS);
-        new ImageManagementRepository(id).downloadImage(new OnDownloadDataListener<Uri>() {
+        new ImageManagementRepository(id, context).downloadImage(new OnDownloadDataListener<Uri>() {
             @Override
             public void onDownloadSuccessful(List<Uri> list) {
                 setImageUri(list.get(0));
@@ -62,9 +63,9 @@ public class ImageManagementViewModel extends ViewModel {
         });
     }
 
-    public void deleteImage(String id) {
+    public void deleteImage(String id, Context context) {
         mState.setValue(Configuration.ImageStageState.PROGRESS);
-        new ImageManagementRepository(id).deleteImage(new OnUpdateDataListener() {
+        new ImageManagementRepository(id, context).deleteImage(new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 setImageUri(null);

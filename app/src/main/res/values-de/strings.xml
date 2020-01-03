@@ -34,4 +34,12 @@
     <string name="group_name">Gruppenname</string>
     <string name="group_debt">Konzernverschuldung</string>
     <string name="new_group_debt">Neue Konzernverschuldung</string>
+    <string name="network_lost_message">Internetverbindung verloren :(</string>
+    <string name="ok">In Ordnung</string>
+    <string name="send_request">Eine Anfrage senden?</string>
+    <string name="upload_image">Bild hochladen</string>
+    <string name="yes">Ja</string>
+    <string name="add_friend">Freund hinzufügen</string>
+    <string name="cancel">Stornieren</string>
+    <string name="create_group">Gruppe erstellen</string>
 </resources>

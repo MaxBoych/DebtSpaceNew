@@ -4,7 +4,7 @@ import com.example.debtspace.config.Configuration;
 
 import java.util.Map;
 
-public class HistoryItem {
+public class HistoryItem implements Comparable<HistoryItem> {
 
     private String debt;
     private String username;
@@ -55,6 +55,11 @@ public class HistoryItem {
 
     public String getComment() {
         return comment;
+    }
+
+    @Override
+    public int compareTo(HistoryItem o) {
+        return o.date.compareTo(this.date);
     }
 }
 

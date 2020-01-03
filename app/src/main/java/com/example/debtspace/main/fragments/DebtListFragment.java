@@ -10,22 +10,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
-import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.adapters.DebtListAdapter;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.DebtListViewModel;
 import com.example.debtspace.models.Debt;
 import com.example.debtspace.models.GroupDebt;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.Objects;
 
 public class DebtListFragment extends Fragment implements View.OnClickListener {
 
@@ -51,15 +46,13 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
 
         View view = inflater.inflate(R.layout.fragment_debt_list, viewGroup, false);
 
-
-
         mList = view.findViewById(R.id.debt_list);
         mProgressBar = view.findViewById(R.id.debt_list_progress_bar);
         mCreateGroupDebt = view.findViewById(R.id.button_create_group_debt);
 
         initViewModel();
         observeDebtList();
-        mViewModel.uploadDebtList();
+        mViewModel.uploadDebtList(getContext());
 
         view.findViewById(R.id.button_sign_out).setOnClickListener(this);
         view.findViewById(R.id.button_to_user_search).setOnClickListener(this);
@@ -92,7 +85,7 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
     }
 
     private void updateDebtList() {
-        mAdapter = new DebtListAdapter(mViewModel.getDebtList().getValue());
+        mAdapter = new DebtListAdapter(mViewModel.getDebtList().getValue(), getContext());
         mAdapter.setOnListItemClickListener(position -> {
             Debt item = mViewModel.getDebtListItem(position);
             if (item instanceof GroupDebt) {

@@ -28,10 +28,18 @@
     <string name="phone">Teléfono:</string>
     <string name="userID">Identificación:</string>
     <string name="open_image">Abrir imagen</string>
-    <string name="change_image">Cambiar imagen</string>
+    <string name="change_image">Cambiar imagenэ</string>
     <string name="delete_image">Eliminar Imagen</string>
     <string name="update_group">Actualizar grupo</string>
     <string name="group_name">Nombre del grupo</string>
     <string name="group_debt">Deuda colectiva</string>
     <string name="new_group_debt">Nueva deuda grupal</string>
+    <string name="network_lost_message">Conexión a Internet perdida :(</string>
+    <string name="ok">Bueno</string>
+    <string name="send_request">¿Enviar una solicitud?</string>
+    <string name="upload_image">Cargar imagen</string>
+    <string name="yes">Si</string>
+    <string name="add_friend">Añadir amigo</string>
+    <string name="cancel">Cancelar</string>
+    <string name="create_group">Crea un grupo</string>
 </resources>

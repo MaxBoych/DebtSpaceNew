@@ -80,7 +80,7 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
     }
 
     private void initUserSearchList() {
-        mAdapter = new UserSearchListAdapter(mViewModel.getUserSearchList().getValue());
+        mAdapter = new UserSearchListAdapter(mViewModel.getUserSearchList().getValue(), getContext());
         mAdapter.setOnListItemClickListener(position -> {
             User user = mViewModel.getUser(position);
             mOnMainStateChangeListener.onFriendRequestScreen(user);
@@ -113,7 +113,7 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mViewModel.downloadUserSearchList(s);
+                mViewModel.downloadUserSearchList(s, getContext());
             }
 
             @Override

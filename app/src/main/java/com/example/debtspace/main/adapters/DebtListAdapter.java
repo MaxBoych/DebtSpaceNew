@@ -1,5 +1,6 @@
 package com.example.debtspace.main.adapters;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
@@ -12,13 +13,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.Debt;
 import com.example.debtspace.models.GroupDebt;
-import com.example.debtspace.utilities.CircleTransform;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -27,9 +27,11 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private OnListItemClickListener mOnListItemClickListener;
 
     private List<Debt> mList;
+    private Context mContext;
 
-    public DebtListAdapter(List<Debt> mList) {
-        this.mList = mList;
+    public DebtListAdapter(List<Debt> list, Context context) {
+        mList = list;
+        mContext = context;
     }
 
     public void setOnListItemClickListener(OnListItemClickListener listener) {
@@ -86,11 +88,9 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 Uri uri1 = groupDebt.getUriImage();
                 if (uri1 != null) {
-                    Picasso.get()
+                    Glide.with(mContext)
                             .load(uri1)
-                            .resize(Configuration.IMAGE_SIZE_128, Configuration.IMAGE_SIZE_128)
                             .centerCrop()
-                            .transform(new CircleTransform())
                             .into(groupDebtViewHolder.image);
                 }
 
@@ -104,17 +104,14 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 Debt debt = mList.get(position);
                 Uri uri2 = debt.getUriImage();
                 if (uri2 != null) {
-                    Picasso.get()
+                    Glide.with(mContext)
                             .load(uri2)
-                            .resize(Configuration.IMAGE_SIZE_128, Configuration.IMAGE_SIZE_128)
                             .centerCrop()
-                            .transform(new CircleTransform())
                             .into(debtViewHolder.image);
                 }
 
-                String userFullName = debt.getUser().getFirstName() + debt.getUser().getLastName();
+                String userFullName = debt.getUser().getFirstName() + " " + debt.getUser().getLastName();
                 debtViewHolder.name.setText(userFullName);
-                //debtViewHolder.username.setText(debt.getUser().getUsername());
 
                 GradientDrawable debtBackground = (GradientDrawable) debtViewHolder.debt.getBackground();
                 double debtValue = Double.parseDouble(debt.getDebt());

@@ -1,9 +1,11 @@
 package com.example.debtspace.main.repositories;
 
+import android.content.Context;
+
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.models.HistoryItem;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -13,19 +15,15 @@ import java.util.Objects;
 
 public class StrikeRepository {
 
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseFirestore mDatabase;
     private String mUsername;
     private int mRequestAmount;
     private int mCount;
 
-    public StrikeRepository() {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseFirestore.getInstance();
+    public StrikeRepository(Context context) {
+        mDatabase = DebtSpaceApplication.from(context).getDatabase();
 
-        mUsername = Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth
-                .getCurrentUser())
-                .getDisplayName());
+        mUsername = DebtSpaceApplication.from(context).getUsername();
 
         mRequestAmount = 4;
         mCount = 0;

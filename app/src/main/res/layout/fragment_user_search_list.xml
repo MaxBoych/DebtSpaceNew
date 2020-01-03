@@ -30,8 +30,7 @@
         android:id="@+id/user_search_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/user_search_control_panel">
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_below="@id/user_search_control_panel" />
 
     <ProgressBar
         android:id="@+id/user_search_list_progress_bar"

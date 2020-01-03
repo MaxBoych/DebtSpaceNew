@@ -1,33 +1,34 @@
 package com.example.debtspace.main.repositories;
 
+import android.content.Context;
+
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 public class FriendRequestRepository {
 
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseFirestore mDatabase;
     private String mUsername;
 
-    public FriendRequestRepository() {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseFirestore.getInstance();
+    public FriendRequestRepository(Context context) {
+        mDatabase = DebtSpaceApplication.from(context).getDatabase();
 
-        mUsername = Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth
-                .getCurrentUser())
-                .getDisplayName());
+        mUsername = DebtSpaceApplication.from(context).getUsername();
     }
 
     private void sendFriendRequest(String username, OnUpdateDataListener listener) {
 
         Map<String, String> map = new HashMap<>();
-        map.put(Configuration.DATE_KEY, "yyyy/mm/dd hh:mm:ss");
+        String date = new SimpleDateFormat("yyyy/mm/dd", Locale.getDefault()).format(new Date());
+        map.put(Configuration.DATE_KEY, date);
 
         mDatabase.collection(Configuration.NOTIFICATIONS_COLLECTION_NAME)
                 .document(username)

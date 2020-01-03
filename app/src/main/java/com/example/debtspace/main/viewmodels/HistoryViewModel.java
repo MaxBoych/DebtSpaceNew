@@ -1,5 +1,7 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,25 +14,25 @@ import com.example.debtspace.main.repositories.HistoryRepository;
 import java.util.List;
 
 public class HistoryViewModel extends ViewModel {
-    private MutableLiveData<List<HistoryItem>> mDataList;
+    private MutableLiveData<List<HistoryItem>> mList;
     private MutableLiveData<Configuration.LoadStageState> mState;
     private MutableLiveData<String> mErrorMessage;
 
     public HistoryViewModel() {
-        mDataList = new MutableLiveData<>();
+        mList = new MutableLiveData<>();
         mState = new MutableLiveData<>();
         mErrorMessage = new MutableLiveData<>();
         mState.setValue(Configuration.LoadStageState.NONE);
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void downloadHistoryList() {
+    public void downloadHistoryList(Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new HistoryRepository().downloadHistoryData(new OnDownloadDataListener<HistoryItem>() {
+        new HistoryRepository(context).downloadHistoryData(new OnDownloadDataListener<HistoryItem>() {
 
             @Override
-            public void onDownloadSuccessful(List<HistoryItem> data) {
-                mDataList.setValue(data);
+            public void onDownloadSuccessful(List<HistoryItem> list) {
+                mList.setValue(list);
                 mState.setValue(Configuration.LoadStageState.SUCCESS);
             }
 
@@ -43,7 +45,7 @@ public class HistoryViewModel extends ViewModel {
     }
 
     public LiveData<List<HistoryItem>> getDataList() {
-        return mDataList;
+        return mList;
     }
 
     public LiveData<Configuration.LoadStageState> getListState() {

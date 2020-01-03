@@ -4,7 +4,6 @@
     tools:context=".auth.activities.AuthActivity">
 
     <data>
-
         <variable
             name="User"
             type="com.example.debtspace.models.User" />

@@ -29,9 +29,17 @@
     <string name="phone">Téléphone:</string>
     <string name="open_image">Ouvrir l\'image</string>
     <string name="delete_image">Supprimer l\'image</string>
-    <string name="change_image">Changer l\'image</string>
     <string name="update_group">Groupe de mise à jour</string>
     <string name="group_name">nom de groupe</string>
     <string name="group_debt">Dette du groupe</string>
     <string name="new_group_debt">Nouvelle dette collective</string>
+    <string name="network_lost_message">Perte de connexion Internet :(</string>
+    <string name="ok">D\'accord</string>
+    <string name="send_request">Envoyer une demande?</string>
+    <string name="upload_image">Téléchargez l\'image</string>
+    <string name="yes">Oui</string>
+    <string name="add_friend">Ajouter un ami</string>
+    <string name="cancel">Annuler</string>
+    <string name="create_group">Créer un groupe</string>
+    <string name="change_image" translatable="false">Changer l\'image</string>
 </resources>
