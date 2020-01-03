@@ -73,8 +73,9 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
     public void onClick(View v) {
         if (v.getId() == R.id.strike_button && !StringUtilities.isEmpty(mBill.getText().toString())) {
             String date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date());
-            HistoryItem item = new HistoryItem(mUsername, mBill.getText().toString(),
+            HistoryItem item = new HistoryItem(mBill.getText().toString(),
                     mComment.getText().toString(), date);
+            item.setUsername(mUsername);
             doStrike(item);
         }
     }

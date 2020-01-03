@@ -1,11 +1,15 @@
 package com.example.debtspace.main.repositories;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
+import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.models.HistoryItem;
+import com.example.debtspace.models.User;
+import com.example.debtspace.utilities.FirebaseUtilities;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -64,14 +68,49 @@ public class StrikeRepository {
             updateData(updatedCurrentUser, mUsername, listener);
             updateData(updatedFriend, username, listener);
 
-            HistoryItem historyCurrentUser = new HistoryItem(item.getUsername(), Double.toString(-debtRequest),
+
+
+            HistoryItem historyCurrentUser = new HistoryItem(Double.toString(-debtRequest),
                     item.getComment(), item.getDate());
 
-            HistoryItem historyFriend = new HistoryItem(mUsername, debt,
+            FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
+                @Override
+                public void onSuccessful(User user) {
+                    historyCurrentUser.setName(user.getFirstName() + " " + user.getLastName());
+                    sendDebtToHistory(mUsername, historyCurrentUser, listener);
+                }
+
+                @Override
+                public void onDoesNotExist() {
+                    sendDebtToHistory(mUsername, historyCurrentUser, listener);
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    sendDebtToHistory(mUsername, historyCurrentUser, listener);
+                }
+            });
+
+            HistoryItem historyFriend = new HistoryItem(debt,
                     item.getComment(), item.getDate());
 
-            sendDebtToHistory(mUsername, historyCurrentUser, listener);
-            sendDebtToHistory(username, historyFriend, listener);
+            FirebaseUtilities.findUserByUsername(mUsername, new OnFindUserListener() {
+                @Override
+                public void onSuccessful(User user) {
+                    historyFriend.setName(user.getFirstName() + " " + user.getLastName());
+                    sendDebtToHistory(username, historyFriend, listener);
+                }
+
+                @Override
+                public void onDoesNotExist() {
+                    sendDebtToHistory(username, historyFriend, listener);
+                }
+
+                @Override
+                public void onFailure(String errorMessage) {
+                    sendDebtToHistory(username, historyFriend, listener);
+                }
+            });
         } else {
             listener.onFailure("Cannot recount debt: user \"" + username + "\" is not found");
         }

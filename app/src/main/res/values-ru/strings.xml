@@ -24,7 +24,7 @@
     <string name="submit_request">Принять запрос в друзья?</string>
     <string name="total_debt">Общий долг:</string>
     <string name="user_search">Поиск пользователя</string>
-    <string name="username">Никнейм</string>
+    <string name="name">Никнейм</string>
     <string name="phone">Телефон:</string>
     <string name="userID">Идентификатор:</string>
     <string name="change_image">Изменить изображение</string>

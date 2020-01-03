@@ -24,7 +24,7 @@
     <string name="submit_request">Aceptar la solicitud de amistad?</string>
     <string name="total_debt">Deuda total:</string>
     <string name="user_search">Búsqueda de usuarios</string>
-    <string name="username">Nombre de usuario</string>
+    <string name="name">Nombre de usuario</string>
     <string name="phone">Teléfono:</string>
     <string name="userID">Identificación:</string>
     <string name="open_image">Abrir imagen</string>
