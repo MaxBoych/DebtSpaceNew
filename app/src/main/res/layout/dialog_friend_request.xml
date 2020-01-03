@@ -49,20 +49,24 @@
             android:orientation="horizontal">
 
             <Button
+                android:background="@drawable/rounded_dark"
+                style="@style/buttonAuth"
                 android:id="@+id/friend_request_yes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Yes"
-                android:textSize="25dp" />
+                android:textSize="24dp" />
 
             <Button
+                style="@style/buttonText"
+                android:textColor="@color/Dark"
                 android:id="@+id/friend_request_cancel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Cancel"
-                android:textSize="25dp" />
+                android:textSize="24dp" />
         </LinearLayout>
 
         <ProgressBar

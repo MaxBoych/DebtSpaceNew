@@ -2,10 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:layout_margin="10dp"
-    android:background="@color/white"
-    android:elevation="4dp"
+    android:background="@color/whiteBlue"
     android:orientation="vertical">
 
     <ImageView
@@ -19,29 +16,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/open_image_button"
-        android:layout_marginBottom="50dp" />
+        android:layout_marginBottom="32dp" />
 
     <Button
+        style="@style/buttonAuth"
+        android:background="@drawable/rounded_dark"
         android:id="@+id/open_image_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_centerHorizontal="true"
         android:layout_above="@id/change_image_button"
         android:text="@string/open_image" />
 
     <Button
+        style="@style/buttonAuth"
+        android:background="@drawable/rounded_dark"
         android:id="@+id/change_image_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_centerHorizontal="true"
         android:layout_above="@id/delete_image_button"
         android:text="@string/change_image" />
 
     <Button
+        style="@style/buttonText"
         android:id="@+id/delete_image_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:text="@string/delete_image"
-        android:textColor="@color/red" />
+        android:textColor="@color/Dark"/>
 
     <ProgressBar
         android:id="@+id/image_progress_bar"

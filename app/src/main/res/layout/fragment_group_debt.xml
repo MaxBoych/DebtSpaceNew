@@ -90,6 +90,7 @@
     </LinearLayout>
 
     <Button
+        android:background="@drawable/rounded_dark"
         style="@style/buttonAuth"
         android:id="@+id/button_submit"
         android:layout_width="150dp"

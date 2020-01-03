@@ -78,13 +78,14 @@
         android:layout_below="@id/profile_resume"
         android:layout_gravity="start"
         android:background="@color/white"
-        android:elevation="4dp"
+        android:elevation="-4dp"
         android:fitsSystemWindows="true"
         app:itemIconTint="@color/colorPrimaryDark"
         app:itemTextColor="@color/Dark"
         app:menu="@menu/draw_menu" />
 
     <ProgressBar
+        android:elevation="16dp"
         android:id="@+id/profile_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -52,5 +52,6 @@
     <string name="new_group_debt">New group debt</string>
     <string name="group_name">Group name</string>
     <string name="group_debt">Group debt</string>
+    <string name="back">back</string>
 
 </resources>

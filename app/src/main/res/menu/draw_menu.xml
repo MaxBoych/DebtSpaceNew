@@ -6,9 +6,8 @@
     <item  android:title="@string/account">
         <menu>
             <item android:id="@+id/nav_id"
-                android:title=""/>
-            <item android:id="@+id/nav_phone"
-                android:title="@string/phone"/>
+                android:title=""
+                android:icon="@drawable/ic_id"/>
         </menu>
     </item>
 

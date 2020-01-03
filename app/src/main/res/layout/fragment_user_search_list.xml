@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="15dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/whiteBlue">
 
     <LinearLayout
         android:id="@+id/user_search_control_panel"
@@ -12,18 +12,21 @@
         android:orientation="horizontal">
 
         <EditText
+            style="@style/editAuth"
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:background="@drawable/rounded_light"
             android:id="@+id/user_search_field"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:hint="@string/user_search"
-            android:textSize="20sp" />
+            android:hint="@string/user_search"/>
 
         <Button
+            style="@style/buttonAuth"
+            android:background="@drawable/rounded_dark"
+            android:layout_margin="8dp"
+            android:layout_gravity="center"
+            android:text="@string/back"
             android:id="@+id/button_to_debt_list"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_width="wrap_content" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

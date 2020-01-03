@@ -114,7 +114,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 String userFullName = debt.getUser().getFirstName() + debt.getUser().getLastName();
                 debtViewHolder.name.setText(userFullName);
-                debtViewHolder.username.setText(debt.getUser().getUsername());
 
                 GradientDrawable debtBackground = (GradientDrawable) debtViewHolder.debt.getBackground();
                 double debtValue = Double.parseDouble(debt.getDebt());
@@ -144,7 +143,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         private final ImageView image;
         private final TextView name;
-        private final TextView username;
         private final TextView debt;
 
         DebtViewHolder(@NonNull View itemView) {
@@ -153,7 +151,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             image = itemView.findViewById(R.id.debt_user_image);
             name = itemView.findViewById(R.id.debt_user_name);
-            username = itemView.findViewById(R.id.debt_user_username);
             debt = itemView.findViewById(R.id.debt_user_debt);
 
 

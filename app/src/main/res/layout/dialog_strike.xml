@@ -43,6 +43,7 @@
                 android:layout_height="0dp"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:paddingHorizontal="8dp"
                 android:background="@drawable/edit_text"
                 android:gravity="start|center"
                 android:hint="@string/debt"
@@ -65,19 +66,38 @@
         android:maxLength="120"
         android:maxLines="3"
         android:padding="8dp" />
-
-    <Button
-        android:id="@+id/strike_button"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
+    <LinearLayout
         android:layout_below="@id/strike_comment"
-        android:layout_gravity="bottom"
-        android:layout_margin="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@color/colorPrimaryDark"
-        android:elevation="4dp"
-        android:text="@string/strike"
-        android:textColor="@color/white" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:background="@drawable/rounded_dark"
+            style="@style/buttonAuth"
+            android:id="@+id/strike_button"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:elevation="4dp"
+            android:text="@string/strike"
+            android:textSize="24sp"/>
+        <Button
+            style="@style/buttonText"
+            android:id="@+id/back_button"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            android:elevation="4dp"
+            android:text="@string/back"
+            android:textColor="@color/Dark"
+            android:textSize="24sp"/>
+
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/strike_progress_bar"

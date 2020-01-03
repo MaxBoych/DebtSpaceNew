@@ -8,7 +8,7 @@
     android:background="@drawable/rounded_light"
     android:elevation="4dp"
     android:orientation="vertical"
-    android:padding="8dp"
+    android:padding="16dp"
     tools:targetApi="o">
 
     <androidx.cardview.widget.CardView
