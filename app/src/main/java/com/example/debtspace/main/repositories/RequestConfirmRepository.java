@@ -1,33 +1,32 @@
 package com.example.debtspace.main.repositories;
 
+import android.content.Context;
+
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class RequestConfirmRepository {
 
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseFirestore mDatabase;
     private CollectionReference mDebts;
+    private CollectionReference mRequests;
     private String mUsername;
 
     private int mAmount;
     private int mCount;
 
-    public RequestConfirmRepository() {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseFirestore.getInstance();
+    public RequestConfirmRepository(Context context) {
+        mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mDebts = mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME);
+        mRequests = mDatabase.collection(Configuration.NOTIFICATIONS_COLLECTION_NAME);
 
-        mUsername = Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth
-                .getCurrentUser())
-                .getDisplayName());
+        mUsername = DebtSpaceApplication.from(context).getUsername();
 
         mAmount = 3;
         mCount = 0;
@@ -45,7 +44,7 @@ public class RequestConfirmRepository {
         deleteNotificationData(username, listener);
     }
 
-    private void checkDebts(Map<String, Object> data, String username, OnUpdateDataListener listener) {
+    /*private void checkDebts(Map<String, Object> data, String username, OnUpdateDataListener listener) {
         mDebts.document(username)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -58,7 +57,7 @@ public class RequestConfirmRepository {
                 .addOnFailureListener(e ->
                         listener.onFailure(e.getMessage())
                 );
-    }
+    }*/
 
     private void updateData(Map<String, Object> data, String username, OnUpdateDataListener listener) {
         mDebts.document(username)
@@ -70,7 +69,7 @@ public class RequestConfirmRepository {
                 );
     }
 
-    private void setData(Map<String, Object> data, String username, OnUpdateDataListener listener) {
+    /*private void setData(Map<String, Object> data, String username, OnUpdateDataListener listener) {
         mDebts.document(username)
                 .set(data)
                 .addOnSuccessListener(aVoid ->
@@ -78,15 +77,14 @@ public class RequestConfirmRepository {
                 .addOnFailureListener(e ->
                         listener.onFailure(e.getMessage())
                 );
-    }
+    }*/
 
     public void rejectFriendRequest(String username, OnUpdateDataListener listener) {
         deleteNotificationData(username, listener);
     }
 
     private void deleteNotificationData(String username, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.NOTIFICATIONS_COLLECTION_NAME)
-                .document(mUsername)
+        mRequests.document(mUsername)
                 .collection(Configuration.FRIENDS_COLLECTION_NAME)
                 .document(username)
                 .delete()

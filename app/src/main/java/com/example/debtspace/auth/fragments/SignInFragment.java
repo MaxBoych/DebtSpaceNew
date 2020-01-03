@@ -16,8 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.debtspace.R;
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.auth.interfaces.OnAuthStateChangeListener;
 import com.example.debtspace.auth.viewmodels.AuthViewModel;
+
+import java.util.Objects;
 
 public class SignInFragment extends Fragment implements View.OnClickListener {
 
@@ -89,6 +92,7 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
                     editTextSetNull();
                     buttonsSetEnabled(false);
                     mProgressBar.setVisibility(View.GONE);
+                    DebtSpaceApplication.from(Objects.requireNonNull(getContext())).setUsername();
                     mOnAuthStateChangeListener.onMainScreen();
                     break;
                 case FAIL:

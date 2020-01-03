@@ -18,11 +18,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.viewmodels.ImageManagementViewModel;
-import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -53,13 +55,6 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
     public void setImageSharingListener(OnImageSharingListener listener) {
         mOnImageSharingListener = listener;
     }
-
-    /*@Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        mOnImageSharingListener = (OnImageSharingListener) context;
-    }*/
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
@@ -124,12 +119,11 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
         mViewModel.getState().observe(this, imageStageState -> {
             switch (imageStageState) {
                 case DOWNLOAD_SUCCESS:
-                    Log.d("#DS", "DOWNLOAD_SUCCESS");
-                    mProgressBar.setVisibility(View.GONE);
                     setEnabled(true);
                     setEnabledUpload(false);
                     mImageUri = mViewModel.getImageUri();
                     drawImage();
+                    mProgressBar.setVisibility(View.GONE);
                     break;
                 case UPLOAD_SUCCESS:
                 case DELETE_SUCCESS:
@@ -177,15 +171,29 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
     }
 
     private void uploadImage() {
-        mViewModel.uploadImage(mImageUri, mProgressBar, mImageID);
+        mViewModel.uploadImage(mImageUri, mProgressBar, mImageID, getContext());
     }
 
     private void openImage() {
-        mViewModel.downloadImage(mImageID);
+        if (mImageID != null) {
+            mViewModel.downloadImage(mImageID, getContext());
+        } else {
+            Toast.makeText(getContext(),
+                    "Image not yet added",
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 
     private void deleteImage() {
-        mViewModel.deleteImage(mImageID);
+        if (mImageID != null) {
+            mViewModel.deleteImage(mImageID, getContext());
+        } else {
+            Toast.makeText(getContext(),
+                    "Image not yet added",
+                    Toast.LENGTH_LONG)
+                    .show();
+        }
     }
 
     @Override
@@ -204,7 +212,9 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
 
     private void drawImage() {
         if (mImageUri != null) {
-            Picasso.get().load(mImageUri)
+            Glide.with(Objects.requireNonNull(getContext()))
+                    .load(mImageUri)
+                    .centerCrop()
                     .into(mSelectedImage);
         }
     }

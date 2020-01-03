@@ -21,16 +21,14 @@
             android:id="@+id/request_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="scdfwdf"
-            android:textSize="25dp" />
+            android:textSize="25sp" />
 
         <TextView
             android:id="@+id/request_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/request_name"
-            android:text="Qwerty"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/friend_request_message"
@@ -39,8 +37,8 @@
             android:layout_below="@id/request_username"
             android:layout_margin="20dp"
             android:gravity="center"
-            android:text="Send a request?"
-            android:textSize="20dp" />
+            android:text="@string/send_request"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -55,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Yes"
+                android:text="@string/yes"
                 android:textSize="24dp" />
 
             <Button
@@ -65,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel"
+                android:text="@string/cancel"
                 android:textSize="24dp" />
         </LinearLayout>
 

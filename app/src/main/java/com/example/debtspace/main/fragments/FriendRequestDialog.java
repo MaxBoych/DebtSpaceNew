@@ -116,6 +116,6 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
     }
 
     private void sendFriendRequest(String username) {
-        mViewModel.sendFriendRequest(username);
+        mViewModel.sendFriendRequest(username, getContext());
     }
 }

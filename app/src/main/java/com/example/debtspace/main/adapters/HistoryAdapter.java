@@ -16,16 +16,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.debtspace.R;
 import com.example.debtspace.models.HistoryItem;
 
+import java.util.Collections;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemViewHolder> {
     private List<HistoryItem> mList;
 
     public HistoryAdapter(List<HistoryItem> store) {
-        mList = store;
+        if (store != null) {
+            Collections.sort(store);
+            mList = store;
+        }
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
+
         private final TextView name;
         private final TextView debt;
         private final TextView comment;

@@ -1,9 +1,11 @@
 package com.example.debtspace.main.repositories;
 
+import android.content.Context;
+
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.models.HistoryItem;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -12,16 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.requireNonNull;
-
 public class HistoryRepository {
 
     private FirebaseFirestore mDatabase;
     private String mUsername;
 
-    public HistoryRepository() {
-        mDatabase = FirebaseFirestore.getInstance();
-        mUsername = requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getDisplayName();
+    public HistoryRepository(Context context) {
+        mDatabase = DebtSpaceApplication.from(context).getDatabase();
+        mUsername = DebtSpaceApplication.from(context).getUsername();
     }
 
     public void downloadHistoryData(OnDownloadDataListener<HistoryItem> listener) {

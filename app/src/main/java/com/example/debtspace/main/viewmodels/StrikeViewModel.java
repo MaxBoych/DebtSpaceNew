@@ -1,5 +1,7 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -21,9 +23,9 @@ public class StrikeViewModel extends ViewModel {
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void doStrike(HistoryItem item) {
+    public void doStrike(HistoryItem item, Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new StrikeRepository().doStrike(item, new OnUpdateDataListener() {
+        new StrikeRepository(context).doStrike(item, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 mState.setValue(Configuration.LoadStageState.SUCCESS);

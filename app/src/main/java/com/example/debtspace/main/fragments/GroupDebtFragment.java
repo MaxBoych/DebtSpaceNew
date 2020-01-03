@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.adapters.GroupDebtAddedListAdapter;
@@ -29,9 +30,9 @@ import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.GroupDebtViewModel;
 import com.example.debtspace.models.GroupDebt;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class GroupDebtFragment extends Fragment implements View.OnClickListener, OnImageSharingListener {
 
@@ -96,12 +97,12 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
             mID = getArguments().getString(Configuration.ID_KEY);
             mName.setText(getArguments().getString(Configuration.NAME_KEY));
             mDebt.setText(getArguments().getString(Configuration.DEBT_KEY));
-            mViewModel.downloadAddedList(getArguments().getStringArrayList(Configuration.MEMBERS_KEY));
+            mViewModel.downloadAddedList(getArguments().getStringArrayList(Configuration.MEMBERS_KEY), mID, getContext());
             mSubmit.setText(getString(R.string.update_group));
             mIsCreate = false;
-            mViewModel.downloadImage(mID);
+        } else {
+            mViewModel.downloadFriendList(getContext());
         }
-        mViewModel.downloadFriendList();
         textChangeListen();
 
         mSubmit.setOnClickListener(this);
@@ -148,7 +149,7 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
     }
 
     private void initFoundList() {
-        mFoundAdapter = new GroupDebtFoundListAdapter(mViewModel.getFoundList().getValue());
+        mFoundAdapter = new GroupDebtFoundListAdapter(mViewModel.getFoundList().getValue(), getContext());
         mFoundList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
 
         mFoundAdapter.setOnListItemClickListener(position ->
@@ -230,16 +231,18 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
 
     private void drawImage() {
         if (mImageUri != null) {
-            Picasso.get().load(mImageUri)
+            Glide.with(Objects.requireNonNull(getContext()))
+                    .load(mImageUri)
+                    .centerCrop()
                     .into(mImage);
         }
     }
 
     private void createGroup() {
-        mViewModel.createGroup(mName.getText().toString(), mDebt.getText().toString(), mImageUri);
+        mViewModel.createGroup(mName.getText().toString(), mDebt.getText().toString(), mImageUri, getContext());
     }
 
     private void updateGroup() {
-        mViewModel.updateGroup(mID, mName.getText().toString(), mDebt.getText().toString());
+        mViewModel.updateGroup(mID, mName.getText().toString(), mDebt.getText().toString(), getContext());
     }
 }

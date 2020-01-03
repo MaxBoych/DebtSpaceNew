@@ -1,18 +1,18 @@
 package com.example.debtspace.main.repositories;
 
+import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.FirebaseUtilities;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
@@ -24,7 +24,6 @@ import java.util.Objects;
 
 public class GroupDebtRepository {
 
-    private FirebaseAuth mFirebaseAuth;
     private FirebaseFirestore mDatabase;
     private StorageReference mStorage;
     private String mUsername;
@@ -32,15 +31,11 @@ public class GroupDebtRepository {
     private int mSize;
     private int mCount;
 
-    public GroupDebtRepository() {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseFirestore.getInstance();
-        mStorage = FirebaseStorage.getInstance()
-                .getReference();
+    public GroupDebtRepository(Context context) {
+        mDatabase = DebtSpaceApplication.from(context).getDatabase();
+        mStorage = DebtSpaceApplication.from(context).getStorage();
 
-        mUsername = Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth
-                .getCurrentUser())
-                .getDisplayName());
+        mUsername = DebtSpaceApplication.from(context).getUsername();
 
         mSize = 0;
         mCount = 0;

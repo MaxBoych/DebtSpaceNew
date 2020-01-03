@@ -1,5 +1,7 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,9 +22,9 @@ public class FriendRequestViewModel extends ViewModel {
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void sendFriendRequest(String username) {
+    public void sendFriendRequest(String username, Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new FriendRequestRepository().checkExistenceFriends(username, new OnUpdateDataListener() {
+        new FriendRequestRepository(context).checkExistenceFriends(username, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 mState.setValue(Configuration.LoadStageState.SUCCESS);

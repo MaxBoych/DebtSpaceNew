@@ -27,11 +27,19 @@
     <string name="username">Никнейм</string>
     <string name="phone">Телефон:</string>
     <string name="userID">Идентификатор:</string>
-    <string name="change_image">Изменить картинку</string>
+    <string name="change_image">Изменить изображение</string>
     <string name="delete_image">Удалить картинку</string>
     <string name="open_image">Открыть картинку</string>
     <string name="update_group">Обновить группу</string>
     <string name="group_name">Название группы</string>
     <string name="group_debt">Групповой долг</string>
     <string name="new_group_debt">Новый групповой долг</string>
+    <string name="network_lost_message">Интернет соединение потеряно :(</string>
+    <string name="ok">ОК</string>
+    <string name="send_request">Отправить запрос?</string>
+    <string name="upload_image">Загрузить изображение</string>
+    <string name="yes">Да</string>
+    <string name="add_friend">Добавить друга</string>
+    <string name="cancel">Отмена</string>
+    <string name="create_group">Создать группу</string>
 </resources>

@@ -1,5 +1,7 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,9 +22,9 @@ public class RequestConfirmViewModel extends ViewModel {
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void acceptFriendRequest(String username) {
+    public void acceptFriendRequest(String username, Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new RequestConfirmRepository().acceptFriendRequest(username, new OnUpdateDataListener() {
+        new RequestConfirmRepository(context).acceptFriendRequest(username, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 mState.setValue(Configuration.LoadStageState.SUCCESS);
@@ -36,9 +38,9 @@ public class RequestConfirmViewModel extends ViewModel {
         });
     }
 
-    public void rejectFriendRequest(String username) {
+    public void rejectFriendRequest(String username, Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new RequestConfirmRepository().rejectFriendRequest(username, new OnUpdateDataListener() {
+        new RequestConfirmRepository(context).rejectFriendRequest(username, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 mState.setValue(Configuration.LoadStageState.SUCCESS);

@@ -21,6 +21,14 @@ public class Configuration {
         NONE
     }
 
+    public enum ProfileLoadStageState {
+        SUCCESS_LOAD_DATA,
+        SUCCESS_LOAD_IMAGE,
+        FAIL,
+        PROGRESS,
+        NONE
+    }
+
     public enum ImageStageState {
         DOWNLOAD_SUCCESS,
         UPLOAD_SUCCESS,

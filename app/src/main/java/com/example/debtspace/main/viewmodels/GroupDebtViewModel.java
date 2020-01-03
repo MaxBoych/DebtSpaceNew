@@ -1,5 +1,6 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
 import android.net.Uri;
 
 import androidx.lifecycle.LiveData;
@@ -103,9 +104,9 @@ public class GroupDebtViewModel extends ViewModel {
         mState.setValue(Configuration.LoadStageState.SUCCESS);
     }
 
-    public void downloadFriendList() {
+    public void downloadFriendList(Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new GroupDebtRepository().downloadFoundListData(new OnDownloadDataListener<User>() {
+        new GroupDebtRepository(context).downloadFoundListData(new OnDownloadDataListener<User>() {
             @Override
             public void onDownloadSuccessful(List<User> data) {
                 setFriendList(data);
@@ -119,12 +120,13 @@ public class GroupDebtViewModel extends ViewModel {
         });
     }
 
-    public void downloadAddedList(ArrayList<String> usernames) {
+    public void downloadAddedList(ArrayList<String> usernames, String groupID, Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new GroupDebtRepository().downloadListItems(usernames, new OnDownloadDataListener<User>() {
+        new GroupDebtRepository(context).downloadListItems(usernames, new OnDownloadDataListener<User>() {
             @Override
             public void onDownloadSuccessful(List<User> list) {
                 setAddedList(list);
+                downloadImage(groupID, context);
             }
 
             @Override
@@ -155,7 +157,7 @@ public class GroupDebtViewModel extends ViewModel {
         return found;
     }
 
-    public void createGroup(String groupName, String debt, Uri uri) {
+    public void createGroup(String groupName, String debt, Uri uri,Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
         List<User> users = mAddedList.getValue();
         if (Objects.requireNonNull(users).size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
@@ -163,7 +165,7 @@ public class GroupDebtViewModel extends ViewModel {
             for (User user : users) {
                 members.add(user.getUsername());
             }
-            new GroupDebtRepository().insertGroupToDatabase(groupName, debt, members, uri, new OnUpdateDataListener() {
+            new GroupDebtRepository(context).insertGroupToDatabase(groupName, debt, members, uri, new OnUpdateDataListener() {
                 @Override
                 public void onUpdateSuccessful() {
                     mIsSubmit = true;
@@ -182,7 +184,7 @@ public class GroupDebtViewModel extends ViewModel {
         }
     }
 
-    public void updateGroup(String groupID, String groupName, String debt) {
+    public void updateGroup(String groupID, String groupName, String debt, Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
         List<User> users = mAddedList.getValue();
         if (Objects.requireNonNull(users).size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
@@ -190,7 +192,7 @@ public class GroupDebtViewModel extends ViewModel {
             for (User user : users) {
                 members.add(user.getUsername());
             }
-            new GroupDebtRepository().updateGroupInDatabase(groupID, groupName, debt, members, new OnUpdateDataListener() {
+            new GroupDebtRepository(context).updateGroupInDatabase(groupID, groupName, debt, members, new OnUpdateDataListener() {
                 @Override
                 public void onUpdateSuccessful() {
                     mIsSubmit = true;
@@ -209,13 +211,13 @@ public class GroupDebtViewModel extends ViewModel {
         }
     }
 
-    public void downloadImage(String groupID) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new GroupDebtRepository().downloadGroupImage(groupID, new OnDownloadDataListener<Uri>() {
+    private void downloadImage(String groupID, Context context) {
+        new GroupDebtRepository(context).downloadGroupImage(groupID, new OnDownloadDataListener<Uri>() {
             @Override
             public void onDownloadSuccessful(List<Uri> list) {
-                mState.setValue(Configuration.LoadStageState.SUCCESS);
+                //mState.setValue(Configuration.LoadStageState.SUCCESS);
                 mUriImage = list.get(0);
+                downloadFriendList(context);
             }
 
             @Override

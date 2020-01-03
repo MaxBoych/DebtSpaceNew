@@ -1,39 +1,31 @@
 package com.example.debtspace.main.repositories;
 
+import android.content.Context;
 import android.net.Uri;
 import android.widget.ProgressBar;
 
+import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ImageManagementRepository {
 
-    private FirebaseAuth mFirebaseAuth;
     private StorageReference mStorage;
     private String mID;
 
-    public ImageManagementRepository(String id) {
-        mFirebaseAuth = FirebaseAuth.getInstance();
-
+    public ImageManagementRepository(String id, Context context) {
         if (id.equals(Configuration.NONE_ID)) {
-            mStorage = FirebaseStorage.getInstance()
-                    .getReference()
+            mStorage = DebtSpaceApplication.from(context).getStorage()
                     .child(Configuration.USERS_COLLECTION_NAME);
 
-            mID = Objects.requireNonNull(Objects.requireNonNull(mFirebaseAuth
-                    .getCurrentUser())
-                    .getDisplayName());
+            mID = DebtSpaceApplication.from(context).getUsername();
         } else {
-            mStorage = FirebaseStorage.getInstance()
-                    .getReference()
+            mStorage = DebtSpaceApplication.from(context).getStorage()
                     .child(Configuration.GROUP_DEBTS_COLLECTION_NAME);
 
             mID = id;

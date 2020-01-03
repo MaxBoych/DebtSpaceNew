@@ -1,5 +1,7 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -25,13 +27,11 @@ public class RequestListViewModel extends ViewModel {
         mErrorMessage = new MutableLiveData<>();
         mState.setValue(Configuration.LoadStageState.NONE);
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
-
-        downloadRequestList();
     }
 
-    public void downloadRequestList() {
+    public void downloadRequestList(Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new RequestListRepository().getRequests(new OnDownloadDataListener<User>() {
+        new RequestListRepository(context).getRequests(new OnDownloadDataListener<User>() {
             @Override
             public void onDownloadSuccessful(List<User> list) {
                 setRequestList(list);

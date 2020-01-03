@@ -19,7 +19,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/debt_user_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"

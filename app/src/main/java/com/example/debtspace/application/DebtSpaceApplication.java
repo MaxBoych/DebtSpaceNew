@@ -14,18 +14,30 @@ import com.example.debtspace.config.Configuration;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.Objects;
 
 public class DebtSpaceApplication extends Application {
 
     private FirebaseAuth mAuth;
+    private String mUsername;
     private FirebaseFirestore mDatabase;
-    private FirebaseStorage mStorage;
+    private StorageReference mStorage;
     private MutableLiveData<Configuration.NetworkState> mNetworkState;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
+        mAuth = FirebaseAuth.getInstance();
+
+        if (mAuth.getCurrentUser() != null) {
+            setUsername();
+        }
+
+        mDatabase = FirebaseFirestore.getInstance();
+        mStorage = FirebaseStorage.getInstance().getReference();
         mNetworkState = new MutableLiveData<>();
         mNetworkState.setValue(Configuration.NetworkState.LOST);
         addNetworkListener();
@@ -33,6 +45,27 @@ public class DebtSpaceApplication extends Application {
 
     public static DebtSpaceApplication from(Context context) {
         return (DebtSpaceApplication) context.getApplicationContext();
+    }
+
+    public FirebaseAuth getAuth() {
+        return mAuth;
+    }
+
+    public void setUsername() {
+        mUsername = Objects.requireNonNull(mAuth.getCurrentUser())
+                .getDisplayName();
+    }
+
+    public String getUsername() {
+        return mUsername;
+    }
+
+    public FirebaseFirestore getDatabase() {
+        return mDatabase;
+    }
+
+    public StorageReference getStorage() {
+        return mStorage;
     }
 
     private void addNetworkListener() {

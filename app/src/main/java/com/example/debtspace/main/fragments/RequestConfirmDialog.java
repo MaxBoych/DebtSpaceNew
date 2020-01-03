@@ -118,10 +118,10 @@ public class RequestConfirmDialog extends DialogFragment implements View.OnClick
     }
 
     private void acceptRequest(String username) {
-        mViewModel.acceptFriendRequest(username);
+        mViewModel.acceptFriendRequest(username, getContext());
     }
 
     private void rejectRequest(String username) {
-        mViewModel.rejectFriendRequest(username);
+        mViewModel.rejectFriendRequest(username, getContext());
     }
 }

@@ -1,5 +1,7 @@
 package com.example.debtspace.main.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -27,9 +29,9 @@ public class DebtListViewModel extends ViewModel {
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void uploadDebtList() {
+    public void uploadDebtList(Context context) {
         mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new DebtListRepository().uploadDebtListData(new OnDownloadDataListener<Debt>() {
+        new DebtListRepository(context).uploadDebtListData(new OnDownloadDataListener<Debt>() {
             @Override
             public void onDownloadSuccessful(List<Debt> data) {
                 setDebtList(data);
