@@ -67,9 +67,9 @@
         android:maxLines="3"
         android:padding="8dp" />
     <LinearLayout
+        android:layout_height="wrap_content"
         android:layout_below="@id/strike_comment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <Button
@@ -83,18 +83,6 @@
             android:layout_margin="8dp"
             android:elevation="4dp"
             android:text="@string/strike"
-            android:textSize="24sp"/>
-        <Button
-            style="@style/buttonText"
-            android:id="@+id/back_button"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="8dp"
-            android:elevation="4dp"
-            android:text="@string/back"
-            android:textColor="@color/Dark"
             android:textSize="24sp"/>
 
     </LinearLayout>

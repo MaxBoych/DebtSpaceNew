@@ -14,7 +14,8 @@
         android:layout_marginTop="24dp"
         android:gravity="center"
         android:text="@string/new_group_debt"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:layout_marginBottom="8dp"/>
 
     <LinearLayout
         android:id="@+id/group_debt_data"
@@ -27,7 +28,6 @@
             android:id="@+id/group_debt_image"
             android:layout_width="128dp"
             android:layout_height="128dp"
-            android:layout_weight="1"
             android:background="@color/white"/>
 
         <LinearLayout
@@ -46,9 +46,9 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:background="@color/whiteBlue"
                 android:hint="@string/group_name"
                 android:textSize="16sp"
+                android:paddingHorizontal="16dp"
                 tools:ignore="NestedWeights" />
 
             <EditText
@@ -61,7 +61,7 @@
                 android:layout_height="0dp"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                android:background="@color/whiteBlue"
+                android:paddingHorizontal="16dp"
                 android:hint="@string/group_debt"
                 android:textSize="16sp" />
         </LinearLayout>

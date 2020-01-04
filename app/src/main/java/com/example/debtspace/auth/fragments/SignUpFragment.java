@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -17,6 +19,8 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.debtspace.R;
 import com.example.debtspace.auth.interfaces.OnAuthStateChangeListener;
 import com.example.debtspace.auth.viewmodels.AuthViewModel;
+
+import java.util.Objects;
 
 public class SignUpFragment extends Fragment implements View.OnClickListener {
 
@@ -74,6 +78,9 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.button_sign_up) {
+            InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
+            Objects.requireNonNull(imm).hideSoftInputFromWindow(v.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS);
             String firstName = mFirstName.getText().toString();
             String lastName = mLastName.getText().toString();
             String username = mUsername.getText().toString().toLowerCase();

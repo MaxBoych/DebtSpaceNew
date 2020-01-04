@@ -1,5 +1,6 @@
 package com.example.debtspace.main.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -77,14 +79,14 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 GradientDrawable totalDebtBackground = (GradientDrawable) groupDebtViewHolder.total_debt.getBackground();
                 totalDebtBackground.setColor(Color.YELLOW);
 
-                String num_of_part = Integer.toString(groupDebt.getMembers().size());
-                groupDebtViewHolder.number_of_participants.setText(num_of_part);
+                //String num_of_part = Integer.toString(groupDebt.getMembers().size());
+               // groupDebtViewHolder.number_of_participants.setText(num_of_part);
 
                 double user_debt = Math.round((Double.parseDouble(groupDebt.getDebt()) / groupDebt.getMembers().size()) * 1000) / 1000;
                 String u_debt = Double.toString(user_debt);
                 groupDebtViewHolder.user_debt.setText(u_debt);
                 GradientDrawable userDebtBackground = (GradientDrawable) groupDebtViewHolder.user_debt.getBackground();
-                userDebtBackground.setColor(Color.RED);
+                userDebtBackground.setColor(ContextCompat.getColor(mContext, R.color.red));
 
                 Uri uri1 = groupDebt.getUriImage();
                 if (uri1 != null) {
@@ -118,14 +120,14 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (debtValue > 0) {
                     String val = Double.toString(debtValue);
                     debtViewHolder.debt.setText(val);
-                    debtBackground.setColor(Color.RED);
+                    debtBackground.setColor(ContextCompat.getColor(mContext, R.color.red));
                 } else if (debtValue == 0) {
                     debtViewHolder.debt.setText("0");
                     debtBackground.setColor(Color.GRAY);
                 } else {
                     String val = Double.toString(-debtValue);
                     debtViewHolder.debt.setText(val);
-                    debtBackground.setColor(Color.GREEN);
+                    debtBackground.setColor(ContextCompat.getColor(mContext, R.color.green));
                 }
 
                 break;
@@ -169,7 +171,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private final TextView name;
         private final TextView total_debt;
         private final TextView user_debt;
-        private final TextView number_of_participants;
+        //private final TextView number_of_participants;
 
         GroupDebtViewHolder(@NonNull View itemView) {
 
@@ -179,7 +181,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             name = itemView.findViewById(R.id.group_debt_name);
             total_debt = itemView.findViewById(R.id.group_total_debt);
             user_debt = itemView.findViewById(R.id.group_user_debt);
-            number_of_participants = itemView.findViewById(R.id.number_of_participants);
+            //number_of_participants = itemView.findViewById(R.id.number_of_participants);
 
             itemView.setOnClickListener(v -> {
                 if (mOnListItemClickListener != null) {

@@ -3,66 +3,54 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:elevation="4dp"
-    android:orientation="vertical"
-    android:padding="15dp">
+    android:layout_margin="8dp"
+    android:padding="8dp"
+    android:background="@drawable/rounded_light">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/group_debt"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/group_debt_image"
-                android:layout_width="128dp"
-                android:layout_height="128dp"
-                android:padding="10dp" />
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:padding="8dp"/>
 
-            <TextView
-                android:id="@+id/group_debt_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_toEndOf="@id/group_debt_image"
-                android:textSize="15sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/number_of_participants"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="250dp"
-                android:layout_marginTop="25dp"
-                android:gravity="center"
-                android:textSize="12sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/group_debt_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:textSize="16sp"/>
 
-            <TextView
-                android:id="@+id/group_total_debt"
-                android:layout_width="120dp"
-                android:layout_height="30dp"
-                android:layout_marginStart="200dp"
-                android:layout_marginTop="50dp"
-                android:background="@drawable/rounded_corner"
-                android:gravity="center"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/group_total_debt"
+                    style="@style/debt"
+                    android:layout_marginTop="56dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="24dp"/>
 
-            <TextView
-                android:id="@+id/group_user_debt"
-                android:layout_width="120dp"
-                android:layout_height="30dp"
-                android:layout_below="@id/group_total_debt"
-                android:layout_marginStart="200dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/rounded_corner"
-                android:gravity="center"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/group_user_debt"
+                    style="@style/debt"
+                    android:layout_marginTop="56dp"
+                    android:layout_toEndOf="@id/group_total_debt"/>
+
+
+            </RelativeLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>
