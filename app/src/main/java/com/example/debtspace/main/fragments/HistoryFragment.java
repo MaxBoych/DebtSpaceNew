@@ -50,7 +50,7 @@ public class HistoryFragment extends Fragment {
     }
 
     private void initHistory() {
-        mAdapter = new HistoryAdapter(mViewModel.getDataList().getValue());
+        mAdapter = new HistoryAdapter(mViewModel.getDataList().getValue(), getContext());
         mList.setLayoutManager(new LinearLayoutManager(this.getContext()));
         mList.setAdapter(mAdapter);
     }

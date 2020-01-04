@@ -14,16 +14,18 @@
         <EditText
             style="@style/editAuth"
             android:layout_margin="8dp"
+            android:layout_marginEnd="96dp"
             android:layout_gravity="center"
             android:background="@drawable/rounded_light"
             android:id="@+id/user_search_field"
+            android:layout_width="296dp"
             android:hint="@string/user_search"/>
 
         <Button
             style="@style/buttonAuth"
             android:background="@drawable/rounded_dark"
             android:layout_margin="8dp"
-            android:layout_gravity="center"
+            android:layout_gravity="end|center_vertical"
             android:text="@string/back"
             android:id="@+id/button_to_debt_list"
             android:layout_width="wrap_content" />

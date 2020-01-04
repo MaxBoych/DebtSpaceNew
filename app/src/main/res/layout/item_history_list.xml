@@ -45,7 +45,7 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center_vertical"
                     android:minWidth="32dp"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/history_user_debt"
@@ -56,7 +56,7 @@
                     android:background="@drawable/rounded_corner"
                     android:gravity="center|start"
                     android:paddingHorizontal="8dp"
-                    android:textSize="20sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
                 <TextView
@@ -66,7 +66,7 @@
                     android:layout_marginStart="8dp"
                     android:gravity="center|start"
                     android:textColor="@color/darkTransColor"
-                    android:textSize="16sp"
+                    android:textSize="12sp"
                     android:textStyle="normal" />
             </LinearLayout>
         </RelativeLayout>

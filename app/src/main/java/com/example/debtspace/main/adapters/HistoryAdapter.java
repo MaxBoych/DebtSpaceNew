@@ -1,5 +1,6 @@
 package com.example.debtspace.main.adapters;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
@@ -21,12 +23,14 @@ import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemViewHolder> {
     private List<HistoryItem> mList;
+    Context mContext;
 
-    public HistoryAdapter(List<HistoryItem> store) {
+    public HistoryAdapter(List<HistoryItem> store, Context context) {
         if (store != null) {
             Collections.sort(store);
             mList = store;
         }
+        mContext = context;
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -71,7 +75,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         if (debtValue > 0) {
             String val = Double.toString(debtValue);
             holder.debt.setText(val);
-            debtBackground.setColor(Color.RED);
+            debtBackground.setColor(ContextCompat.getColor(mContext, R.color.red));
         } else if (debtValue == 0) {
             holder.debt.setText("0");
             debtBackground.setColor(Color.GRAY);

@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -23,6 +24,7 @@ import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
 import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.viewmodels.ImageManagementViewModel;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.Objects;
 
@@ -41,7 +43,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
     private ImageManagementViewModel mViewModel;
 
     private ProgressBar mProgressBar;
-    private Toolbar mToolbar;
+    private NavigationView mToolbar;
 
     public ImageManagementDialog newInstance(String id) {
         Bundle args = new Bundle();
@@ -66,9 +68,8 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
         mSelectedImage = view.findViewById(R.id.selected_image);
         mProgressBar = view.findViewById(R.id.image_progress_bar);
 
-        mToolbar = view.findViewById(R.id.image_toolbar);
-        mToolbar.inflateMenu(R.menu.image_menu);
-        mToolbar.setOnMenuItemClickListener(item -> {
+        mToolbar = view.findViewById(R.id.nav_view);
+        mToolbar.setNavigationItemSelectedListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.open_image:
                             openImage();

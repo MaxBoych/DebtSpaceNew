@@ -49,7 +49,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     private TextView mScore;
     private MenuItem mUsername;
     private ProgressBar mProgressBar;
-    private Menu mMenu;
 
     private OnMainStateChangeListener mOnMainStateChangeListener;
 
@@ -75,7 +74,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
 
         NavigationView navigationView = view.findViewById(R.id.nav_view);
-        mMenu = navigationView.getMenu();
+        Menu mMenu = navigationView.getMenu();
         mUsername = mMenu.getItem(0).getSubMenu().getItem(0);
         mUsername.setTitle(DebtSpaceApplication.from(Objects.requireNonNull(getContext())).getUsername());
         navigationView.setNavigationItemSelectedListener(this);
@@ -116,7 +115,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         mViewModel.getState().observe(this, state -> {
             switch (state) {
                 case SUCCESS_LOAD_DATA:
-                    //Log.d("#DS", "in SUCCESS_LOAD_DATA");
                     setUserData(mViewModel.getUser());
                     mProgressBar.setVisibility(View.GONE);
                     break;
@@ -192,26 +190,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Choose Language");
+
         builder.setSingleChoiceItems(languageList, -1, (dialog, which) -> {
             switch (which) {
                 case 0:
-                    ((MainActivity) getActivity()).setLocale("en");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("en");
                     dialog.dismiss();
                     break;
                 case 1:
-                    ((MainActivity) getActivity()).setLocale("ru");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("ru");
                     dialog.dismiss();
                     break;
                 case 2:
-                    ((MainActivity) getActivity()).setLocale("de");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("de");
                     dialog.dismiss();
                     break;
                 case 3:
-                    ((MainActivity) getActivity()).setLocale("fr");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("fr");
                     dialog.dismiss();
                     break;
                 case 4:
-                    ((MainActivity) getActivity()).setLocale("es");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("es");
                     dialog.dismiss();
                     break;
             }
@@ -223,7 +222,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        showChangeLanguageDialog();
+        if(menuItem.getItemId() == 2131296512) {
+            showChangeLanguageDialog();
+        }
         return true;
     }
 }

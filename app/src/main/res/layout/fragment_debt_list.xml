@@ -40,7 +40,7 @@
             android:layout_below="@id/toolbar1"
             android:layout_marginBottom="56dp"
             android:clipToPadding="false"
-            android:paddingBottom="64dp">
+            android:paddingBottom="72dp">
         </androidx.recyclerview.widget.RecyclerView>
 
         <ProgressBar

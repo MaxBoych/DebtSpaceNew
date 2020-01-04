@@ -127,7 +127,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else {
                     String val = Double.toString(-debtValue);
                     debtViewHolder.debt.setText(val);
-                    debtBackground.setColor(ContextCompat.getColor(mContext, R.color.green));
+                    debtBackground.setColor(Color.GREEN);
                 }
 
                 break;
