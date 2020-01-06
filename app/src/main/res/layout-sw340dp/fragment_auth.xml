@@ -16,7 +16,7 @@
             android:background="@drawable/rounded_dark"
             android:id="@+id/from_auth_to_sign_in"
             style="@style/buttonAuth"
-            android:layout_width="300dp"
+            android:width="300dp"
             android:text="@string/sing_in" />
 
         <Button
