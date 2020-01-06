@@ -34,9 +34,39 @@ public class StrikeRepository {
     }
 
     public void doStrike(HistoryItem item, OnUpdateDataListener listener) {
-        DocumentReference document = mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+        DocumentReference profile = mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
                 .document(mUsername);
 
+        profile.get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Map<String, Object> data = documentSnapshot.getData();
+                    if (data != null) {
+                        Double debt = Double.parseDouble(item.getDebt());
+                        Double totalDebt = Double.parseDouble(Objects.requireNonNull(data.get("score")).toString());
+                        totalDebt += debt;
+                        data.put("score", totalDebt.toString());
+                        profile.set(data);
+                        DocumentReference profile1 = mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
+                                .document(item.getUsername());
+                        profile1.get()
+                                .addOnSuccessListener(documentSnapshot1 -> {
+                                    Map<String, Object> data1 = documentSnapshot1.getData();
+                                    if(data1 != null) {
+                                        Double debt1 = Double.parseDouble(item.getDebt());
+                                        Double totalDebt1 = Double.parseDouble(Objects.requireNonNull(data1.get("score")).toString());
+                                        totalDebt1 -= debt1;
+                                        data1.put("score", totalDebt1.toString());
+                                        profile1.set(data1);
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(e ->
+                        listener.onFailure(e.getMessage())
+                );
+
+        DocumentReference document = mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+                .document(mUsername);
         document.get()
                 .addOnSuccessListener(documentSnapshot -> {
                     Map<String, Object> data = documentSnapshot.getData();
