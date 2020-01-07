@@ -5,6 +5,9 @@ import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.models.Debt;
@@ -13,6 +16,8 @@ import com.example.debtspace.models.GroupDebt;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.FirebaseUtilities;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
@@ -40,8 +45,8 @@ public class DebtListRepository {
         mList = new ArrayList<>();
     }
 
-    public void uploadDebtListData(OnDownloadDataListener<Debt> listener) {
-        uploadGroupsIDs(new OnDownloadDataListener<String>() {
+    public void downloadDebtListData(OnDownloadDataListListener<Debt> listener) {
+        downloadGroupsIDs(new OnDownloadDataListListener<String>() {
             @Override
             public void onDownloadSuccessful(List<String> list) {
                 downloadGroupDebts(list, listener);
@@ -54,75 +59,142 @@ public class DebtListRepository {
         });
     }
 
-    private void uploadGroupsIDs(OnDownloadDataListener<String> listener) {
+    public void observeDebtEvents(OnDatabaseEventListener<DebtBond> listener) {
+        mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+                .document(mUsername)
+                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .addSnapshotListener((query, e) -> {
+                    if (e != null) {
+                        if (e.getMessage() != null) {
+                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        }
+                        listener.onFailure(ErrorsConfiguration.ERROR_DATA_READING);
+                    } else if (query != null) {
+                        for (DocumentChange change : query.getDocumentChanges()) {
+                            DocumentSnapshot document = change.getDocument();
+                            Map<String, Object> data = document.getData();
+                            if (data != null) {
+                                DebtBond debtBond = new DebtBond(document.getId(), data);
+                                switch (change.getType()) {
+                                    case ADDED:
+                                        listener.onAdded(debtBond);
+                                        break;
+                                    case MODIFIED:
+                                        listener.onModified(debtBond);
+                                        break;
+                                    case REMOVED:
+                                        listener.onRemoved(debtBond);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void transformToDebt(DebtBond debtBond, OnDownloadDataListener<Debt> listener) {
+        String username = debtBond.getUsername();
+        FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
+            @Override
+            public void onSuccessful(User user) {
+                Debt debt = new Debt(user, debtBond.getDebt(), debtBond.getDate());
+                listener.onDownloadSuccessful(debt);
+            }
+
+            @Override
+            public void onDoesNotExist() {
+                Debt debt = new Debt(new User(username), debtBond.getDebt(), debtBond.getDate());
+                listener.onDownloadSuccessful(debt);
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Debt debt = new Debt(new User(username), debtBond.getDebt(), debtBond.getDate());
+                listener.onDownloadSuccessful(debt);
+
+                Log.e(Configuration.APPLICATION_LOG_TAG, errorMessage);
+            }
+        });
+    }
+
+    private void downloadGroupsIDs(OnDownloadDataListListener<String> listener) {
         mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
                 .document(mUsername)
                 .get()
-                .addOnSuccessListener(documentSnapshot -> {
+                .addOnSuccessListener(document -> {
                     @SuppressWarnings("unchecked")
-                    List<String> ids = (List<String>) Objects.requireNonNull(documentSnapshot.getData())
+                    List<String> ids = (List<String>) Objects.requireNonNull(document.getData())
                             .get(Configuration.GROUPS_FIELD_NAME);
                     listener.onDownloadSuccessful(ids);
                 })
-                .addOnFailureListener(e ->
-                        listener.onFailure(e.getMessage())
-                );
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_GROUP_IDS);
+                });
     }
 
-    private void downloadSingleDebts(OnDownloadDataListener<Debt> listener) {
+    private void downloadSingleDebts(OnDownloadDataListListener<Debt> listener) {
         mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
                 .document(mUsername)
+                .collection(Configuration.FRIENDS_COLLECTION_NAME)
                 .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        Map<String, Object> map = documentSnapshot.getData();
-                        List<DebtBond> debtBonds = new ArrayList<>();
-                        for (String partnerUsername : Objects.requireNonNull(map).keySet()) {
-                            debtBonds.add(new DebtBond(partnerUsername,  String.valueOf(map.get(partnerUsername))));
+                .addOnSuccessListener(documents -> {
+                    List<DebtBond> debtBonds = new ArrayList<>();
+                    for (DocumentSnapshot document : documents) {
+                        if (document.exists()) {
+                            Map<String, Object> data = document.getData();
+                            if (data != null) {
+                                debtBonds.add(new DebtBond(document.getId(), data));
+                            }
                         }
-                        continueDownloadSingleDebts(debtBonds, listener);
-                    } else {
-                        listener.onDownloadSuccessful(null);
                     }
+                    continueDownloadSingleDebts(debtBonds, listener);
                 })
-                .addOnFailureListener(e ->
-                        listener.onFailure(e.getMessage())
-                );
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_SINGLE_DEBTS);
+                });
     }
 
-    private void continueDownloadSingleDebts(List<DebtBond> debtBonds, OnDownloadDataListener<Debt> listener) {
+    private void continueDownloadSingleDebts(List<DebtBond> debtBonds, OnDownloadDataListListener<Debt> listener) {
         mSize += debtBonds.size();
+        if (mSize == mCount) {
+            listener.onDownloadSuccessful(mList);
+        }
         for (DebtBond debtBond : debtBonds) {
-            String username = debtBond.getPartnerUsername();
+            String username = debtBond.getUsername();
             String debt = debtBond.getDebt();
+            String date = debtBond.getDate();
             FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
 
                 @Override
                 public void onSuccessful(User user) {
-                    Debt debtObj = new Debt(user, debt);
+                    Debt debtObj = new Debt(user, debt, date);
                     downloadDebtImage(debtObj, listener);
                 }
 
                 @Override
                 public void onDoesNotExist() {
-                    Debt debtObj = new Debt(new User(username), debt);
+                    Debt debtObj = new Debt(new User(username), debt, date);
                     addSingleDebt(debtObj, listener);
-
-                    Log.d("#DS findUser failed", "User with username " + username + " does not exist.");
                 }
 
                 @Override
                 public void onFailure(String errorMessage) {
-                    Debt debtObj = new Debt(new User(username), debt);
+                    Debt debtObj = new Debt(new User(username), debt, date);
                     addSingleDebt(debtObj, listener);
 
-                    Log.d("#DS findUser failed", "Error find username " + username + " ; " + errorMessage);
+                    Log.e(Configuration.APPLICATION_LOG_TAG, errorMessage);
                 }
             });
         }
     }
 
-    private void downloadGroupDebts(List<String> groupIDs, OnDownloadDataListener<Debt> listener) {
+    private void downloadGroupDebts(List<String> groupIDs, OnDownloadDataListListener<Debt> listener) {
         mSize = groupIDs.size();
         if (mSize == 0) {
             downloadSingleDebts(listener);
@@ -133,17 +205,22 @@ public class DebtListRepository {
                     .get()
                     .addOnSuccessListener(documentSnapshot -> {
                         Map<String, Object> data = documentSnapshot.getData();
-                        GroupDebt groupDebt = new GroupDebt(Objects.requireNonNull(data));
-                        groupDebt.setID(id);
-                        downloadGroupImage(groupDebt, listener);
+                        if (data != null) {
+                            GroupDebt groupDebt = new GroupDebt(data);
+                            groupDebt.setID(id);
+                            downloadGroupImage(groupDebt, listener);
+                        }
                     })
-                    .addOnFailureListener(e ->
-                            listener.onFailure(e.getMessage())
-                    );
+                    .addOnFailureListener(e -> {
+                        if (e.getMessage() != null) {
+                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        }
+                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_GROUP_DEBTS);
+                    });
         }
     }
 
-    private void downloadGroupImage(GroupDebt group, OnDownloadDataListener<Debt> listener) {
+    private void downloadGroupImage(GroupDebt group, OnDownloadDataListListener<Debt> listener) {
         mStorage.child(Configuration.GROUP_DEBTS_COLLECTION_NAME)
                 .child(group.getId())
                 .getDownloadUrl()
@@ -156,12 +233,15 @@ public class DebtListRepository {
                     if (errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
                         useDefaultImage(group, mStorage.child(Configuration.GROUP_DEBTS_COLLECTION_NAME), listener);
                     } else {
-                        listener.onFailure(e.getMessage());
+                        if (e.getMessage() != null) {
+                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        }
+                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_GROUP_IMAGE + group.getId());
                     }
                 });
     }
 
-    private void downloadDebtImage(Debt debt, OnDownloadDataListener<Debt> listener) {
+    private void downloadDebtImage(Debt debt, OnDownloadDataListListener<Debt> listener) {
         mStorage.child(Configuration.USERS_COLLECTION_NAME)
                 .child(debt.getUser().getUsername())
                 .getDownloadUrl()
@@ -174,12 +254,15 @@ public class DebtListRepository {
                     if (errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
                         useDefaultImage(debt, mStorage.child(Configuration.USERS_COLLECTION_NAME), listener);
                     } else {
-                        listener.onFailure(e.getMessage());
+                        if (e.getMessage() != null) {
+                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        }
+                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_USER_IMAGE + debt.getUser().getUsername());
                     }
                 });
     }
 
-    private void useDefaultImage(Debt debt, StorageReference reference, OnDownloadDataListener<Debt> listener) {
+    private void useDefaultImage(Debt debt, StorageReference reference, OnDownloadDataListListener<Debt> listener) {
         reference.child(Configuration.DEFAULT_IMAGE_VALUE)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
@@ -190,12 +273,19 @@ public class DebtListRepository {
                         addSingleDebt(debt, listener);
                     }
                 })
-                .addOnFailureListener(e ->
-                        listener.onFailure(e.getMessage())
-                );
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    if (debt instanceof GroupDebt) {
+                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_DEFAULT_GROUP_IMAGE + ((GroupDebt) debt).getId());
+                    } else {
+                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_DEFAULT_USER_IMAGE + debt.getUser().getUsername());
+                    }
+                });
     }
 
-    private void addGroupDebt(GroupDebt debt, OnDownloadDataListener<Debt> listener) {
+    private void addGroupDebt(GroupDebt debt, OnDownloadDataListListener<Debt> listener) {
         mList.add(debt);
         mCount++;
         if (mCount == mSize) {
@@ -203,7 +293,7 @@ public class DebtListRepository {
         }
     }
 
-    private void addSingleDebt(Debt debt, OnDownloadDataListener<Debt> listener) {
+    private void addSingleDebt(Debt debt, OnDownloadDataListListener<Debt> listener) {
         mList.add(debt);
         mCount++;
         if (mCount == mSize) {

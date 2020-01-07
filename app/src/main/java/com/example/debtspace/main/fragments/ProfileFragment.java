@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,9 +69,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         mName = view.findViewById(R.id.profile_name);
         mScore = view.findViewById(R.id.profile_total_debt_value);
 
-        Log.d("#DS", DebtSpaceApplication.from(Objects.requireNonNull(getContext())).getUsername());
-
-
         NavigationView navigationView = view.findViewById(R.id.nav_view);
         Menu mMenu = navigationView.getMenu();
         mUsername = mMenu.getItem(0).getSubMenu().getItem(0);
@@ -83,8 +79,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         getSavedData();
 
         initViewModel();
-        observeState();
-        mViewModel.downloadUserData(getContext());
 
         mImage.setOnClickListener(this);
         view.findViewById(R.id.button_sign_out).setOnClickListener(this);
@@ -109,9 +103,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+        mViewModel.setContext(getContext());
+        observeLoadState();
+        mViewModel.downloadUserData();
     }
 
-    private void observeState() {
+    private void observeLoadState() {
         mViewModel.getState().observe(this, state -> {
             switch (state) {
                 case SUCCESS_LOAD_DATA:
@@ -148,12 +145,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             mScore.setText(user.getScore());
 
             SharedPreferences.Editor editor = mPreferences.edit();
-            editor.putString("name", mName.getText().toString());
+            editor.putString(Configuration.NAME_KEY, mName.getText().toString());
             editor.apply();
         }
 
         if (mUri == null) {
-            mViewModel.downloadUserImage(getContext());
+            mViewModel.downloadUserImage();
         }
     }
 
@@ -161,7 +158,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         mDoesDataSave = false;
         mPreferences = Objects.requireNonNull(getContext())
                 .getSharedPreferences(mUsername.getTitle().toString(), Context.MODE_PRIVATE);
-        String name = mPreferences.getString("name", null);
+        String name = mPreferences.getString(Configuration.NAME_KEY, null);
         if (name != null) {
             mName.setText(name);
             mDoesDataSave = true;
@@ -189,28 +186,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Choose Language");
+        builder.setTitle(Configuration.TITLE_LANGUAGE);
 
         builder.setSingleChoiceItems(languageList, -1, (dialog, which) -> {
             switch (which) {
                 case 0:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("en");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.ENGLISH_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 1:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("ru");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.RUSSIAN_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 2:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("de");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.GERMAN_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 3:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("fr");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.FRENCH_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 4:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale("es");
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.SPAIN_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
             }

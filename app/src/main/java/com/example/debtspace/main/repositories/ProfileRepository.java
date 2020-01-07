@@ -6,11 +6,13 @@ import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
-import com.example.debtspace.main.interfaces.OnDownloadDataListener;
+import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.models.User;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
@@ -41,23 +43,22 @@ public class ProfileRepository {
                     if (documentSnapshot.exists()) {
                         User user = documentSnapshot.toObject(User.class);
                         if (user != null) {
-                            Log.d("#DS", "user != null");
-                            //downloadImage(user, listener);
                             listener.onSuccessful(user);
                         }
                     } else {
-                        Log.d("#DS", "in does not exist");
+                        Log.w(Configuration.APPLICATION_LOG_TAG, ErrorsConfiguration.WARNING_USER_DOES_NOT_EXIST + mUsername);
                         listener.onDoesNotExist();
                     }
                 })
                 .addOnFailureListener(e -> {
-                            Log.d("#DS", Objects.requireNonNull(e.getMessage()));
-                            listener.onFailure("Can't find user data for" + mUsername);
-                        }
-                );
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_USER_DATA + mUsername);
+                });
     }
 
-    public void downloadImage(OnDownloadDataListener<Uri> listener) {
+    public void downloadImage(OnDownloadDataListListener<Uri> listener) {
         mStorage.child(mUsername)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
@@ -65,12 +66,20 @@ public class ProfileRepository {
                     list.add(uri);
                     listener.onDownloadSuccessful(list);
                 })
-                .addOnFailureListener(e ->
-                        useDefaultImage(listener)
-                );
+                .addOnFailureListener(e -> {
+                    int errorCode = ((StorageException) e).getErrorCode();
+                    if (errorCode == StorageException.ERROR_OBJECT_NOT_FOUND) {
+                        useDefaultImage(listener);
+                    } else {
+                        if (e.getMessage() != null) {
+                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        }
+                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_USER_IMAGE + mUsername);
+                    }
+                });
     }
 
-    private void useDefaultImage(OnDownloadDataListener<Uri> listener) {
+    private void useDefaultImage(OnDownloadDataListListener<Uri> listener) {
         mStorage.child(Configuration.DEFAULT_IMAGE_VALUE)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
@@ -78,8 +87,11 @@ public class ProfileRepository {
                     list.add(uri);
                     listener.onDownloadSuccessful(list);
                 })
-                .addOnFailureListener(e ->
-                        listener.onFailure(e.getMessage())
-                );
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_DEFAULT_USER_IMAGE);
+                });
     }
 }

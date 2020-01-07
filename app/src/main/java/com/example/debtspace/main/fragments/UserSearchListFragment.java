@@ -52,8 +52,6 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
         mProgressBar = view.findViewById(R.id.user_search_list_progress_bar);
 
         initViewModel();
-        observeUserSearchList();
-        textChangeListen();
 
         view.findViewById(R.id.button_to_debt_list).setOnClickListener(this);
 
@@ -69,18 +67,13 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(UserSearchListViewModel.class);
-
-        initUserSearchList();
-
-        mViewModel.getUserSearchList()
-                .observe(this, users -> {
-                    initUserSearchList();
-                    mAdapter.notifyDataSetChanged();
-                });
+        initAdapter();
+        observeLoadState();
+        textChangeListen();
     }
 
-    private void initUserSearchList() {
-        mAdapter = new UserSearchListAdapter(mViewModel.getUserSearchList().getValue(), getContext());
+    private void initAdapter() {
+        mAdapter = new UserSearchListAdapter(mViewModel.getList(), getContext());
         mAdapter.setOnListItemClickListener(position -> {
             User user = mViewModel.getUser(position);
             mOnMainStateChangeListener.onFriendRequestScreen(user);
@@ -89,11 +82,13 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
         mList.setAdapter(mAdapter);
     }
 
-    private void observeUserSearchList() {
-
-        mViewModel.getUserSearchState().observe(this, listStageState -> {
-            switch (listStageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
+                    mAdapter.updateList(mViewModel.getList());
+                    mProgressBar.setVisibility(View.GONE);
+                    break;
                 case FAIL:
                 case NONE:
                     mProgressBar.setVisibility(View.GONE);

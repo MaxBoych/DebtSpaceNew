@@ -62,7 +62,7 @@ public class RequestConfirmDialog extends DialogFragment implements View.OnClick
         mUsername.setText(username);
 
         initViewModel();
-        observeState();
+        observeLoadState();
 
         mAccept.setOnClickListener(this);
         mReject.setOnClickListener(this);
@@ -92,10 +92,9 @@ public class RequestConfirmDialog extends DialogFragment implements View.OnClick
         mViewModel = ViewModelProviders.of(this).get(RequestConfirmViewModel.class);
     }
 
-    private void observeState() {
-
-        mViewModel.getState().observe(this, stageState -> {
-            switch (stageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
                     mProgressBar.setVisibility(View.GONE);
                     dismiss();

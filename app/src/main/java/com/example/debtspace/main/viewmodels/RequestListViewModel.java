@@ -7,59 +7,134 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.debtspace.config.Configuration;
-import com.example.debtspace.main.interfaces.OnDownloadDataListener;
+import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.repositories.RequestListRepository;
+import com.example.debtspace.models.Request;
 import com.example.debtspace.models.User;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 public class RequestListViewModel extends ViewModel {
 
-    private MutableLiveData<List<User>> mList;
+    private List<Request> mList;
+    private Request mAddedRequest;
 
-    private MutableLiveData<Configuration.LoadStageState> mState;
+    private Context mContext;
+
+    private MutableLiveData<Configuration.LoadStageState> mLoadState;
+    private MutableLiveData<Configuration.EventStageState> mEventState;
     private MutableLiveData<String> mErrorMessage;
 
     public RequestListViewModel() {
-        mList = new MutableLiveData<>();
-        mState = new MutableLiveData<>();
+        mList = new ArrayList<>();
+        mLoadState = new MutableLiveData<>();
+        mLoadState.setValue(Configuration.LoadStageState.NONE);
+        mEventState = new MutableLiveData<>();
+        mEventState.setValue(Configuration.EventStageState.NONE);
         mErrorMessage = new MutableLiveData<>();
-        mState.setValue(Configuration.LoadStageState.NONE);
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
-    public void downloadRequestList(Context context) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new RequestListRepository(context).getRequests(new OnDownloadDataListener<User>() {
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
+    public void downloadRequestList() {
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        new RequestListRepository(mContext).downloadRequestList(new OnDownloadDataListListener<Request>() {
             @Override
-            public void onDownloadSuccessful(List<User> list) {
-                setRequestList(list);
-                mState.setValue(Configuration.LoadStageState.SUCCESS);
+            public void onDownloadSuccessful(List<Request> list) {
+                updateList(list);
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.LoadStageState.FAIL);
+                updateError(errorMessage);
             }
         });
     }
 
-    private void setRequestList(List<User> list) {
-        mList.setValue(list);
+    private void updateList(List<Request> list) {
+        Collections.sort(list);
+        mList = new ArrayList<>(list);
+        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
     }
 
-    public LiveData<List<User>> getList() {
+    private void updateError(String errorMessage) {
+        mErrorMessage.setValue(errorMessage);
+        mLoadState.setValue(Configuration.LoadStageState.FAIL);
+    }
+
+    public void addListChangeListener() {
+        new RequestListRepository(mContext).observeEvents(new OnDatabaseEventListener<Request>() {
+
+            @Override
+            public void onAdded(Request object) {
+                notifyAdded(object);
+            }
+
+            @Override
+            public void onModified(Request object) {}
+
+            @Override
+            public void onRemoved(Request object) {}
+
+            @Override
+            public void onFailure(String errorMessage) {
+                notifyEventFailure(errorMessage);
+            }
+        });
+    }
+
+    private void notifyAdded(Request request) {
+        mEventState.setValue(Configuration.EventStageState.PROGRESS);
+        mAddedRequest = request;
+        boolean doesNotExist = addItemToTop(request);
+        if (doesNotExist) {
+            mEventState.setValue(Configuration.EventStageState.ADDED);
+        } else {
+            mEventState.setValue(Configuration.EventStageState.NONE);
+        }
+    }
+
+    private boolean addItemToTop(Request request) {
+        if (mList != null) {
+            for (Request r : mList) {
+                if (r.getUsername().equals(request.getUsername())) {
+                    return false;
+                }
+            }
+            mList.add(0, request);
+        }
+        return true;
+    }
+
+    private void notifyEventFailure(String errorMessage) {
+        mErrorMessage.setValue(errorMessage);
+        mEventState.setValue(Configuration.EventStageState.FAIL);
+    }
+
+    public List<Request> getList() {
         return mList;
     }
 
     public User getRequest(int position) {
-        return Objects.requireNonNull(mList.getValue()).get(position);
+        return mList.get(position);
     }
 
-    public LiveData<Configuration.LoadStageState> getListState() {
-        return mState;
+    public LiveData<Configuration.LoadStageState> getLoadState() {
+        return mLoadState;
+    }
+
+    public LiveData<Configuration.EventStageState> getEventState() {
+        return mEventState;
+    }
+
+    public Request getAddedRequest() {
+        return mAddedRequest;
     }
 
     public LiveData<String> getErrorMessage() {

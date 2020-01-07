@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.debtspace.R;
 import com.example.debtspace.auth.interfaces.OnAuthStateChangeListener;
 import com.example.debtspace.auth.viewmodels.AuthViewModel;
+import com.example.debtspace.config.ErrorsConfiguration;
 
 import java.util.Objects;
 
@@ -80,23 +81,27 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
             InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
             Objects.requireNonNull(imm).hideSoftInputFromWindow(v.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-            String firstName = mFirstName.getText().toString();
-            String lastName = mLastName.getText().toString();
-            String username = mUsername.getText().toString().toLowerCase();
-            String email = mEmail.getText().toString();
-            String password = mPassword.getText().toString();
 
-            mAuthViewModel.signUp(firstName, lastName,
-                    username, email, password);
-
+            signUp();
         } else if (v.getId() == R.id.from_sign_up_to_sign_in) {
             mOnAuthStateChangeListener.onSignInScreen();
         }
     }
 
+    private void signUp() {
+        String firstName = mFirstName.getText().toString();
+        String lastName = mLastName.getText().toString();
+        String username = mUsername.getText().toString().toLowerCase();
+        String email = mEmail.getText().toString();
+        String password = mPassword.getText().toString();
+
+        mAuthViewModel.signUp(firstName, lastName,
+                username, email, password);
+    }
+
     private void observeSignUp() {
-        mAuthViewModel.getSignUpState().observe(this, authStageState -> {
-            switch (authStageState) {
+        mAuthViewModel.getSignUpState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
                     editTextSetNull();
                     buttonsSetEnabled(false);
@@ -163,7 +168,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorFirstName() {
-        mFirstName.setError("First name failed validation!");
+        mFirstName.setError(ErrorsConfiguration.ERROR_FIRST_NAME);
         mLastName.setError(null);
         mUsername.setError(null);
         mEmail.setError(null);
@@ -171,7 +176,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorLastName() {
-        mLastName.setError("Last name failed validation!");
+        mLastName.setError(ErrorsConfiguration.ERROR_LAST_NAME);
         mFirstName.setError(null);
         mUsername.setError(null);
         mEmail.setError(null);
@@ -179,7 +184,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorUsername() {
-        mUsername.setError("Username failed validation or already exists!");
+        mUsername.setError(ErrorsConfiguration.ERROR_USERNAME);
         mFirstName.setError(null);
         mLastName.setError(null);
         mEmail.setError(null);
@@ -187,7 +192,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorEmail() {
-        mEmail.setError("Email failed validation!");
+        mEmail.setError(ErrorsConfiguration.ERROR_EMAIL);
         mFirstName.setError(null);
         mLastName.setError(null);
         mUsername.setError(null);
@@ -195,8 +200,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorPassword() {
-        mPassword.setError("Password must contain at least 6 symbols: " +
-                "uppercase, lowercase, digits");
+        mPassword.setError(ErrorsConfiguration.ERROR_PASSWORD);
         mFirstName.setError(null);
         mLastName.setError(null);
         mUsername.setError(null);

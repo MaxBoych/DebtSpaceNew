@@ -19,6 +19,7 @@ import com.example.debtspace.main.adapters.DebtListAdapter;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.DebtListViewModel;
 import com.example.debtspace.models.Debt;
+import com.example.debtspace.models.DebtBond;
 import com.example.debtspace.models.GroupDebt;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -30,6 +31,7 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
     private DebtListViewModel mViewModel;
 
     private ProgressBar mProgressBar;
+    private ProgressBar mEventProgressBar;
 
     private FloatingActionButton mCreateGroupDebt;
 
@@ -48,11 +50,10 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
 
         mList = view.findViewById(R.id.debt_list);
         mProgressBar = view.findViewById(R.id.debt_list_progress_bar);
+        mEventProgressBar = view.findViewById(R.id.debt_list_event_progress_bar);
         mCreateGroupDebt = view.findViewById(R.id.button_create_group_debt);
 
         initViewModel();
-        observeDebtList();
-        mViewModel.uploadDebtList(getContext());
 
         view.findViewById(R.id.button_to_user_search).setOnClickListener(this);
         mCreateGroupDebt.setOnClickListener(this);
@@ -71,18 +72,21 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(DebtListViewModel.class);
-
-        updateDebtList();
-
-        mViewModel.getDebtList()
-                .observe(this, debtListItems -> {
-                    updateDebtList();
-                    mAdapter.notifyDataSetChanged();
-                });
+        mViewModel.setContext(getContext());
+        initAdapter();
+        observeLoadState();
+        observeEventState();
+        mViewModel.downloadDebtList();
     }
 
-    private void updateDebtList() {
-        mAdapter = new DebtListAdapter(mViewModel.getDebtList().getValue(), getContext());
+    private void initAdapter() {
+        mList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
+
+        mAdapter = new DebtListAdapter(mList, mViewModel.getDebtList(), getContext());
+        /*mAdapter.setOnLoadMoreListener(() ->
+                mList.post(() ->
+                        mAdapter.notifyDataSetChanged())
+        );*/
         mAdapter.setOnListItemClickListener(position -> {
             Debt item = mViewModel.getDebtListItem(position);
             if (item instanceof GroupDebt) {
@@ -91,14 +95,18 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
                 mOnMainStateChangeListener.onStrikeScreen(item.getUser());
             }
         });
-        mList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
+
         mList.setAdapter(mAdapter);
     }
 
-    private void observeDebtList() {
-        mViewModel.getDebtListState().observe(this, userSearchStageState -> {
-            switch (userSearchStageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
+                    mProgressBar.setVisibility(View.GONE);
+                    mAdapter.updateList(mViewModel.getDebtList());
+                    mViewModel.addListChangeListener();
+                    break;
                 case NONE:
                     mProgressBar.setVisibility(View.GONE);
                     break;
@@ -111,6 +119,48 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
                     break;
                 case PROGRESS:
                     mProgressBar.setVisibility(View.VISIBLE);
+                    break;
+            }
+        });
+    }
+
+    private void observeEventState() {
+        mViewModel.getEventState().observe(this, state -> {
+            switch (state) {
+                case ADDED:
+                    Debt addedDebt = mViewModel.getAddedDebt();
+                    mAdapter.addItemToTop(addedDebt);
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case MODIFIED:
+                    DebtBond changedDebt = mViewModel.getChangedDebt();
+                    int modifyIndex = mViewModel.modifyItem(changedDebt);
+                    if (modifyIndex != -1) {
+                        Debt modifiedDebt = mViewModel.getDebtListItem(0);
+                        mAdapter.setAndMoveItem(modifyIndex, modifiedDebt);
+                    }
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case REMOVED:
+                    DebtBond removedDebt = mViewModel.getChangedDebt();
+                    int removeIndex = mViewModel.removeItem(removedDebt.getUsername());
+                    if (removeIndex != -1) {
+                        mAdapter.removeItem(removeIndex);
+                    }
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case PROGRESS:
+                    mEventProgressBar.setVisibility(View.VISIBLE);
+                    break;
+                case NONE:
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case FAIL:
+                    mEventProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),
+                            mViewModel.getErrorMessage().getValue(),
+                            Toast.LENGTH_LONG)
+                            .show();
                     break;
             }
         });

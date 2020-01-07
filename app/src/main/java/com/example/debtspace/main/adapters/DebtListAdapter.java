@@ -1,10 +1,10 @@
 package com.example.debtspace.main.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,22 +22,61 @@ import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.Debt;
 import com.example.debtspace.models.GroupDebt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private OnListItemClickListener mOnListItemClickListener;
+    //private OnLoadMoreListener mOnLoadMoreListener;
 
     private List<Debt> mList;
     private Context mContext;
+    //private RecyclerView mRecyclerView;
+    //private LinearLayoutManager mManager;
+    //private int mVisibleAmount;
+    //private int mVisibleThreshold;
 
-    public DebtListAdapter(List<Debt> list, Context context) {
-        mList = list;
+    public DebtListAdapter(RecyclerView recyclerView, List<Debt> list, Context context) {
+        if (list != null) {
+            mList = new ArrayList<>(list);
+        }
         mContext = context;
+        //mRecyclerView = recyclerView;
+        //mManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        //mVisibleAmount = 5;
+        //mVisibleThreshold = 5;
+
+        //addScrollListener();
     }
+
+    /*private void addScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = mManager.getItemCount();
+                int lastVisibleItem = mManager.findLastVisibleItemPosition();
+                //Log.d("#DS", "total: " + totalItemCount + " last: " + lastVisibleItem);
+                if (totalItemCount <= lastVisibleItem + 1) {
+                    increaseVisibleAmount();
+                    mOnLoadMoreListener.onLoadMore();
+                }
+            }
+        });
+    }*/
 
     public void setOnListItemClickListener(OnListItemClickListener listener) {
         mOnListItemClickListener = listener;
+    }
+
+    /*public void setOnLoadMoreListener(OnLoadMoreListener listener) {
+        mOnLoadMoreListener = listener;
+    }*/
+
+    public void updateList(List<Debt> list) {
+        mList = new ArrayList<>(list);
+        this.notifyDataSetChanged();
     }
 
     @NonNull
@@ -80,7 +119,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 totalDebtBackground.setColor(Color.YELLOW);
 
                 //String num_of_part = Integer.toString(groupDebt.getMembers().size());
-               // groupDebtViewHolder.number_of_participants.setText(num_of_part);
+                //groupDebtViewHolder.number_of_participants.setText(num_of_part);
 
                 double user_debt = Math.round((Double.parseDouble(groupDebt.getDebt()) / groupDebt.getMembers().size()) * 1000) / 1000;
                 String u_debt = Double.toString(user_debt);
@@ -139,6 +178,13 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return mList == null ? 0 : mList.size();
     }
 
+    /*private void increaseVisibleAmount() {
+        mVisibleAmount += mVisibleThreshold;
+        if (mVisibleAmount > mList.size()) {
+            mVisibleAmount = mList.size();
+        }
+    }*/
+
     class DebtViewHolder extends RecyclerView.ViewHolder {
 
         private final ImageView image;
@@ -193,6 +239,30 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             });
         }
     }
+
+    public void addItemToTop(Debt debt) {
+        mList.add(0, debt);
+        this.notifyItemInserted(0);
+    }
+
+    public void setAndMoveItem(int index, Debt debt) {
+        mList.set(index, debt);
+        Debt debtCopy = mList.remove(index);
+        mList.add(0, debtCopy);
+
+        for (Debt debt1 : mList) {
+            if (debt1 instanceof GroupDebt) {
+                continue;
+            }
+            Log.d("#DS", debt1.getUser().getUsername());
+        }
+
+        this.notifyItemMoved(index, 0);
+        this.notifyItemRangeChanged(0, index + 1);
+    }
+
+    public void removeItem(int index) {
+        mList.remove(index);
+        this.notifyItemRemoved(index);
+    }
 }
-
-

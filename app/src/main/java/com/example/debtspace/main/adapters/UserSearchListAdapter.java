@@ -16,6 +16,7 @@ import com.example.debtspace.R;
 import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAdapter.UserSearchListViewHolder> {
@@ -26,7 +27,9 @@ public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAd
     private OnListItemClickListener mOnListItemClickListener;
 
     public UserSearchListAdapter(List<User> list, Context context) {
-        mList = list;
+        if (list != null) {
+            mList = new ArrayList<>(list);
+        }
         mContext = context;
     }
 
@@ -72,7 +75,7 @@ public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAd
         UserSearchListViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            image = itemView.findViewById(R.id.user_photo);
+            image = itemView.findViewById(R.id.user_image);
             name = itemView.findViewById(R.id.user_name);
             username = itemView.findViewById(R.id.user_username);
 
@@ -85,5 +88,10 @@ public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAd
                 }
             });
         }
+    }
+
+    public void updateList(List<User> list) {
+        mList = new ArrayList<>(list);
+        this.notifyDataSetChanged();
     }
 }

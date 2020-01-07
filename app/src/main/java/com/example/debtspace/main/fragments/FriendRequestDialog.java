@@ -61,7 +61,6 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
         mUserUsername.setText(username);
 
         initViewModel();
-        observeState();
 
         mYes.setOnClickListener(this);
         mCancel.setOnClickListener(this);
@@ -88,12 +87,12 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(FriendRequestViewModel.class);
+        observeLoadState();
     }
 
-    private void observeState() {
-
-        mViewModel.getState().observe(this, listStageState -> {
-            switch (listStageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
                     mProgressBar.setVisibility(View.GONE);
                     dismiss();

@@ -92,16 +92,15 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
         mIsCreate = true;
 
         initViewModel();
-        observeFoundList();
         if (getArguments() != null) {
             mID = getArguments().getString(Configuration.ID_KEY);
             mName.setText(getArguments().getString(Configuration.NAME_KEY));
             mDebt.setText(getArguments().getString(Configuration.DEBT_KEY));
-            mViewModel.downloadAddedList(getArguments().getStringArrayList(Configuration.MEMBERS_KEY), mID, getContext());
+            mViewModel.downloadAddedList(getArguments().getStringArrayList(Configuration.MEMBERS_KEY), mID);
             mSubmit.setText(getString(R.string.update_group));
             mIsCreate = false;
         } else {
-            mViewModel.downloadFriendList(getContext());
+            mViewModel.downloadFriendList();
         }
         textChangeListen();
 
@@ -132,24 +131,14 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(GroupDebtViewModel.class);
-
-        initFoundList();
-        mViewModel.getFoundList()
-                .observe(this, users -> {
-                    initFoundList();
-                    mFoundAdapter.notifyDataSetChanged();
-                });
-
-        initAddedList();
-        mViewModel.getAddedList()
-                .observe(this, users -> {
-                    initAddedList();
-                    mAddedAdapter.notifyDataSetChanged();
-                });
+        mViewModel.setContext(getContext());
+        initFoundAdapter();
+        initAddedAdapter();
+        observeLoadState();
     }
 
-    private void initFoundList() {
-        mFoundAdapter = new GroupDebtFoundListAdapter(mViewModel.getFoundList().getValue(), getContext());
+    private void initFoundAdapter() {
+        mFoundAdapter = new GroupDebtFoundListAdapter(mViewModel.getFoundList(), getContext());
         mFoundList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
 
         mFoundAdapter.setOnListItemClickListener(position ->
@@ -158,8 +147,8 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
         mFoundList.setAdapter(mFoundAdapter);
     }
 
-    private void initAddedList() {
-        mAddedAdapter = new GroupDebtAddedListAdapter(mViewModel.getAddedList().getValue());
+    private void initAddedAdapter() {
+        mAddedAdapter = new GroupDebtAddedListAdapter(mViewModel.getAddedList());
         mAddedList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
 
         mAddedAdapter.setOnListItemClickListener(position ->
@@ -168,16 +157,17 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
         mAddedList.setAdapter(mAddedAdapter);
     }
 
-    private void observeFoundList() {
-
-        mViewModel.getGroupDebtState().observe(this, groupStageState -> {
-            switch (groupStageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
                     mProgressBar.setVisibility(View.GONE);
                     if (mViewModel.getIsCreate()) {
                         mOnMainStateChangeListener.onDebtListScreen();
                     }
 
+                    mAddedAdapter.updateList(mViewModel.getAddedList());
+                    mFoundAdapter.updateList(mViewModel.getFoundList());
                     Uri uri = mViewModel.getUriImage();
                     if (uri != null) {
                         mImageUri = uri;
@@ -239,10 +229,10 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
     }
 
     private void createGroup() {
-        mViewModel.createGroup(mName.getText().toString(), mDebt.getText().toString(), mImageUri, getContext());
+        mViewModel.createGroup(mName.getText().toString(), mDebt.getText().toString(), mImageUri);
     }
 
     private void updateGroup() {
-        mViewModel.updateGroup(mID, mName.getText().toString(), mDebt.getText().toString(), getContext());
+        mViewModel.updateGroup(mID, mName.getText().toString(), mDebt.getText().toString());
     }
 }

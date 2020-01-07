@@ -1,6 +1,6 @@
 package com.example.debtspace.main.fragments;
 
-import androidx.fragment.app.DialogFragment;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.debtspace.R;
@@ -24,8 +25,7 @@ import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.StringUtilities;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class StrikeDialog extends DialogFragment implements View.OnClickListener {
@@ -62,7 +62,7 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
         mName.setText(Objects.requireNonNull(getArguments()).getString(Configuration.NAME_KEY));
 
         initViewModel();
-        observeStrikeState();
+        observeLoadState();
 
         mStrike.setOnClickListener(this);
 
@@ -72,7 +72,8 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.strike_button && !StringUtilities.isEmpty(mBill.getText().toString())) {
-            String date = new SimpleDateFormat("yyyy/MM/dd", Locale.getDefault()).format(new Date());
+            @SuppressLint("SimpleDateFormat")
+            String date = new SimpleDateFormat(Configuration.PATTERN_DATE).format(Calendar.getInstance().getTime());
             HistoryItem item = new HistoryItem(mBill.getText().toString(),
                     mComment.getText().toString(), date);
             item.setUsername(mUsername);
@@ -92,10 +93,9 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
         mViewModel = ViewModelProviders.of(this).get(StrikeViewModel.class);
     }
 
-    private void observeStrikeState() {
-
-        mViewModel.getState().observe(this, listStageState -> {
-            switch (listStageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
                     mProgressBar.setVisibility(View.GONE);
                     dismiss();
