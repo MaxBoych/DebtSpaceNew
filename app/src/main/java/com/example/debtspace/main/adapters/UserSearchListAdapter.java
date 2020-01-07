@@ -19,6 +19,8 @@ import com.example.debtspace.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAdapter.UserSearchListViewHolder> {
 
     private List<User> mList;
@@ -68,7 +70,7 @@ public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAd
 
     class UserSearchListViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImageView image;
+        private final CircleImageView image;
         private final TextView name;
         private final TextView username;
 

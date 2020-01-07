@@ -137,6 +137,7 @@ public class UserSearchListRepository {
     private void readinessCheck(User user, OnDownloadDataListListener<User> listener) {
         mList.add(user);
         mCount++;
+        Log.d("#DS", "check " + mCount + " " + mSize);
         if (mCount == mSize) {
             listener.onDownloadSuccessful(mList);
         }
