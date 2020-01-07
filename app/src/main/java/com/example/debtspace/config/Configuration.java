@@ -64,6 +64,7 @@ public class Configuration {
 
     public final static String GROUPS_FIELD_NAME = "groups";
     public final static String USERNAME_FIELD_NAME = "username";
+    public final static String SCORE_FIELD_NAME = "score";
 
     public final static String DEFAULT_DEBT_VALUE = "0";
     public final static String STRING_DEFAULT = "default";
@@ -74,6 +75,7 @@ public class Configuration {
     public final static int DEBT_TYPE = 0;
     public final static int GROUP_DEBT_TYPE = 1;
     public final static String NONE_ID = "-1";
+    public final static String MINUS_STRING = "-";
 
     public final static int IMAGE_SIZE_64 = 64;
     public final static int IMAGE_SIZE_128 = 128;

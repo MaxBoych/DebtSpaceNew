@@ -9,13 +9,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
         <EditText
             android:id="@+id/first_name"
             style="@style/editAuth"
-            android:layout_width="300dp"
             android:background="@drawable/rounded_light"
             android:color="@color/white"
             android:hint="@string/first_name" />
@@ -23,7 +22,6 @@
         <EditText
             android:id="@+id/last_name"
             style="@style/editAuth"
-            android:layout_width="300dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_light"
             android:hint="@string/last_name" />
@@ -31,7 +29,6 @@
         <EditText
             android:id="@+id/username"
             style="@style/editAuth"
-            android:layout_width="300dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_light"
             android:hint="@string/name" />
@@ -39,7 +36,6 @@
         <EditText
             android:id="@+id/email"
             style="@style/editAuth"
-            android:layout_width="300dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_light"
             android:hint="@string/email" />
@@ -47,7 +43,6 @@
         <EditText
             android:id="@+id/password"
             style="@style/editAuth"
-            android:layout_width="300dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/rounded_light"
             android:hint="@string/password" />
@@ -55,7 +50,6 @@
         <Button
             android:id="@+id/button_sign_up"
             style="@style/buttonAuth"
-            android:layout_width="300dp"
             android:layout_marginTop="24dp"
             android:background="@drawable/rounded_dark"
             android:text="@string/sing_up" />

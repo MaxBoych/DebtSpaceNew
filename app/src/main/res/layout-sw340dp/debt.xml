@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="4dp"
+    android:layout_margin="8dp"
+    android:padding="8dp"
+    android:background="@drawable/rounded_light">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item_debt_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/debt_user_image"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:padding="8dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/debt_user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:textSize="16sp"/>
+
+                <TextView
+                    android:id="@+id/debt_user_debt"
+                    style="@style/debt"
+                    android:layout_marginTop="56dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="24dp"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

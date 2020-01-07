@@ -28,7 +28,7 @@ public class StrikeRepository {
     public StrikeRepository(Context context) {
         mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mUsername = DebtSpaceApplication.from(context).getUsername();
-        mRequestAmount = 4;
+        mRequestAmount = 6;
         mCount = 0;
     }
 
@@ -75,6 +75,9 @@ public class StrikeRepository {
         updatedFriend.put(Configuration.DATE_KEY, item.getDate());
         updateData(updatedFriend, username, mUsername, listener);
 
+        updateScore(mUsername, Configuration.MINUS_STRING + debt, listener);
+        updateScore(username, debt, listener);
+
         HistoryItem historyCurrentUser = new HistoryItem(Double.toString(-debtRequest),
                 item.getComment(), item.getDate());
         uploadDebt(mUsername, username, historyCurrentUser, listener);
@@ -82,6 +85,49 @@ public class StrikeRepository {
         HistoryItem historyFriend = new HistoryItem(debt,
                 item.getComment(), item.getDate());
         uploadDebt(username, mUsername, historyFriend, listener);
+
+
+    }
+
+    private void updateScore(String username, String debt, OnUpdateDataListener listener) {
+        mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
+                .document(username)
+                .get()
+                .addOnSuccessListener(document -> {
+                    Map<String, Object> data = document.getData();
+                    if (data != null) {
+                        String lastScore = (String) data.get(Configuration.SCORE_KEY);
+                        if (lastScore != null) {
+                            String newScore = Double.toString(Double.parseDouble(lastScore) + Double.parseDouble(debt));
+                            setNewScore(username, newScore, listener);
+                        } else {
+                            listener.onFailure(ErrorsConfiguration.ERROR_UPDATE_SCORE + username);
+                        }
+                    } else {
+                        listener.onFailure(ErrorsConfiguration.ERROR_UPDATE_SCORE + username);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_UPDATE_SCORE + username);
+                });
+    }
+
+    private void setNewScore(String username, String score, OnUpdateDataListener listener) {
+        mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
+                .document(username)
+                .update(Configuration.SCORE_FIELD_NAME, score)
+                .addOnSuccessListener(aVoid ->
+                        readinessCheck(listener))
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_SET_NEW_SCORE + username);
+                });
+
     }
 
     private void uploadDebt(String toWhom, String fromWhom, HistoryItem data, OnUpdateDataListener listener) {

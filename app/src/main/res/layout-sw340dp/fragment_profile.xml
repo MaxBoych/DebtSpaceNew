@@ -42,8 +42,8 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_image"
-            android:layout_width="96dp"
-            android:layout_height="96dp"/>
+            android:layout_width="128dp"
+            android:layout_height="128dp"/>
 
         <LinearLayout
             android:layout_marginStart="8dp"
@@ -65,17 +65,17 @@
 
                 <TextView
                     android:id="@+id/profile_total_debt"
-                    android:layout_width="80dp"
+                    android:layout_width="96dp"
                     android:layout_height="match_parent"
                     android:gravity="start|center"
                     android:text="@string/total_debt"
-                    android:textSize="16sp"
-                    android:padding="4dp"/>
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/profile_total_debt_value"
                     style="@style/debt"
-                    android:layout_marginStart="80dp"/>
+                    android:layout_marginStart="80dp"
+                    android:layout_centerVertical="true"/>
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

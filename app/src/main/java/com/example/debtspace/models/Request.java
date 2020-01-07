@@ -8,6 +8,7 @@ public class Request extends User implements Comparable<Request> {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.imageUri = user.getImageUri();
+        this.username = user.getUsername();
         this.date = date;
     }
 

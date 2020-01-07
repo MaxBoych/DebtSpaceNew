@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="@string/network_lost_message"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
     <Button
         android:id="@+id/network_lost_ok"

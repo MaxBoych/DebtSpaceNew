@@ -3,6 +3,8 @@ package com.example.debtspace.main.fragments;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +18,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -140,9 +143,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     private void setUserData(User user) {
         if (mDoesDataSave) {
             mScore.setText(user.getScore());
+            GradientDrawable debtBackground = (GradientDrawable) mScore.getBackground();
+            double debtValue = Double.parseDouble(user.getScore());
+            if (debtValue < 0) {
+                debtBackground.setColor(Color.RED);
+            } else if (debtValue == 0) {
+                debtBackground.setColor(Color.GRAY);
+            } else {
+                debtBackground.setColor(Color.GREEN);
+            }
         } else {
             mName.setText(getString(R.string.user_full_name, user.getFirstName(), user.getLastName()));
             mScore.setText(user.getScore());
+            GradientDrawable debtBackground = (GradientDrawable) mScore.getBackground();
+            double debtValue = Double.parseDouble(user.getScore());
+            if (debtValue < 0) {
+                debtBackground.setColor(Color.RED);
+            } else if (debtValue == 0) {
+                debtBackground.setColor(Color.GRAY);
+            } else {
+                debtBackground.setColor(Color.GREEN);
+            }
 
             SharedPreferences.Editor editor = mPreferences.edit();
             editor.putString(Configuration.NAME_KEY, mName.getText().toString());

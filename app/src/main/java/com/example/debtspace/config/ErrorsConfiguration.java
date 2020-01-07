@@ -52,6 +52,8 @@ public class ErrorsConfiguration {
     public final static String DEBUG_CHANGE_IMAGE = "Image not yet added";
 
     public final static String ERROR_DO_STRIKE = "Cannot do strike";
+    public final static String ERROR_UPDATE_SCORE = "Cannot update score. Username: ";
+    public final static String ERROR_SET_NEW_SCORE = "Cannot set new score. Username: ";
 
     public final static String ERROR_DOWNLOAD_USERS_FOR_SEARCH = "Cannot download users for search";
     public final static String ERROR_CHECK_FRIENDS_IN_SEARCH = "Cannot check friends in user search";
