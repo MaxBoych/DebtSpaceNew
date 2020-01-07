@@ -147,8 +147,10 @@ public class DebtListViewModel extends ViewModel {
     private boolean addItemToTop(Debt debt) {
         if (mList != null) {
             for (Debt d : mList) {
-                if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
-                    return false;
+                if (!(d instanceof GroupDebt)) {
+                    if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
+                        return false;
+                    }
                 }
             }
             mList.add(0, debt);

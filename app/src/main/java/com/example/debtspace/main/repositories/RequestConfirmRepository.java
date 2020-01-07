@@ -38,7 +38,7 @@ public class RequestConfirmRepository {
 
     public void acceptFriendRequest(String username, OnUpdateDataListener listener) {
         @SuppressLint("SimpleDateFormat")
-        String date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(Calendar.getInstance().getTime());
+        String date = new SimpleDateFormat(Configuration.PATTERN_DATE).format(Calendar.getInstance().getTime());
         Map<String, Object> data = new HashMap<>();
         data.put(Configuration.DATE_KEY, date);
         data.put(Configuration.DEBT_KEY, Configuration.DEFAULT_DEBT_VALUE);
