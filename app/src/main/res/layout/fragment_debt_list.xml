@@ -10,7 +10,7 @@
         android:background="@color/whiteBlue">
 
         <android.widget.Toolbar
-            android:id="@+id/toolbar1"
+            android:id="@+id/notification_toolbar"
             style="@style/Toolbar"
             android:elevation="4dp"
             app:menu="@menu/toolbar_menu">
@@ -37,7 +37,7 @@
             android:id="@+id/debt_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/toolbar1"
+            android:layout_below="@id/notification_toolbar"
             android:layout_marginBottom="56dp"
             android:clipToPadding="false"
             android:paddingBottom="72dp">
@@ -45,6 +45,14 @@
 
         <ProgressBar
             android:id="@+id/debt_list_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:indeterminate="true" />
+
+        <ProgressBar
+            android:id="@+id/debt_list_event_progress_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

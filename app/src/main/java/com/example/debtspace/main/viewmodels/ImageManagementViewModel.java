@@ -9,7 +9,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.debtspace.config.Configuration;
-import com.example.debtspace.main.interfaces.OnDownloadDataListener;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.main.repositories.ImageManagementRepository;
 
@@ -18,64 +18,64 @@ import java.util.List;
 public class ImageManagementViewModel extends ViewModel {
 
     private Uri mImageUri;
-    private MutableLiveData<Configuration.ImageStageState> mState;
+    private MutableLiveData<Configuration.ImageStageState> mLoadState;
     private MutableLiveData<String> mErrorMessage;
 
     public ImageManagementViewModel() {
         mImageUri = null;
-        mState = new MutableLiveData<>();
+        mLoadState = new MutableLiveData<>();
         mErrorMessage = new MutableLiveData<>();
-        mState.setValue(Configuration.ImageStageState.NONE);
+        mLoadState.setValue(Configuration.ImageStageState.NONE);
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
     public void uploadImage(Uri uri, ProgressBar progressBar, String id, Context context) {
-        mState.setValue(Configuration.ImageStageState.PROGRESS);
+        mLoadState.setValue(Configuration.ImageStageState.PROGRESS);
         new ImageManagementRepository(id, context).uploadImage(uri, progressBar, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 setImageUri(null);
-                mState.setValue(Configuration.ImageStageState.UPLOAD_SUCCESS);
+                mLoadState.setValue(Configuration.ImageStageState.UPLOAD_SUCCESS);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.ImageStageState.FAIL);
+                mLoadState.setValue(Configuration.ImageStageState.FAIL);
             }
         });
     }
 
     public void downloadImage(String id, Context context) {
-        mState.setValue(Configuration.ImageStageState.PROGRESS);
-        new ImageManagementRepository(id, context).downloadImage(new OnDownloadDataListener<Uri>() {
+        mLoadState.setValue(Configuration.ImageStageState.PROGRESS);
+        new ImageManagementRepository(id, context).downloadImage(new OnDownloadDataListListener<Uri>() {
             @Override
             public void onDownloadSuccessful(List<Uri> list) {
                 setImageUri(list.get(0));
-                mState.setValue(Configuration.ImageStageState.DOWNLOAD_SUCCESS);
+                mLoadState.setValue(Configuration.ImageStageState.DOWNLOAD_SUCCESS);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.ImageStageState.FAIL);
+                mLoadState.setValue(Configuration.ImageStageState.FAIL);
             }
         });
     }
 
     public void deleteImage(String id, Context context) {
-        mState.setValue(Configuration.ImageStageState.PROGRESS);
+        mLoadState.setValue(Configuration.ImageStageState.PROGRESS);
         new ImageManagementRepository(id, context).deleteImage(new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 setImageUri(null);
-                mState.setValue(Configuration.ImageStageState.DELETE_SUCCESS);
+                mLoadState.setValue(Configuration.ImageStageState.DELETE_SUCCESS);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.ImageStageState.FAIL);
+                mLoadState.setValue(Configuration.ImageStageState.FAIL);
             }
         });
     }
@@ -90,8 +90,8 @@ public class ImageManagementViewModel extends ViewModel {
         return mImageUri;
     }
 
-    public MutableLiveData<Configuration.ImageStageState> getState() {
-        return mState;
+    public MutableLiveData<Configuration.ImageStageState> getLoadState() {
+        return mLoadState;
     }
 
     public LiveData<String> getErrorMessage() {

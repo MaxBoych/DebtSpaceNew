@@ -2,11 +2,13 @@ package com.example.debtspace.main.repositories;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.Configuration;
-import com.example.debtspace.main.interfaces.OnDownloadDataListener;
+import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.google.firebase.storage.StorageReference;
 
@@ -37,16 +39,15 @@ public class ImageManagementRepository {
                 .putFile(uri)
                 .addOnSuccessListener(taskSnapshot ->
                         listener.onUpdateSuccessful())
-                .addOnFailureListener(e ->
-                        listener.onFailure(e.getMessage()
-                        ))
-                .addOnProgressListener(taskSnapshot -> {
-                    double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot.getTotalByteCount());
-                    progressBar.setProgress((int) progress);
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_IMAGE);
                 });
     }
 
-    public void downloadImage(OnDownloadDataListener<Uri> listener) {
+    public void downloadImage(OnDownloadDataListListener<Uri> listener) {
         mStorage.child(mID)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
@@ -54,9 +55,12 @@ public class ImageManagementRepository {
                     list.add(uri);
                     listener.onDownloadSuccessful(list);
                 })
-                .addOnFailureListener(e ->
-                        listener.onFailure(e.getMessage())
-                );
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_IMAGE);
+                });
     }
 
     public void deleteImage(OnUpdateDataListener listener) {
@@ -64,8 +68,11 @@ public class ImageManagementRepository {
                 .delete()
                 .addOnSuccessListener(aVoid ->
                         listener.onUpdateSuccessful())
-                .addOnFailureListener(e ->
-                        listener.onFailure(e.getMessage())
-                );
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfiguration.ERROR_DELETE_IMAGE);
+                });
     }
 }

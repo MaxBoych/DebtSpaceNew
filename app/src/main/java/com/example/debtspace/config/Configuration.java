@@ -21,6 +21,15 @@ public class Configuration {
         NONE
     }
 
+    public enum EventStageState {
+        ADDED,
+        MODIFIED,
+        REMOVED,
+        PROGRESS,
+        FAIL,
+        NONE
+    }
+
     public enum ProfileLoadStageState {
         SUCCESS_LOAD_DATA,
         SUCCESS_LOAD_IMAGE,
@@ -43,6 +52,8 @@ public class Configuration {
         LOST
     }
 
+    public final static String APPLICATION_LOG_TAG = "#DS";
+
     public final static String USERS_COLLECTION_NAME = "users";
     public final static String DEBTS_COLLECTION_NAME = "debts";
     public final static String FRIENDS_COLLECTION_NAME = "friends";
@@ -55,7 +66,8 @@ public class Configuration {
     public final static String USERNAME_FIELD_NAME = "username";
 
     public final static String DEFAULT_DEBT_VALUE = "0";
-    public final static String DEFAULT_IMAGE_VALUE = "default.jpg";
+    public final static String STRING_DEFAULT = "default";
+    public final static String DEFAULT_IMAGE_VALUE = STRING_DEFAULT + ".jpg";
     public final static String DEFAULT_ERROR_VALUE = "";
     public final static int MINIMUM_GROUP_MEMBERS = 2;
 
@@ -81,11 +93,19 @@ public class Configuration {
     public final static String INTENT_IMAGE_TITLE = "Select image";
     public final static int PICK_IMAGE_FROM_GALLERY = 2;
 
+    public final static String TITLE_LANGUAGE = "Choose language";
     public final static String ENGLISH_LANGUAGE = "English";
+    public final static String ENGLISH_LANGUAGE_ABBREVIATION = "en";
     public final static String RUSSIAN_LANGUAGE = "Русский";
+    public final static String RUSSIAN_LANGUAGE_ABBREVIATION = "ru";
     public final static String GERMAN_LANGUAGE = "Deutsch";
+    public final static String GERMAN_LANGUAGE_ABBREVIATION = "de";
     public final static String FRENCH_LANGUAGE = "Français";
+    public final static String FRENCH_LANGUAGE_ABBREVIATION = "fr";
     public final static String SPAIN_LANGUAGE = "Espanol";
+    public final static String SPAIN_LANGUAGE_ABBREVIATION = "es";
+
+    public final static String PATTERN_DATE = "yyyy/MM/dd HH:mm:ss";
 }
 
 

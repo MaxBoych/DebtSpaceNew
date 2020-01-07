@@ -1,18 +1,16 @@
 package com.example.debtspace.auth.viewmodels;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.debtspace.auth.interfaces.OnAuthProgressListener;
-import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.auth.repositories.AuthRepository;
 import com.example.debtspace.config.Configuration;
+import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.models.User;
-import com.example.debtspace.utilities.StringUtilities;
 import com.example.debtspace.utilities.FirebaseUtilities;
+import com.example.debtspace.utilities.StringUtilities;
 
 public class AuthViewModel extends ViewModel {
 
@@ -22,51 +20,53 @@ public class AuthViewModel extends ViewModel {
 
     public AuthViewModel() {
         mSignInState = new MutableLiveData<>();
-        mSignUpState = new MutableLiveData<>();
-        mErrorMessage = new MutableLiveData<>();
         mSignInState.setValue(Configuration.AuthStageState.NONE);
+        mSignUpState = new MutableLiveData<>();
         mSignUpState.setValue(Configuration.AuthStageState.NONE);
+        mErrorMessage = new MutableLiveData<>();
         mErrorMessage.setValue("");
     }
 
     public void signIn(String email, String password) {
-
-        mSignInState.postValue(Configuration.AuthStageState.PROGRESS);
-
+        mSignInState.setValue(Configuration.AuthStageState.PROGRESS);
         if (StringUtilities.isNotValidEmail(email)) {
-            mSignInState.postValue(Configuration.AuthStageState.ERROR_EMAIL);
-
+            mSignInState.setValue(Configuration.AuthStageState.ERROR_EMAIL);
         } else {
-
             new AuthRepository().signIn(email, password, new OnAuthProgressListener() {
                 @Override
                 public void onSuccessful() {
-                    mSignInState.postValue(Configuration.AuthStageState.SUCCESS);
+                    updateSignInStateToSuccess();
                 }
 
                 @Override
                 public void onFailure(String errorMessage) {
-                    mErrorMessage.postValue(errorMessage);
-                    mSignInState.postValue(Configuration.AuthStageState.FAIL);
+                    updateErrorForSignIn(errorMessage);
                 }
             });
         }
     }
 
+    private void updateSignInStateToSuccess() {
+        mSignUpState.setValue(Configuration.AuthStageState.SUCCESS);
+    }
+
+    private void updateErrorForSignIn(String errorMessage) {
+        mErrorMessage.setValue(errorMessage);
+        mSignInState.setValue(Configuration.AuthStageState.FAIL);
+    }
+
     public void signUp(String firstName, String lastName,
                        String username, String email, String password) {
-
-        mSignUpState.postValue(Configuration.AuthStageState.PROGRESS);
-
-        if (StringUtilities.isEmpty(username)) {
-            mSignUpState.postValue(Configuration.AuthStageState.ERROR_USERNAME);
+        mSignUpState.setValue(Configuration.AuthStageState.PROGRESS);
+        if (StringUtilities.isEmpty(username) || username.equals(Configuration.STRING_DEFAULT)) {
+            updateSignUpStateToErrorUsername();
             return;
         }
 
         FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
             @Override
             public void onSuccessful(User user) {
-                mSignUpState.postValue(Configuration.AuthStageState.ERROR_USERNAME);
+                updateSignUpStateToErrorUsername();
             }
 
             @Override
@@ -76,25 +76,33 @@ public class AuthViewModel extends ViewModel {
 
             @Override
             public void onFailure(String errorMessage) {
-                mErrorMessage.postValue(errorMessage);
-                mSignUpState.postValue(Configuration.AuthStageState.FAIL);
+                updateErrorForSignUp(errorMessage);
             }
         });
+    }
+
+    private void updateErrorForSignUp(String errorMessage) {
+        mErrorMessage.setValue(errorMessage);
+        mSignUpState.setValue(Configuration.AuthStageState.FAIL);
+    }
+
+    private void updateSignUpStateToErrorUsername() {
+        mSignUpState.setValue(Configuration.AuthStageState.ERROR_USERNAME);
     }
 
     private void signUpContinue(String firstName, String lastName,
                                 String username, String email, String password) {
         if (StringUtilities.isEmpty(firstName)) {
-            mSignUpState.postValue(Configuration.AuthStageState.ERROR_FIRST_NAME);
+            mSignUpState.setValue(Configuration.AuthStageState.ERROR_FIRST_NAME);
 
         } else if (StringUtilities.isEmpty(lastName)) {
-            mSignUpState.postValue(Configuration.AuthStageState.ERROR_LAST_NAME);
+            mSignUpState.setValue(Configuration.AuthStageState.ERROR_LAST_NAME);
 
         } else if (StringUtilities.isNotValidEmail(email)) {
-            mSignUpState.postValue(Configuration.AuthStageState.ERROR_EMAIL);
+            mSignUpState.setValue(Configuration.AuthStageState.ERROR_EMAIL);
 
         } else if (!StringUtilities.isValidPassword(password)) {
-            mSignUpState.postValue(Configuration.AuthStageState.ERROR_PASSWORD);
+            mSignUpState.setValue(Configuration.AuthStageState.ERROR_PASSWORD);
 
         } else {
 
@@ -103,14 +111,12 @@ public class AuthViewModel extends ViewModel {
 
                         @Override
                         public void onSuccessful() {
-                            Log.d("#DS RESULT", "SUCCESSFUL");
-                            mSignUpState.postValue(Configuration.AuthStageState.SUCCESS);
+                            mSignUpState.setValue(Configuration.AuthStageState.SUCCESS);
                         }
 
                         @Override
                         public void onFailure(String errorMessage) {
-                            mErrorMessage.postValue(errorMessage);
-                            mSignUpState.postValue(Configuration.AuthStageState.FAIL);
+                            updateErrorForSignUp(errorMessage);
                         }
                     });
         }

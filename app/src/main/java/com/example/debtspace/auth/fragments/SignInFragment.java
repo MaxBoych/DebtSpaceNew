@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,7 +63,6 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
         mFromSignInToSignUpButton = view.findViewById(R.id.from_sign_in_to_sign_up);
 
         mProgressBar = view.findViewById(R.id.sign_in_progress_bar);
-
         mSignInError = view.findViewById(R.id.sign_in_error);
 
         observeSignIn();
@@ -81,7 +79,6 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
             InputMethodManager imm = (InputMethodManager) Objects.requireNonNull(getActivity()).getSystemService(Context.INPUT_METHOD_SERVICE);
             Objects.requireNonNull(imm).hideSoftInputFromWindow(v.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
-            //Objects.requireNonNull(getActivity()).getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
             String email = mEmail.getText().toString();
             String password = mPassword.getText().toString();
 
@@ -92,8 +89,8 @@ public class SignInFragment extends Fragment implements View.OnClickListener {
     }
 
     private void observeSignIn() {
-        mAuthViewModel.getSignInState().observe(this, authStageState -> {
-            switch (authStageState) {
+        mAuthViewModel.getSignInState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
                     editTextSetNull();
                     buttonsSetEnabled(false);

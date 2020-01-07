@@ -39,7 +39,7 @@ public class StrikeViewModel extends ViewModel {
         });
     }
 
-    public MutableLiveData<Configuration.LoadStageState> getState() {
+    public MutableLiveData<Configuration.LoadStageState> getLoadState() {
         return mState;
     }
 

@@ -16,6 +16,7 @@ import com.example.debtspace.R;
 import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GroupDebtFoundListAdapter extends RecyclerView.Adapter<GroupDebtFoundListAdapter.GroupDebtFoundListViewHolder> {
@@ -26,7 +27,9 @@ public class GroupDebtFoundListAdapter extends RecyclerView.Adapter<GroupDebtFou
     private OnListItemClickListener mOnListItemClickListener;
 
     public GroupDebtFoundListAdapter(List<User> list, Context context) {
-        mList = list;
+        if (list != null) {
+            mList = new ArrayList<>(list);
+        }
         mContext = context;
     }
 
@@ -84,5 +87,10 @@ public class GroupDebtFoundListAdapter extends RecyclerView.Adapter<GroupDebtFou
                 }
             });
         }
+    }
+
+    public void updateList(List<User> list) {
+        mList = new ArrayList<>(list);
+        this.notifyDataSetChanged();
     }
 }

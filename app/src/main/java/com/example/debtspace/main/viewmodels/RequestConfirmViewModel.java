@@ -12,50 +12,50 @@ import com.example.debtspace.main.repositories.RequestConfirmRepository;
 
 public class RequestConfirmViewModel extends ViewModel {
 
-    private MutableLiveData<Configuration.LoadStageState> mState;
+    private MutableLiveData<Configuration.LoadStageState> mLoadState;
     private MutableLiveData<String> mErrorMessage;
 
     public RequestConfirmViewModel() {
-        mState = new MutableLiveData<>();
+        mLoadState = new MutableLiveData<>();
         mErrorMessage = new MutableLiveData<>();
-        mState.setValue(Configuration.LoadStageState.NONE);
+        mLoadState.setValue(Configuration.LoadStageState.NONE);
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
     }
 
     public void acceptFriendRequest(String username, Context context) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
         new RequestConfirmRepository(context).acceptFriendRequest(username, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
-                mState.setValue(Configuration.LoadStageState.SUCCESS);
+                mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.LoadStageState.FAIL);
+                mLoadState.setValue(Configuration.LoadStageState.FAIL);
             }
         });
     }
 
     public void rejectFriendRequest(String username, Context context) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
         new RequestConfirmRepository(context).rejectFriendRequest(username, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
-                mState.setValue(Configuration.LoadStageState.SUCCESS);
+                mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.LoadStageState.FAIL);
+                mLoadState.setValue(Configuration.LoadStageState.FAIL);
             }
         });
     }
 
-    public MutableLiveData<Configuration.LoadStageState> getState() {
-        return mState;
+    public MutableLiveData<Configuration.LoadStageState> getLoadState() {
+        return mLoadState;
     }
 
     public LiveData<String> getErrorMessage() {

@@ -12,11 +12,12 @@ public class HistoryItem implements Comparable<HistoryItem> {
     private String date;
     private String comment;
 
-    public HistoryItem(Map<String, String> map) {
-        debt = map.get(Configuration.DEBT_KEY);
-        name = map.get(Configuration.NAME_KEY);
-        comment = map.get(Configuration.COMMENT_KEY);
-        date = map.get(Configuration.DATE_KEY);
+    public HistoryItem(Map<String, Object> map, String username) {
+        debt = (String) map.get(Configuration.DEBT_KEY);
+        name = (String) map.get(Configuration.NAME_KEY);
+        comment = (String) map.get(Configuration.COMMENT_KEY);
+        date = (String) map.get(Configuration.DATE_KEY);
+        this.username = username;
     }
 
     public HistoryItem(String debt, String comment, String date) {

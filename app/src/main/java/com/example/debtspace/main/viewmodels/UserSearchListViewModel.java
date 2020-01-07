@@ -7,25 +7,22 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.debtspace.config.Configuration;
-import com.example.debtspace.main.interfaces.OnGetFirestoreDataListener;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.repositories.UserSearchListRepository;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.StringUtilities;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 public class UserSearchListViewModel extends ViewModel {
 
-    private MutableLiveData<List<User>> mList;
+    private List<User> mList;
     private MutableLiveData<Configuration.LoadStageState> mState;
     private MutableLiveData<String> mErrorMessage;
 
     public UserSearchListViewModel() {
-        mList = new MutableLiveData<>();
+        mList = new ArrayList<>();
         mState = new MutableLiveData<>();
         mErrorMessage = new MutableLiveData<>();
         mState.setValue(Configuration.LoadStageState.NONE);
@@ -37,23 +34,10 @@ public class UserSearchListViewModel extends ViewModel {
         if (!StringUtilities.isEmpty(string)) {
             mState.setValue(Configuration.LoadStageState.PROGRESS);
 
-            new UserSearchListRepository(context).getUsersBySubstring(string, new OnGetFirestoreDataListener() {
+            new UserSearchListRepository(context).getUsersBySubstring(string, new OnDownloadDataListListener<User>() {
                 @Override
-                public void onGetSuccessful(List<Map<String, Map<String, Object>>> data) {
-                    List<Map<String, String>> list = new ArrayList<>();
-                    for (Map<String, Map<String, Object>> mapObject : data) {
-                        for (Map.Entry<String, Map<String, Object>> map : mapObject.entrySet()) {
-                            Map<String, String> m = new HashMap<>();
-                            for (Map.Entry<String, Object> entry : map.getValue().entrySet()) {
-                                if (!entry.getKey().equals(Configuration.GROUPS_FIELD_NAME)) {
-                                    m.put(entry.getKey(), (String) entry.getValue());
-                                }
-                            }
-                            list.add(m);
-                        }
-                    }
-                    setUserSearchList(list);
-                    mState.setValue(Configuration.LoadStageState.SUCCESS);
+                public void onDownloadSuccessful(List<User> list) {
+                    updateList(list);
                 }
 
                 @Override
@@ -65,23 +49,20 @@ public class UserSearchListViewModel extends ViewModel {
         }
     }
 
-    private void setUserSearchList(List<Map<String, String>> users) {
-        List<User> list = new ArrayList<>();
-        for (Map<String, String> user : users) {
-            list.add(new User(user));
-        }
-        mList.setValue(list);
+    private void updateList(List<User> list) {
+        mList = new ArrayList<>(list);
+        mState.setValue(Configuration.LoadStageState.SUCCESS);
     }
 
     public User getUser(int position) {
-        return Objects.requireNonNull(mList.getValue()).get(position);
+        return mList.get(position);
     }
 
-    public LiveData<List<User>> getUserSearchList() {
+    public List<User> getList() {
         return mList;
     }
 
-    public LiveData<Configuration.LoadStageState> getUserSearchState() {
+    public LiveData<Configuration.LoadStageState> getLoadState() {
         return mState;
     }
 

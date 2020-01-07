@@ -8,7 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.debtspace.config.Configuration;
-import com.example.debtspace.main.interfaces.OnDownloadDataListener;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.main.repositories.ProfileRepository;
 import com.example.debtspace.models.User;
@@ -22,6 +22,8 @@ public class ProfileViewModel extends ViewModel {
     private String mErrorMessage;
     private Uri mUri;
 
+    private Context mContext;
+
     public ProfileViewModel() {
         mUser = new User();
 
@@ -30,9 +32,13 @@ public class ProfileViewModel extends ViewModel {
         mErrorMessage = Configuration.DEFAULT_ERROR_VALUE;
     }
 
-    public void downloadUserData(Context context) {
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
+    public void downloadUserData() {
         mState.setValue(Configuration.ProfileLoadStageState.PROGRESS);
-        new ProfileRepository(context).downloadUserData(new OnFindUserListener() {
+        new ProfileRepository(mContext).downloadUserData(new OnFindUserListener() {
 
             @Override
             public void onSuccessful(User user) {
@@ -51,9 +57,9 @@ public class ProfileViewModel extends ViewModel {
         });
     }
 
-    public void downloadUserImage(Context context) {
+    public void downloadUserImage() {
         mState.setValue(Configuration.ProfileLoadStageState.PROGRESS);
-        new ProfileRepository(context).downloadImage(new OnDownloadDataListener<Uri>() {
+        new ProfileRepository(mContext).downloadImage(new OnDownloadDataListListener<Uri>() {
             @Override
             public void onDownloadSuccessful(List<Uri> list) {
                 setUri(list.get(0));

@@ -3,9 +3,7 @@ package com.example.debtspace.main.fragments;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,13 +13,13 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
 import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.ErrorsConfiguration;
 import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.viewmodels.ImageManagementViewModel;
 import com.google.android.material.navigation.NavigationView;
@@ -91,7 +89,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
         }
 
         initViewModel();
-        observeState();
+        observeLoadState();
 
         mUploadImage.setOnClickListener(this);
 
@@ -102,10 +100,8 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
     public void onClick(View v) {
         if (v.getId() == R.id.upload_image_button) {
             if (mImageID != null) {
-                Log.d("#DS", "ID != null");
                 uploadImage();
             } else {
-                Log.d("#DS", "ID == null");
                 mOnImageSharingListener.onUploaded(mImageUri);
                 dismiss();
             }
@@ -116,9 +112,9 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
         mViewModel = ViewModelProviders.of(this).get(ImageManagementViewModel.class);
     }
 
-    private void observeState() {
-        mViewModel.getState().observe(this, imageStageState -> {
-            switch (imageStageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case DOWNLOAD_SUCCESS:
                     setEnabled(true);
                     setEnabledUpload(false);
@@ -180,7 +176,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
             mViewModel.downloadImage(mImageID, getContext());
         } else {
             Toast.makeText(getContext(),
-                    "Image not yet added",
+                    ErrorsConfiguration.DEBUG_CHANGE_IMAGE,
                     Toast.LENGTH_LONG)
                     .show();
         }
@@ -191,7 +187,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
             mViewModel.deleteImage(mImageID, getContext());
         } else {
             Toast.makeText(getContext(),
-                    "Image not yet added",
+                    ErrorsConfiguration.DEBUG_CHANGE_IMAGE,
                     Toast.LENGTH_LONG)
                     .show();
         }

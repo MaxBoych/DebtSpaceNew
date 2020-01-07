@@ -3,21 +3,20 @@ package com.example.debtspace.main.adapters;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
+import com.example.debtspace.config.Configuration;
 import com.example.debtspace.models.HistoryItem;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,8 +26,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
 
     public HistoryAdapter(List<HistoryItem> store, Context context) {
         if (store != null) {
-            Collections.sort(store);
-            mList = store;
+            //Collections.sort(store);
+            mList = new ArrayList<>(store);
         }
         mContext = context;
     }
@@ -66,7 +65,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         holder.debt.setText(item.getDebt());
         holder.comment.setText(item.getComment());
         holder.date.setText(item.getDate());
-        Log.i("testing", String.valueOf(holder.itemView.getId()));
+        //Log.i("testing", String.valueOf(holder.itemView.getId()));
         //RelativeLayout.LayoutParams Params = (RelativeLayout.LayoutParams) holder.itemView.getLayoutParams();
         //Params.bottomMargin = 40;
 
@@ -77,7 +76,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
             holder.debt.setText(val);
             debtBackground.setColor(ContextCompat.getColor(mContext, R.color.red));
         } else if (debtValue == 0) {
-            holder.debt.setText("0");
+            holder.debt.setText(Configuration.DEFAULT_DEBT_VALUE);
             debtBackground.setColor(Color.GRAY);
         } else {
             String val = Double.toString(-debtValue);
@@ -89,5 +88,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
     @Override
     public int getItemCount() {
         return mList == null ? 0 : mList.size();
+    }
+
+    public void addItemToTop(HistoryItem item) {
+        mList.add(0, item);
+        this.notifyItemInserted(0);
+    }
+
+    public void updateList(List<HistoryItem> list) {
+        mList = new ArrayList<>(list);
+        this.notifyDataSetChanged();
     }
 }

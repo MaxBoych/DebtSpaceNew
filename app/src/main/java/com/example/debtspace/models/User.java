@@ -10,11 +10,11 @@ import java.util.Map;
 
 public class User {
 
-    private String firstName;
-    private String lastName;
-    private String username;
+    String firstName;
+    String lastName;
+    String username;
     private String score;
-    private Uri imageUri;
+    Uri imageUri;
     private List<String> groups;
 
     public User() {}

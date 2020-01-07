@@ -14,19 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
 import com.example.debtspace.main.interfaces.OnListItemClickListener;
-import com.example.debtspace.models.User;
+import com.example.debtspace.models.Request;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.FriendRequestsListViewHolder> {
 
-    private List<User> mList;
+    private List<Request> mList;
     private Context mContext;
 
     private OnListItemClickListener mOnListItemClickListener;
 
-    public RequestListAdapter(List<User> list, Context context) {
-        mList = list;
+    public RequestListAdapter(List<Request> list, Context context) {
+        if (list != null) {
+            mList = new ArrayList<>(list);
+        }
         mContext = context;
     }
 
@@ -40,23 +43,24 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
 
         View friend_view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.item_user_list, parent, false);
+                .inflate(R.layout.item_request_list, parent, false);
         return new FriendRequestsListViewHolder(friend_view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FriendRequestsListViewHolder holder, int position) {
-        User user = mList.get(position);
+        Request request = mList.get(position);
 
-        Uri uri = user.getImageUri();
+        Uri uri = request.getImageUri();
         Glide.with(mContext)
                 .load(uri)
                 .centerCrop()
                 .into(holder.image);
 
-        String fullUserName = user.getFirstName() + " " + user.getLastName();
+        String fullUserName = request.getFirstName() + " " + request.getLastName();
         holder.name.setText(fullUserName);
-        holder.username.setText(user.getUsername());
+        holder.username.setText(request.getUsername());
+        holder.date.setText(request.getDate());
     }
 
     @Override
@@ -69,13 +73,15 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         private final ImageView image;
         private final TextView name;
         private final TextView username;
+        private final TextView date;
 
         FriendRequestsListViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            image = itemView.findViewById(R.id.user_photo);
-            name = itemView.findViewById(R.id.user_name);
-            username = itemView.findViewById(R.id.user_username);
+            image = itemView.findViewById(R.id.request_image);
+            name = itemView.findViewById(R.id.request_name);
+            username = itemView.findViewById(R.id.request_username);
+            date = itemView.findViewById(R.id.request_date);
 
             itemView.setOnClickListener(v -> {
                 if (mOnListItemClickListener != null) {
@@ -86,5 +92,15 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
                 }
             });
         }
+    }
+
+    public void updateList(List<Request> list) {
+        mList = new ArrayList<>(list);
+        this.notifyDataSetChanged();
+    }
+
+    public void addItemToTop(Request request) {
+        mList.add(0, request);
+        this.notifyItemInserted(0);
     }
 }

@@ -8,6 +8,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.main.repositories.GroupDebtRepository;
@@ -17,51 +19,52 @@ import com.example.debtspace.utilities.StringUtilities;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 public class GroupDebtViewModel extends ViewModel {
 
     private Uri mUriImage;
-    private MutableLiveData<List<User>> mFoundList;
+    private List<User> mFoundList;
     private List<User> mFriendList;
-    private MutableLiveData<List<User>> mAddedList;
+    private List<User> mAddedList;
 
-    private MutableLiveData<Configuration.LoadStageState> mState;
+    private Context mContext;
+
+    private MutableLiveData<Configuration.LoadStageState> mLoadState;
+    private MutableLiveData<String> mErrorMessage;
     private Boolean mIsSubmit;
 
-    private MutableLiveData<String> mErrorMessage;
-
     public GroupDebtViewModel() {
-        mFoundList = new MutableLiveData<>();
-        mAddedList = new MutableLiveData<>();
-        mState = new MutableLiveData<>();
-        mErrorMessage = new MutableLiveData<>();
-
-        mFoundList.setValue(new ArrayList<>());
-        mAddedList.setValue(new ArrayList<>());
+        mFoundList = new ArrayList<>();
+        mAddedList = new ArrayList<>();
         mFriendList = new ArrayList<>();
-        mState.setValue(Configuration.LoadStageState.NONE);
-        mIsSubmit = false;
+        mLoadState = new MutableLiveData<>();
+        mLoadState.setValue(Configuration.LoadStageState.NONE);
+        mErrorMessage = new MutableLiveData<>();
         mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
+        mIsSubmit = false;
+    }
+
+    public void setContext(Context context) {
+        mContext = context;
     }
 
     public void addToGroup(int position) {
-        List<User> list = new ArrayList<>(Objects.requireNonNull(mFoundList.getValue()));
+        List<User> list = new ArrayList<>(mFoundList);
         User friend = list.get(position);
         mFriendList.remove(friend);
         list.remove(position);
         setFoundList(list);
 
-        list = mAddedList.getValue();
-        Objects.requireNonNull(list).add(friend);
-        setAddedList(list);
+        list = new ArrayList<>(mAddedList);
+        list.add(friend);
+        updateAddedList(list);
     }
 
     public void removeFromGroup(int position) {
-        List<User> list = new ArrayList<>(Objects.requireNonNull(mAddedList.getValue()));
+        List<User> list = new ArrayList<>(mAddedList);
         User friend = list.get(position);
         list.remove(position);
-        setAddedList(list);
+        updateAddedList(list);
 
         Iterator<User> iterator = mFriendList.iterator();
         while (iterator.hasNext()) {
@@ -75,7 +78,7 @@ public class GroupDebtViewModel extends ViewModel {
     }
 
     public void textChangeListen(CharSequence s) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
 
         String string = s.toString().toLowerCase();
         if (StringUtilities.isEmpty(string)) {
@@ -86,13 +89,12 @@ public class GroupDebtViewModel extends ViewModel {
     }
 
     private void setFoundList(List<User> list) {
-        List<User> added = mAddedList.getValue();
-        if (!Objects.requireNonNull(added).isEmpty()) {
+        if (!mAddedList.isEmpty()) {
 
             Iterator<User> iterator = list.iterator();
             while (iterator.hasNext()) {
                 User user = iterator.next();
-                for (User addUser : added) {
+                for (User addUser : mAddedList) {
                     if (user.getUsername().equals(addUser.getUsername())) {
                         iterator.remove();
                     }
@@ -100,13 +102,13 @@ public class GroupDebtViewModel extends ViewModel {
             }
         }
 
-        mFoundList.setValue(list);
-        mState.setValue(Configuration.LoadStageState.SUCCESS);
+        mFoundList = new ArrayList<>(list);
+        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
     }
 
-    public void downloadFriendList(Context context) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new GroupDebtRepository(context).downloadFoundListData(new OnDownloadDataListener<User>() {
+    public void downloadFriendList() {
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        new GroupDebtRepository(mContext).downloadFoundListData(new OnDownloadDataListListener<User>() {
             @Override
             public void onDownloadSuccessful(List<User> data) {
                 setFriendList(data);
@@ -114,36 +116,39 @@ public class GroupDebtViewModel extends ViewModel {
 
             @Override
             public void onFailure(String errorMessage) {
-                mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.LoadStageState.FAIL);
+                updateError(errorMessage);
             }
         });
     }
 
-    public void downloadAddedList(ArrayList<String> usernames, String groupID, Context context) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
-        new GroupDebtRepository(context).downloadListItems(usernames, new OnDownloadDataListener<User>() {
+    public void downloadAddedList(ArrayList<String> usernames, String groupID) {
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        new GroupDebtRepository(mContext).downloadListItems(usernames, new OnDownloadDataListListener<User>() {
             @Override
             public void onDownloadSuccessful(List<User> list) {
-                setAddedList(list);
-                downloadImage(groupID, context);
+                updateAddedList(list);
+                downloadImage(groupID);
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.LoadStageState.FAIL);
+                updateError(errorMessage);
             }
         });
     }
 
+    private void updateError(String errorMessage) {
+        mErrorMessage.setValue(errorMessage);
+        mLoadState.setValue(Configuration.LoadStageState.FAIL);
+    }
+
     private void setFriendList(List<User> list) {
-        mFriendList.addAll(list);
+        mFriendList = new ArrayList<>(list);
         setFoundList(list);
     }
 
-    private void setAddedList(List<User> list) {
-        mAddedList.setValue(list);
+    private void updateAddedList(List<User> list) {
+        mAddedList = new ArrayList<>(list);
     }
 
     private List<User> searchFriends(String string) {
@@ -157,87 +162,90 @@ public class GroupDebtViewModel extends ViewModel {
         return found;
     }
 
-    public void createGroup(String groupName, String debt, Uri uri,Context context) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
-        List<User> users = mAddedList.getValue();
-        if (Objects.requireNonNull(users).size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
+    public void createGroup(String groupName, String debt, Uri uri) {
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        List<User> users = new ArrayList<>(mAddedList);
+        if (users.size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
             List<String> members = new ArrayList<>();
             for (User user : users) {
                 members.add(user.getUsername());
             }
-            new GroupDebtRepository(context).insertGroupToDatabase(groupName, debt, members, uri, new OnUpdateDataListener() {
+            new GroupDebtRepository(mContext).uploadGroup(groupName, debt,
+                    members, uri, new OnUpdateDataListener() {
+
                 @Override
                 public void onUpdateSuccessful() {
-                    mIsSubmit = true;
-                    mState.setValue(Configuration.LoadStageState.SUCCESS);
+                    updateSubmitToTrue();
                 }
 
                 @Override
                 public void onFailure(String errorMessage) {
-                    mErrorMessage.setValue(errorMessage);
-                    mState.setValue(Configuration.LoadStageState.FAIL);
+                    updateError(errorMessage);
                 }
             });
         } else {
-            mErrorMessage.setValue("At least 3 members of the group are required (including you)");
-            mState.setValue(Configuration.LoadStageState.FAIL);
+            mErrorMessage.setValue(ErrorsConfiguration.ERROR_MINIMUM_MEMBERS);
+            mLoadState.setValue(Configuration.LoadStageState.FAIL);
         }
     }
 
-    public void updateGroup(String groupID, String groupName, String debt, Context context) {
-        mState.setValue(Configuration.LoadStageState.PROGRESS);
-        List<User> users = mAddedList.getValue();
-        if (Objects.requireNonNull(users).size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
+    private void updateSubmitToTrue() {
+        mIsSubmit = true;
+        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
+    }
+
+    public void updateGroup(String groupID, String groupName, String debt) {
+        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        List<User> users = new ArrayList<>(mAddedList);
+        if (users.size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
             List<String> members = new ArrayList<>();
             for (User user : users) {
                 members.add(user.getUsername());
             }
-            new GroupDebtRepository(context).updateGroupInDatabase(groupID, groupName, debt, members, new OnUpdateDataListener() {
+            new GroupDebtRepository(mContext).updateGroup(groupID, groupName,
+                    debt, members, new OnUpdateDataListener() {
+
                 @Override
                 public void onUpdateSuccessful() {
-                    mIsSubmit = true;
-                    mState.setValue(Configuration.LoadStageState.SUCCESS);
+                    updateSubmitToTrue();
                 }
 
                 @Override
                 public void onFailure(String errorMessage) {
-                    mErrorMessage.setValue(errorMessage);
-                    mState.setValue(Configuration.LoadStageState.FAIL);
+                    updateError(errorMessage);
                 }
             });
         } else {
-            mErrorMessage.setValue("At least 3 members of the group are required (including you)");
-            mState.setValue(Configuration.LoadStageState.FAIL);
+            mErrorMessage.setValue(ErrorsConfiguration.ERROR_MINIMUM_MEMBERS);
+            mLoadState.setValue(Configuration.LoadStageState.FAIL);
         }
     }
 
-    private void downloadImage(String groupID, Context context) {
-        new GroupDebtRepository(context).downloadGroupImage(groupID, new OnDownloadDataListener<Uri>() {
+    private void downloadImage(String groupID) {
+        new GroupDebtRepository(mContext).downloadGroupImage(groupID, new OnDownloadDataListener<Uri>() {
             @Override
-            public void onDownloadSuccessful(List<Uri> list) {
-                //mState.setValue(Configuration.LoadStageState.SUCCESS);
-                mUriImage = list.get(0);
-                downloadFriendList(context);
+            public void onDownloadSuccessful(Uri uri) {
+                mUriImage = uri;
+                downloadFriendList();
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                mErrorMessage.setValue(errorMessage);
-                mState.setValue(Configuration.LoadStageState.FAIL);
+                updateError(errorMessage);
             }
         });
     }
 
-    public LiveData<List<User>> getFoundList() {
+    public List<User> getFoundList() {
         return mFoundList;
     }
 
-    public LiveData<List<User>> getAddedList() {
+    public List<User> getAddedList() {
         return mAddedList;
     }
 
-    public LiveData<Configuration.LoadStageState> getGroupDebtState() {
-        return mState;
+    public LiveData<Configuration.LoadStageState> getLoadState() {
+        return mLoadState;
     }
 
     public Uri getUriImage() {

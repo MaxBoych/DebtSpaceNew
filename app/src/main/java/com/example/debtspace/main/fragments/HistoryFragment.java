@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -15,12 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.debtspace.R;
 import com.example.debtspace.main.adapters.HistoryAdapter;
 import com.example.debtspace.main.viewmodels.HistoryViewModel;
+import com.example.debtspace.models.HistoryItem;
 
 public class HistoryFragment extends Fragment {
+
     private RecyclerView mList;
     private HistoryAdapter mAdapter;
     private HistoryViewModel mViewModel;
-    private ProgressBar mProgress;
+    private ProgressBar mProgressBar;
+    private ProgressBar mEventProgressBar;
 
     @Nullable
     @Override
@@ -28,43 +32,68 @@ public class HistoryFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         mList = view.findViewById(R.id.history_list);
-        mProgress = view.findViewById(R.id.history_progress_bar);
+        mProgressBar = view.findViewById(R.id.history_progress_bar);
+        mEventProgressBar = view.findViewById(R.id.history_event_progress_bar);
 
         initViewModel();
-        observeHistory();
-        mViewModel.downloadHistoryList(getContext());
 
         return view;
     }
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
-
-        initHistory();
-
-        mViewModel.getDataList()
-                .observe(this, Items -> {
-                    initHistory();
-                    mAdapter.notifyDataSetChanged();
-                });
+        mViewModel.setContext(getContext());
+        initAdapter();
+        observeLoadState();
+        observeEventState();
+        mViewModel.downloadHistoryList();
     }
 
-    private void initHistory() {
-        mAdapter = new HistoryAdapter(mViewModel.getDataList().getValue(), getContext());
+    private void initAdapter() {
+        mAdapter = new HistoryAdapter(mViewModel.getList(), getContext());
         mList.setLayoutManager(new LinearLayoutManager(this.getContext()));
         mList.setAdapter(mAdapter);
     }
 
-    private void observeHistory() {
-        mViewModel.getListState().observe(this, userSearchStageState -> {
-            switch (userSearchStageState) {
+    private void observeLoadState() {
+        mViewModel.getLoadState().observe(this, state -> {
+            switch (state) {
                 case SUCCESS:
+                    mAdapter.updateList(mViewModel.getList());
+                    mProgressBar.setVisibility(View.GONE);
+                    mViewModel.addListChangeListener();
+                    break;
                 case FAIL:
                 case NONE:
-                    mProgress.setVisibility(View.GONE);
+                    mProgressBar.setVisibility(View.GONE);
                     break;
                 case PROGRESS:
-                    mProgress.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);
+                    break;
+            }
+        });
+    }
+
+    private void observeEventState() {
+        mViewModel.getEventState().observe(this, state -> {
+            switch (state) {
+                case ADDED:
+                    HistoryItem addedRequest = mViewModel.getAddedRequest();
+                    mAdapter.addItemToTop(addedRequest);
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case PROGRESS:
+                    mEventProgressBar.setVisibility(View.VISIBLE);
+                    break;
+                case NONE:
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case FAIL:
+                    mEventProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),
+                            mViewModel.getErrorMessage().getValue(),
+                            Toast.LENGTH_LONG)
+                            .show();
                     break;
             }
         });

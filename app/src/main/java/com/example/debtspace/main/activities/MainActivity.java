@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -54,7 +56,24 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
     }
 
     public void setLocale(String lang) {
-        Locale locale = new Locale(lang);
+        Locale myLocale = new Locale(lang);
+
+        Resources res = getResources();
+        Configuration conf = res.getConfiguration();
+        conf.locale = myLocale;
+
+        DisplayMetrics metrics = res.getDisplayMetrics();
+        res.updateConfiguration(conf, metrics);
+        Intent refresh = new Intent(this, MainActivity.class);
+        finish();
+        startActivity(refresh);
+
+
+
+
+
+
+        /*Locale locale = new Locale(lang);
         Locale.setDefault(locale);
 
         Configuration config = new Configuration();
@@ -64,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
         SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("lang", lang);
-        editor.apply();
+        editor.apply();*/
     }
 
     public void getLocale() {

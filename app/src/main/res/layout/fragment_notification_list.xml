@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <android.widget.Toolbar
-        android:id="@+id/toolbar1"
+        android:id="@+id/notification_toolbar"
         style="@style/Toolbar"
         android:elevation="4dp"
         app:menu="@menu/toolbar_menu">
@@ -23,14 +23,22 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/notification_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:layout_below="@id/notification_toolbar"/>
 
     <ProgressBar
         android:id="@+id/notification_list_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:indeterminate="true" />
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/notification_list_event_progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:indeterminate="true" />
+</RelativeLayout>

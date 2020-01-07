@@ -72,8 +72,6 @@ public class AuthActivity extends AppCompatActivity implements OnAuthStateChange
 
     @Override
     public void onMainScreen() {
-        Log.d("Sign in", "successful!");
-
         finish();
         startActivity(new Intent(this, MainActivity.class));
     }
