@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +26,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.activities.MainActivity;
 import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
@@ -94,7 +93,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.profile_image) {
-            mOnMainStateChangeListener.onImageManagementScreen(Configuration.NONE_ID, this);
+            mOnMainStateChangeListener.onImageManagementScreen(AppConfig.NONE_ID, this);
         } else if (v.getId() == R.id.button_sign_out) {
             mOnMainStateChangeListener.onAuthScreen();
         }
@@ -145,34 +144,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     @SuppressLint("SetTextI18n")
     private void setUserData(User user) {
         if (mDoesDataSave) {
-            mScore.setText(user.getScore());
-            GradientDrawable debtBackground = (GradientDrawable) mScore.getBackground();
-            double debtValue = Double.parseDouble(user.getScore());
-            if (debtValue < 0) {
-                debtBackground.setColor(Color.RED);
-            } else if (debtValue == 0) {
-                debtBackground.setColor(Color.GRAY);
-            } else {
-                debtBackground.setColor(Color.GREEN);
-            }
+            setScore(user);
         } else {
             mName.setText(getString(R.string.user_full_name, user.getFirstName(), user.getLastName()));
-            mScore.setText(user.getScore());
-            GradientDrawable debtBackground = (GradientDrawable) mScore.getBackground();
-            double debtValue = Double.parseDouble(user.getScore());
-            if (debtValue < 0) {
-                mScore.setText(Double.toString(-debtValue));
-                debtBackground.setColor(Color.RED);
-            } else if (debtValue == 0) {
-                mScore.setText(0);
-                debtBackground.setColor(Color.GRAY);
-            } else {
-                mScore.setText(Double.toString(debtValue));
-                debtBackground.setColor(Color.GREEN);
-            }
+            setScore(user);
 
             SharedPreferences.Editor editor = mPreferences.edit();
-            editor.putString(Configuration.NAME_KEY, mName.getText().toString());
+            editor.putString(AppConfig.NAME_KEY, mName.getText().toString());
             editor.apply();
         }
 
@@ -181,11 +159,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    private void setScore(User user) {
+        GradientDrawable scoreBackground = (GradientDrawable) mScore.getBackground();
+        double scoreValue = Double.parseDouble(user.getScore());
+        if (scoreValue > 0) {
+            String val = Double.toString(scoreValue);
+            mScore.setText(val);
+            scoreBackground.setColor(ContextCompat.getColor(Objects.requireNonNull(getContext()), R.color.red));
+        } else if (scoreValue == 0) {
+            mScore.setText(AppConfig.DEFAULT_DEBT_VALUE);
+            scoreBackground.setColor(Color.GRAY);
+        } else {
+            String val = Double.toString(-scoreValue);
+            mScore.setText(val);
+            scoreBackground.setColor(Color.GREEN);
+        }
+    }
+
     private void getSavedData() {
         mDoesDataSave = false;
         mPreferences = Objects.requireNonNull(getContext())
                 .getSharedPreferences(mUsername.getTitle().toString(), Context.MODE_PRIVATE);
-        String name = mPreferences.getString(Configuration.NAME_KEY, null);
+        String name = mPreferences.getString(AppConfig.NAME_KEY, null);
         if (name != null) {
             mName.setText(name);
             mDoesDataSave = true;
@@ -205,36 +200,36 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     private void showChangeLanguageDialog() {
         final String[] languageList = new String[]{
-                Configuration.ENGLISH_LANGUAGE,
-                Configuration.RUSSIAN_LANGUAGE,
-                Configuration.GERMAN_LANGUAGE,
-                Configuration.FRENCH_LANGUAGE,
-                Configuration.SPAIN_LANGUAGE
+                AppConfig.ENGLISH_LANGUAGE,
+                AppConfig.RUSSIAN_LANGUAGE,
+                AppConfig.GERMAN_LANGUAGE,
+                AppConfig.FRENCH_LANGUAGE,
+                AppConfig.SPAIN_LANGUAGE
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(Configuration.TITLE_LANGUAGE);
+        builder.setTitle(AppConfig.TITLE_LANGUAGE);
 
         builder.setSingleChoiceItems(languageList, -1, (dialog, which) -> {
             switch (which) {
                 case 0:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.ENGLISH_LANGUAGE_ABBREVIATION);
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(AppConfig.ENGLISH_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 1:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.RUSSIAN_LANGUAGE_ABBREVIATION);
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(AppConfig.RUSSIAN_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 2:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.GERMAN_LANGUAGE_ABBREVIATION);
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(AppConfig.GERMAN_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 3:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.FRENCH_LANGUAGE_ABBREVIATION);
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(AppConfig.FRENCH_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
                 case 4:
-                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(Configuration.SPAIN_LANGUAGE_ABBREVIATION);
+                    ((MainActivity) Objects.requireNonNull(getActivity())).setLocale(AppConfig.SPAIN_LANGUAGE_ABBREVIATION);
                     dialog.dismiss();
                     break;
             }

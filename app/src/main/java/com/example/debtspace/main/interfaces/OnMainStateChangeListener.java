@@ -23,7 +23,7 @@ public interface OnMainStateChangeListener {
 
     void onStrikeScreen(User user);
 
-    void onRequestScreen();
+    void onNotificationListScreen();
 
     void onRequestConfirmScreen(User user);
 

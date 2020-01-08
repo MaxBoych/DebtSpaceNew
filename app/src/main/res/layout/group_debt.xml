@@ -2,10 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:elevation="4dp"
     android:layout_margin="8dp"
-    android:padding="8dp"
-    android:background="@drawable/rounded_light">
+    android:background="@drawable/rounded_light"
+    android:elevation="4dp"
+    android:padding="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/group_debt"
@@ -22,7 +22,7 @@
                 android:id="@+id/group_debt_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
-                android:padding="8dp"/>
+                android:padding="8dp" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -34,20 +34,20 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
-                    android:textSize="16sp"/>
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/group_total_debt"
                     style="@style/debt"
-                    android:layout_marginTop="56dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="24dp"/>
+                    android:layout_marginTop="56dp"
+                    android:layout_marginEnd="24dp" />
 
                 <TextView
                     android:id="@+id/group_user_debt"
                     style="@style/debt"
                     android:layout_marginTop="56dp"
-                    android:layout_toEndOf="@id/group_total_debt"/>
+                    android:layout_toEndOf="@id/group_total_debt" />
 
 
             </RelativeLayout>

@@ -84,6 +84,12 @@ public class RequestListFragment extends Fragment {
                     mViewModel.addListChangeListener();
                     break;
                 case FAIL:
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),
+                            mViewModel.getErrorMessage().getValue(),
+                            Toast.LENGTH_LONG)
+                            .show();
+                    break;
                 case NONE:
                     mProgressBar.setVisibility(View.GONE);
                     break;
@@ -98,8 +104,14 @@ public class RequestListFragment extends Fragment {
         mViewModel.getEventState().observe(this, state -> {
             switch (state) {
                 case ADDED:
-                    Request addedRequest = mViewModel.getAddedRequest();
+                    Request addedRequest = mViewModel.getChangedRequest();
                     mAdapter.addItemToTop(addedRequest);
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case REMOVED:
+                    Request removedRequest = mViewModel.getChangedRequest();
+                    int index = mViewModel.removeItem(removedRequest.getUsername());
+                    mAdapter.removeItem(index);
                     mEventProgressBar.setVisibility(View.GONE);
                     break;
                 case PROGRESS:

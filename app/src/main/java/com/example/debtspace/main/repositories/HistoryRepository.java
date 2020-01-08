@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.models.HistoryItem;
@@ -28,9 +28,9 @@ public class HistoryRepository {
     public HistoryRepository(Context context) {
         mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mUsername = DebtSpaceApplication.from(context).getUsername();
-        mHistory = mDatabase.collection(Configuration.HISTORY_COLLECTION_NAME)
+        mHistory = mDatabase.collection(AppConfig.HISTORY_COLLECTION_NAME)
                 .document(mUsername)
-                .collection(Configuration.DATES_COLLECTION_NAME);
+                .collection(AppConfig.DATES_COLLECTION_NAME);
     }
 
     public void downloadHistoryData(OnDownloadDataListListener<HistoryItem> listener) {
@@ -45,17 +45,17 @@ public class HistoryRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_HISTORY);
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_HISTORY);
                 });
     }
 
     public void observeEvents(OnDatabaseEventListener<HistoryItem> listener) {
         mHistory.addSnapshotListener((query, e) -> {
             if (e != null && e.getMessage() != null) {
-                Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
-                listener.onFailure(ErrorsConfiguration.ERROR_DATA_READING_HISTORY);
+                Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
+                listener.onFailure(ErrorsConfig.ERROR_DATA_READING_HISTORY);
             } else if (query != null) {
                 for (DocumentChange change : query.getDocumentChanges()) {
                     DocumentSnapshot document = change.getDocument();

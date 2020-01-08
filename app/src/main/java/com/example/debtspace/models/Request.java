@@ -12,6 +12,10 @@ public class Request extends User implements Comparable<Request> {
         this.date = date;
     }
 
+    public Request(String username) {
+        this.username = username;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }

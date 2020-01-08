@@ -7,8 +7,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
@@ -29,7 +29,7 @@ public class GroupDebtViewModel extends ViewModel {
 
     private Context mContext;
 
-    private MutableLiveData<Configuration.LoadStageState> mLoadState;
+    private MutableLiveData<AppConfig.LoadStageState> mLoadState;
     private MutableLiveData<String> mErrorMessage;
     private Boolean mIsSubmit;
 
@@ -38,9 +38,9 @@ public class GroupDebtViewModel extends ViewModel {
         mAddedList = new ArrayList<>();
         mFriendList = new ArrayList<>();
         mLoadState = new MutableLiveData<>();
-        mLoadState.setValue(Configuration.LoadStageState.NONE);
+        mLoadState.setValue(AppConfig.LoadStageState.NONE);
         mErrorMessage = new MutableLiveData<>();
-        mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
+        mErrorMessage.setValue(AppConfig.DEFAULT_ERROR_VALUE);
         mIsSubmit = false;
     }
 
@@ -78,7 +78,7 @@ public class GroupDebtViewModel extends ViewModel {
     }
 
     public void textChangeListen(CharSequence s) {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
 
         String string = s.toString().toLowerCase();
         if (StringUtilities.isEmpty(string)) {
@@ -103,11 +103,11 @@ public class GroupDebtViewModel extends ViewModel {
         }
 
         mFoundList = new ArrayList<>(list);
-        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
+        mLoadState.setValue(AppConfig.LoadStageState.SUCCESS);
     }
 
     public void downloadFriendList() {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
         new GroupDebtRepository(mContext).downloadFoundListData(new OnDownloadDataListListener<User>() {
             @Override
             public void onDownloadSuccessful(List<User> data) {
@@ -122,7 +122,7 @@ public class GroupDebtViewModel extends ViewModel {
     }
 
     public void downloadAddedList(ArrayList<String> usernames, String groupID) {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
         new GroupDebtRepository(mContext).downloadListItems(usernames, new OnDownloadDataListListener<User>() {
             @Override
             public void onDownloadSuccessful(List<User> list) {
@@ -139,7 +139,7 @@ public class GroupDebtViewModel extends ViewModel {
 
     private void updateError(String errorMessage) {
         mErrorMessage.setValue(errorMessage);
-        mLoadState.setValue(Configuration.LoadStageState.FAIL);
+        mLoadState.setValue(AppConfig.LoadStageState.FAIL);
     }
 
     private void setFriendList(List<User> list) {
@@ -163,9 +163,9 @@ public class GroupDebtViewModel extends ViewModel {
     }
 
     public void createGroup(String groupName, String debt, Uri uri) {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
         List<User> users = new ArrayList<>(mAddedList);
-        if (users.size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
+        if (users.size() >= AppConfig.MINIMUM_GROUP_MEMBERS) {
             List<String> members = new ArrayList<>();
             for (User user : users) {
                 members.add(user.getUsername());
@@ -184,20 +184,20 @@ public class GroupDebtViewModel extends ViewModel {
                 }
             });
         } else {
-            mErrorMessage.setValue(ErrorsConfiguration.ERROR_MINIMUM_MEMBERS);
-            mLoadState.setValue(Configuration.LoadStageState.FAIL);
+            mErrorMessage.setValue(ErrorsConfig.ERROR_MINIMUM_MEMBERS);
+            mLoadState.setValue(AppConfig.LoadStageState.FAIL);
         }
     }
 
     private void updateSubmitToTrue() {
         mIsSubmit = true;
-        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
+        mLoadState.setValue(AppConfig.LoadStageState.SUCCESS);
     }
 
     public void updateGroup(String groupID, String groupName, String debt) {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
         List<User> users = new ArrayList<>(mAddedList);
-        if (users.size() >= Configuration.MINIMUM_GROUP_MEMBERS) {
+        if (users.size() >= AppConfig.MINIMUM_GROUP_MEMBERS) {
             List<String> members = new ArrayList<>();
             for (User user : users) {
                 members.add(user.getUsername());
@@ -216,8 +216,8 @@ public class GroupDebtViewModel extends ViewModel {
                 }
             });
         } else {
-            mErrorMessage.setValue(ErrorsConfiguration.ERROR_MINIMUM_MEMBERS);
-            mLoadState.setValue(Configuration.LoadStageState.FAIL);
+            mErrorMessage.setValue(ErrorsConfig.ERROR_MINIMUM_MEMBERS);
+            mLoadState.setValue(AppConfig.LoadStageState.FAIL);
         }
     }
 
@@ -244,7 +244,7 @@ public class GroupDebtViewModel extends ViewModel {
         return mAddedList;
     }
 
-    public LiveData<Configuration.LoadStageState> getLoadState() {
+    public LiveData<AppConfig.LoadStageState> getLoadState() {
         return mLoadState;
     }
 

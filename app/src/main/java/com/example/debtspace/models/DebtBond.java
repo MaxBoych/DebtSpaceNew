@@ -1,6 +1,6 @@
 package com.example.debtspace.models;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 
 import java.util.Map;
 
@@ -14,8 +14,8 @@ public class DebtBond {
 
     public DebtBond(String username, Map<String, Object> data) {
         this.username = username;
-        this.debt = (String) data.get(Configuration.DEBT_KEY);
-        this.date = (String) data.get(Configuration.DATE_KEY);
+        this.debt = (String) data.get(AppConfig.DEBT_KEY);
+        this.date = (String) data.get(AppConfig.DATE_KEY);
     }
 
     public DebtBond(String date, String debt) {

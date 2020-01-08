@@ -64,6 +64,12 @@ public class HistoryFragment extends Fragment {
                     mViewModel.addListChangeListener();
                     break;
                 case FAIL:
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),
+                            mViewModel.getErrorMessage().getValue(),
+                            Toast.LENGTH_LONG)
+                            .show();
+                    break;
                 case NONE:
                     mProgressBar.setVisibility(View.GONE);
                     break;

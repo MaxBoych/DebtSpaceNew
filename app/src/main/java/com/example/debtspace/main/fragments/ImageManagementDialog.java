@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -19,8 +18,8 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnImageSharingListener;
 import com.example.debtspace.main.viewmodels.ImageManagementViewModel;
 import com.google.android.material.navigation.NavigationView;
@@ -46,7 +45,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
 
     public ImageManagementDialog newInstance(String id) {
         Bundle args = new Bundle();
-        args.putString(Configuration.ID_KEY, id);
+        args.putString(AppConfig.ID_KEY, id);
         ImageManagementDialog fragment = new ImageManagementDialog();
         fragment.setArguments(args);
 
@@ -85,7 +84,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
                 }
         );
         if (getArguments() != null) {
-            mImageID = getArguments().getString(Configuration.ID_KEY);
+            mImageID = getArguments().getString(AppConfig.ID_KEY);
         }
 
         initViewModel();
@@ -161,10 +160,10 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
 
     private void chooseImage() {
         Intent intent = new Intent();
-        intent.setType(Configuration.INTENT_IMAGE_TYPE);
+        intent.setType(AppConfig.INTENT_IMAGE_TYPE);
         intent.setAction(Intent.ACTION_GET_CONTENT);
         startActivityForResult(Intent.createChooser(intent,
-                Configuration.INTENT_IMAGE_TITLE), Configuration.PICK_IMAGE_FROM_GALLERY);
+                AppConfig.INTENT_IMAGE_TITLE), AppConfig.PICK_IMAGE_FROM_GALLERY);
     }
 
     private void uploadImage() {
@@ -176,7 +175,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
             mViewModel.downloadImage(mImageID, getContext());
         } else {
             Toast.makeText(getContext(),
-                    ErrorsConfiguration.DEBUG_CHANGE_IMAGE,
+                    ErrorsConfig.DEBUG_CHANGE_IMAGE,
                     Toast.LENGTH_LONG)
                     .show();
         }
@@ -187,7 +186,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
             mViewModel.deleteImage(mImageID, getContext());
         } else {
             Toast.makeText(getContext(),
-                    ErrorsConfiguration.DEBUG_CHANGE_IMAGE,
+                    ErrorsConfig.DEBUG_CHANGE_IMAGE,
                     Toast.LENGTH_LONG)
                     .show();
         }
@@ -197,7 +196,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == Configuration.PICK_IMAGE_FROM_GALLERY &&
+        if (requestCode == AppConfig.PICK_IMAGE_FROM_GALLERY &&
                 resultCode == RESULT_OK &&
                 data != null && data.getData() != null) {
 

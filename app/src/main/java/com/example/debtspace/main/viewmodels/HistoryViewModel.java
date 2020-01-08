@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.models.HistoryItem;
@@ -21,8 +21,8 @@ public class HistoryViewModel extends ViewModel {
     private List<HistoryItem> mList;
 
     private Context mContext;
-    private MutableLiveData<Configuration.LoadStageState> mLoadState;
-    private MutableLiveData<Configuration.EventStageState> mEventState;
+    private MutableLiveData<AppConfig.LoadStageState> mLoadState;
+    private MutableLiveData<AppConfig.EventStageState> mEventState;
     private MutableLiveData<String> mErrorMessage;
 
     private HistoryItem mAddedRequest;
@@ -30,11 +30,11 @@ public class HistoryViewModel extends ViewModel {
     public HistoryViewModel() {
         mList = new ArrayList<>();
         mLoadState = new MutableLiveData<>();
-        mLoadState.setValue(Configuration.LoadStageState.NONE);
+        mLoadState.setValue(AppConfig.LoadStageState.NONE);
         mEventState = new MutableLiveData<>();
-        mEventState.setValue(Configuration.EventStageState.NONE);
+        mEventState.setValue(AppConfig.EventStageState.NONE);
         mErrorMessage = new MutableLiveData<>();
-        mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
+        mErrorMessage.setValue(AppConfig.DEFAULT_ERROR_VALUE);
     }
 
     public void setContext(Context context) {
@@ -42,7 +42,7 @@ public class HistoryViewModel extends ViewModel {
     }
 
     public void downloadHistoryList() {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
         new HistoryRepository(mContext).downloadHistoryData(new OnDownloadDataListListener<HistoryItem>() {
 
             @Override
@@ -60,12 +60,12 @@ public class HistoryViewModel extends ViewModel {
     private void updateList(List<HistoryItem> list) {
         Collections.sort(list);
         mList = new ArrayList<>(list);
-        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
+        mLoadState.setValue(AppConfig.LoadStageState.SUCCESS);
     }
 
     private void updateError(String errorMessage) {
         mErrorMessage.setValue(errorMessage);
-        mLoadState.setValue(Configuration.LoadStageState.FAIL);
+        mLoadState.setValue(AppConfig.LoadStageState.FAIL);
     }
 
     public void addListChangeListener() {
@@ -90,13 +90,13 @@ public class HistoryViewModel extends ViewModel {
     }
 
     private void notifyAdded(HistoryItem item) {
-        mEventState.setValue(Configuration.EventStageState.PROGRESS);
+        mEventState.setValue(AppConfig.EventStageState.PROGRESS);
         mAddedRequest = item;
         boolean doesNotExist = addItemToTop(item);
         if (doesNotExist) {
-            mEventState.setValue(Configuration.EventStageState.ADDED);
+            mEventState.setValue(AppConfig.EventStageState.ADDED);
         } else {
-            mEventState.setValue(Configuration.EventStageState.NONE);
+            mEventState.setValue(AppConfig.EventStageState.NONE);
         }
     }
 
@@ -114,18 +114,18 @@ public class HistoryViewModel extends ViewModel {
 
     private void notifyEventFailure(String errorMessage) {
         mErrorMessage.setValue(errorMessage);
-        mEventState.setValue(Configuration.EventStageState.FAIL);
+        mEventState.setValue(AppConfig.EventStageState.FAIL);
     }
 
     public List<HistoryItem> getList() {
         return mList;
     }
 
-    public LiveData<Configuration.LoadStageState> getLoadState() {
+    public LiveData<AppConfig.LoadStageState> getLoadState() {
         return mLoadState;
     }
 
-    public LiveData<Configuration.EventStageState> getEventState() {
+    public LiveData<AppConfig.EventStageState> getEventState() {
         return mEventState;
     }
 

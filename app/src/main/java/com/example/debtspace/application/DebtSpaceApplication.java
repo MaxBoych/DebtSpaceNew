@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -24,7 +24,7 @@ public class DebtSpaceApplication extends Application {
     private String mUsername;
     private FirebaseFirestore mDatabase;
     private StorageReference mStorage;
-    private MutableLiveData<Configuration.NetworkState> mNetworkState;
+    private MutableLiveData<AppConfig.NetworkState> mNetworkState;
 
     @Override
     public void onCreate() {
@@ -39,7 +39,7 @@ public class DebtSpaceApplication extends Application {
         mDatabase = FirebaseFirestore.getInstance();
         mStorage = FirebaseStorage.getInstance().getReference();
         mNetworkState = new MutableLiveData<>();
-        mNetworkState.setValue(Configuration.NetworkState.LOST);
+        mNetworkState.setValue(AppConfig.NetworkState.NONE);
         addNetworkListener();
     }
 
@@ -77,19 +77,19 @@ public class DebtSpaceApplication extends Application {
                 @Override
                 public void onAvailable(@NonNull Network network) {
                     super.onAvailable(network);
-                    mNetworkState.postValue(Configuration.NetworkState.AVAILABLE);
+                    mNetworkState.postValue(AppConfig.NetworkState.AVAILABLE);
                 }
 
                 @Override
                 public void onLost(@NonNull Network network) {
                     super.onLost(network);
-                    mNetworkState.postValue(Configuration.NetworkState.LOST);
+                    mNetworkState.postValue(AppConfig.NetworkState.LOST);
                 }
             });
         }
     }
 
-    public LiveData<Configuration.NetworkState> getNetworkState() {
+    public LiveData<AppConfig.NetworkState> getNetworkState() {
         return mNetworkState;
     }
 }

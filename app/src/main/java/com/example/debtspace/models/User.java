@@ -2,7 +2,7 @@ package com.example.debtspace.models;
 
 import android.net.Uri;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +20,10 @@ public class User {
     public User() {}
 
     public User(Map<String, String> map) {
-        firstName = map.get(Configuration.FIRST_NAME_KEY);
-        lastName = map.get(Configuration.LAST_NAME_KEY);
-        username = map.get(Configuration.USERNAME_KEY);
-        score = map.get(Configuration.SCORE_KEY);
+        firstName = map.get(AppConfig.FIRST_NAME_KEY);
+        lastName = map.get(AppConfig.LAST_NAME_KEY);
+        username = map.get(AppConfig.USERNAME_KEY);
+        score = map.get(AppConfig.SCORE_KEY);
     }
 
     public User(String username) {

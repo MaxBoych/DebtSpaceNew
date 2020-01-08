@@ -6,8 +6,8 @@ import android.util.Log;
 import android.widget.ProgressBar;
 
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.google.firebase.storage.StorageReference;
@@ -21,14 +21,14 @@ public class ImageManagementRepository {
     private String mID;
 
     public ImageManagementRepository(String id, Context context) {
-        if (id.equals(Configuration.NONE_ID)) {
+        if (id.equals(AppConfig.NONE_ID)) {
             mStorage = DebtSpaceApplication.from(context).getStorage()
-                    .child(Configuration.USERS_COLLECTION_NAME);
+                    .child(AppConfig.USERS_COLLECTION_NAME);
 
             mID = DebtSpaceApplication.from(context).getUsername();
         } else {
             mStorage = DebtSpaceApplication.from(context).getStorage()
-                    .child(Configuration.GROUP_DEBTS_COLLECTION_NAME);
+                    .child(AppConfig.GROUP_DEBTS_COLLECTION_NAME);
 
             mID = id;
         }
@@ -41,9 +41,9 @@ public class ImageManagementRepository {
                         listener.onUpdateSuccessful())
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_IMAGE);
+                    listener.onFailure(ErrorsConfig.ERROR_UPLOAD_IMAGE);
                 });
     }
 
@@ -57,9 +57,9 @@ public class ImageManagementRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_IMAGE);
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_IMAGE);
                 });
     }
 
@@ -70,9 +70,9 @@ public class ImageManagementRepository {
                         listener.onUpdateSuccessful())
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DELETE_IMAGE);
+                    listener.onFailure(ErrorsConfig.ERROR_DELETE_IMAGE);
                 });
     }
 }

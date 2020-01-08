@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.models.HistoryItem;
@@ -33,9 +33,9 @@ public class StrikeRepository {
     }
 
     public void doStrike(HistoryItem item, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
                 .document(mUsername)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(documents -> {
                     String username = item.getUsername();
@@ -50,32 +50,32 @@ public class StrikeRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DO_STRIKE);
+                    listener.onFailure(ErrorsConfig.ERROR_DO_STRIKE);
                 });
     }
 
     private void debtRecount(Map<String, Object> data, HistoryItem item, OnUpdateDataListener listener) {
         String username = item.getUsername();
         String debt = item.getDebt();
-        double lastDebt = Double.parseDouble(Objects.requireNonNull(data.get(Configuration.DEBT_KEY)).toString());
+        double lastDebt = Double.parseDouble(Objects.requireNonNull(data.get(AppConfig.DEBT_KEY)).toString());
         double debtRequest = Double.parseDouble(debt);
 
         double debtCurrentUser = lastDebt - debtRequest;
         double debtFriend = -lastDebt + debtRequest;
 
         Map<String, Object> updatedCurrentUser = new HashMap<>();
-        updatedCurrentUser.put(Configuration.DEBT_KEY, Double.toString(debtCurrentUser));
-        updatedCurrentUser.put(Configuration.DATE_KEY, item.getDate());
+        updatedCurrentUser.put(AppConfig.DEBT_KEY, Double.toString(debtCurrentUser));
+        updatedCurrentUser.put(AppConfig.DATE_KEY, item.getDate());
         updateData(updatedCurrentUser, mUsername, username, listener);
 
         Map<String, Object> updatedFriend = new HashMap<>();
-        updatedFriend.put(Configuration.DEBT_KEY, Double.toString(debtFriend));
-        updatedFriend.put(Configuration.DATE_KEY, item.getDate());
+        updatedFriend.put(AppConfig.DEBT_KEY, Double.toString(debtFriend));
+        updatedFriend.put(AppConfig.DATE_KEY, item.getDate());
         updateData(updatedFriend, username, mUsername, listener);
 
-        updateScore(mUsername, Configuration.MINUS_STRING + debt, listener);
+        updateScore(mUsername, AppConfig.MINUS_STRING + debt, listener);
         updateScore(username, debt, listener);
 
         HistoryItem historyCurrentUser = new HistoryItem(Double.toString(-debtRequest),
@@ -90,42 +90,42 @@ public class StrikeRepository {
     }
 
     private void updateScore(String username, String debt, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.USERS_COLLECTION_NAME)
                 .document(username)
                 .get()
                 .addOnSuccessListener(document -> {
                     Map<String, Object> data = document.getData();
                     if (data != null) {
-                        String lastScore = (String) data.get(Configuration.SCORE_KEY);
+                        String lastScore = (String) data.get(AppConfig.SCORE_KEY);
                         if (lastScore != null) {
                             String newScore = Double.toString(Double.parseDouble(lastScore) + Double.parseDouble(debt));
                             setNewScore(username, newScore, listener);
                         } else {
-                            listener.onFailure(ErrorsConfiguration.ERROR_UPDATE_SCORE + username);
+                            listener.onFailure(ErrorsConfig.ERROR_UPDATE_SCORE + username);
                         }
                     } else {
-                        listener.onFailure(ErrorsConfiguration.ERROR_UPDATE_SCORE + username);
+                        listener.onFailure(ErrorsConfig.ERROR_UPDATE_SCORE + username);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPDATE_SCORE + username);
+                    listener.onFailure(ErrorsConfig.ERROR_UPDATE_SCORE + username);
                 });
     }
 
     private void setNewScore(String username, String score, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.USERS_COLLECTION_NAME)
                 .document(username)
-                .update(Configuration.SCORE_FIELD_NAME, score)
+                .update(AppConfig.SCORE_FIELD_NAME, score)
                 .addOnSuccessListener(aVoid ->
                         readinessCheck(listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_SET_NEW_SCORE + username);
+                    listener.onFailure(ErrorsConfig.ERROR_SET_NEW_SCORE + username);
                 });
 
     }
@@ -151,9 +151,9 @@ public class StrikeRepository {
     }
 
     private void updateData(Map<String, Object> updated, String toWhom, String fromWhom, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
                 .document(toWhom)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .document(fromWhom)
                 .update(updated)
                 .addOnSuccessListener(aVoid -> {
@@ -161,16 +161,16 @@ public class StrikeRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_DEBT_DATA + fromWhom);
+                    listener.onFailure(ErrorsConfig.ERROR_UPLOAD_DEBT_DATA + fromWhom);
                 });
     }
 
     private void sendDebtToHistory(String toWhom, String fromWhom, HistoryItem data, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.HISTORY_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.HISTORY_COLLECTION_NAME)
                 .document(toWhom)
-                .collection(Configuration.DATES_COLLECTION_NAME)
+                .collection(AppConfig.DATES_COLLECTION_NAME)
                 .document(fromWhom)
                 .set(data)
                 .addOnSuccessListener(aVoid -> {
@@ -179,9 +179,9 @@ public class StrikeRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_REQUESTS + fromWhom);
+                    listener.onFailure(ErrorsConfig.ERROR_UPLOAD_REQUESTS + fromWhom);
                 });
     }
 

@@ -103,4 +103,9 @@ public class RequestListAdapter extends RecyclerView.Adapter<RequestListAdapter.
         mList.add(0, request);
         this.notifyItemInserted(0);
     }
+
+    public void removeItem(int index) {
+        mList.remove(index);
+        this.notifyItemRemoved(index);
+    }
 }

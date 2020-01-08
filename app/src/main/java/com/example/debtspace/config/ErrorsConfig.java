@@ -1,6 +1,6 @@
 package com.example.debtspace.config;
 
-public class ErrorsConfiguration {
+public class ErrorsConfig {
 
     public final static String ERROR_SIGN_IN = "Cannot sign in";
     public final static String ERROR_SIGN_UP = "Cannot sign up";
@@ -26,7 +26,7 @@ public class ErrorsConfiguration {
     public final static String ERROR_UPLOAD_GROUP = "Cannot upload group. Group ID: ";
     public final static String ERROR_UPDATE_GROUP = "Cannot update group. Group ID: ";
     public final static String ERROR_UPLOAD_GROUP_DATA_TO_MEMBERS = "Cannot upload group data to members. Group ID: ";
-    public final static String ERROR_MINIMUM_MEMBERS = "At least " + (Configuration.MINIMUM_GROUP_MEMBERS + 1) + " members of the group are required (including you)";
+    public final static String ERROR_MINIMUM_MEMBERS = "At least " + (AppConfig.MINIMUM_GROUP_MEMBERS + 1) + " members of the group are required (including you)";
 
     public final static String ERROR_DOWNLOAD_SINGLE_DEBTS = "Cannot download single debts";
     public final static String ERROR_DOWNLOAD_USER_IMAGE = "Cannot download user image. Username: ";

@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
@@ -23,11 +23,11 @@ import java.util.ListIterator;
 public class DebtListViewModel extends ViewModel {
 
     private List<Debt> mList;
-    private DebtBond mChangedDebt;
-    private Debt mAddedDebt;
+    //private DebtBond mChangedDebt;
+    private Debt mChangedDebt;
 
-    private MutableLiveData<Configuration.LoadStageState> mLoadState;
-    private MutableLiveData<Configuration.EventStageState> mEventState;
+    private MutableLiveData<AppConfig.LoadStageState> mLoadState;
+    private MutableLiveData<AppConfig.EventStageState> mEventState;
     private MutableLiveData<String> mErrorMessage;
 
     private Context mContext;
@@ -35,11 +35,11 @@ public class DebtListViewModel extends ViewModel {
     public DebtListViewModel() {
         mList = new ArrayList<>();
         mLoadState = new MutableLiveData<>();
-        mLoadState.setValue(Configuration.LoadStageState.NONE);
+        mLoadState.setValue(AppConfig.LoadStageState.NONE);
         mEventState = new MutableLiveData<>();
-        mEventState.setValue(Configuration.EventStageState.NONE);
+        mEventState.setValue(AppConfig.EventStageState.NONE);
         mErrorMessage = new MutableLiveData<>();
-        mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
+        mErrorMessage.setValue(AppConfig.DEFAULT_ERROR_VALUE);
     }
 
     public void setContext(Context context) {
@@ -47,7 +47,7 @@ public class DebtListViewModel extends ViewModel {
     }
 
     public void downloadDebtList() {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
         new DebtListRepository(mContext).downloadDebtListData(new OnDownloadDataListListener<Debt>() {
             @Override
             public void onDownloadSuccessful(List<Debt> data) {
@@ -64,12 +64,12 @@ public class DebtListViewModel extends ViewModel {
     private void updateList(List<Debt> debtList) {
         Collections.sort(debtList);
         mList = new ArrayList<>(debtList);
-        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
+        mLoadState.setValue(AppConfig.LoadStageState.SUCCESS);
     }
 
     private void updateError(String errorMessage) {
         mErrorMessage.setValue(errorMessage);
-        mLoadState.setValue(Configuration.LoadStageState.FAIL);
+        mLoadState.setValue(AppConfig.LoadStageState.FAIL);
     }
 
     public void addListChangeListener() {
@@ -98,30 +98,30 @@ public class DebtListViewModel extends ViewModel {
     }
 
     private void added(DebtBond debtBond) {
-        mEventState.setValue(Configuration.EventStageState.PROGRESS);
-        mChangedDebt = debtBond;
-        transformToDebt();
+        mEventState.setValue(AppConfig.EventStageState.PROGRESS);
+        //mChangedDebt = debtBond;
+        transformToDebt(debtBond);
     }
 
     private void notifyModified(DebtBond debtBond) {
-        mEventState.setValue(Configuration.EventStageState.PROGRESS);
-        mChangedDebt = debtBond;
-        mEventState.setValue(Configuration.EventStageState.MODIFIED);
+        mEventState.setValue(AppConfig.EventStageState.PROGRESS);
+        mChangedDebt = new Debt(debtBond);
+        mEventState.setValue(AppConfig.EventStageState.MODIFIED);
     }
 
     private void notifyRemoved(DebtBond debtBond) {
-        mEventState.setValue(Configuration.EventStageState.PROGRESS);
-        mChangedDebt = debtBond;
-        mEventState.setValue(Configuration.EventStageState.REMOVED);
+        mEventState.setValue(AppConfig.EventStageState.PROGRESS);
+        mChangedDebt = new Debt(debtBond);
+        mEventState.setValue(AppConfig.EventStageState.REMOVED);
     }
 
     private void notifyEventFailure(String errorMessage) {
         mErrorMessage.setValue(errorMessage);
-        mEventState.setValue(Configuration.EventStageState.FAIL);
+        mEventState.setValue(AppConfig.EventStageState.FAIL);
     }
 
-    private void transformToDebt() {
-        new DebtListRepository(mContext).transformToDebt(mChangedDebt, new OnDownloadDataListener<Debt>() {
+    private void transformToDebt(DebtBond debtBond) {
+        new DebtListRepository(mContext).transformToDebt(debtBond, new OnDownloadDataListener<Debt>() {
             @Override
             public void onDownloadSuccessful(Debt object) {
                 notifyAdded(object);
@@ -135,12 +135,12 @@ public class DebtListViewModel extends ViewModel {
     }
 
     private void notifyAdded(Debt debt) {
-        mAddedDebt = debt;
+        mChangedDebt = debt;
         boolean doesNotExist = addItemToTop(debt);
         if (doesNotExist) {
-            mEventState.setValue(Configuration.EventStageState.ADDED);
+            mEventState.setValue(AppConfig.EventStageState.ADDED);
         } else {
-            mEventState.setValue(Configuration.EventStageState.NONE);
+            mEventState.setValue(AppConfig.EventStageState.NONE);
         }
     }
 
@@ -158,20 +158,20 @@ public class DebtListViewModel extends ViewModel {
         return true;
     }
 
-    public int modifyItem(DebtBond debtBond) {
+    public int modifyItem(Debt debt) {
         if (mList != null) {
             ListIterator<Debt> iterator = mList.listIterator();
             while (iterator.hasNext()) {
                 int index = iterator.nextIndex();
-                Debt debt = iterator.next();
-                if (debt instanceof GroupDebt) {
+                Debt d = iterator.next();
+                if (d instanceof GroupDebt) {
                     continue;
                 }
-                if (debt.getUser().getUsername().equals(debtBond.getUsername())) {
-                    debt.setDebt(debtBond.getDebt());
-                    debt.setDate(debtBond.getDate());
+                if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
+                    d.setDebt(debt.getDebt());
+                    d.setDate(debt.getDate());
                     iterator.remove();
-                    mList.add(0, debt);
+                    mList.add(0, d);
                     return index;
                 }
             }
@@ -202,20 +202,16 @@ public class DebtListViewModel extends ViewModel {
         return mList;
     }
 
-    public LiveData<Configuration.LoadStageState> getLoadState() {
+    public LiveData<AppConfig.LoadStageState> getLoadState() {
         return mLoadState;
     }
 
-    public LiveData<Configuration.EventStageState> getEventState() {
+    public LiveData<AppConfig.EventStageState> getEventState() {
         return mEventState;
     }
 
-    public DebtBond getChangedDebt() {
+    public Debt getChangedDebt() {
         return mChangedDebt;
-    }
-
-    public Debt getAddedDebt() {
-        return mAddedDebt;
     }
 
     public LiveData<String> getErrorMessage() {

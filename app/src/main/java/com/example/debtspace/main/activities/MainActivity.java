@@ -1,22 +1,19 @@
 package com.example.debtspace.main.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import com.example.debtspace.R;
 import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.auth.activities.AuthActivity;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.fragments.DebtListFragment;
 import com.example.debtspace.main.fragments.FriendRequestDialog;
 import com.example.debtspace.main.fragments.GroupDebtFragment;
@@ -51,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
         DebtSpaceApplication.from(getApplicationContext())
                 .getNetworkState()
                 .observe(this, networkState -> {
-                    if (networkState == com.example.debtspace.config.Configuration.NetworkState.LOST) {
+                    if (networkState == AppConfig.NetworkState.LOST) {
                         onNetworkLostScreen();
                     }
                 });
@@ -78,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
         /*Locale locale = new Locale(lang);
         Locale.setDefault(locale);
 
-        Configuration config = new Configuration();
+        AppConfig config = new AppConfig();
         config.setLocale(locale);
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
 
@@ -88,43 +85,78 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
         editor.apply();*/
     }
 
-    public void getLocale() {
+    /*public void getLocale() {
         SharedPreferences preferences = getSharedPreferences("settings", Context.MODE_PRIVATE);
         String lang = preferences.getString("lang", "");
         setLocale(lang);
-    }
+    }*/
 
     private void initBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById (R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.action_home);
+        bottomNavigationView.setSelectedItemId(R.id.action_debts);
         onDebtListScreen();
         bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()) {
                 case R.id.action_profile:
                     onProfileScreen();
-
                     break;
-
-                case R.id.action_home:
+                case R.id.action_debts:
                     onDebtListScreen();
                     break;
-
                 case R.id.action_history:
                     onHistoryScreen();
                     break;
-
                 case R.id.action_notifications:
-                    onRequestScreen();
+                    onNotificationListScreen();
                     break;
             }
             return true;
         });
+
+        /*bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.action_profile:
+                    onProfileScreen();
+                    break;
+                case R.id.action_debts:
+                    Fragment debtsFragment = getSupportFragmentManager().findFragmentByTag(AppConfig.FRAGMENT_DEBT_LIST_TAG);
+                    if (debtsFragment != null) {
+                        getSupportFragmentManager().beginTransaction()
+                                .show(debtsFragment)
+                                .commit();
+                    } else {
+                        onDebtListScreen();
+                    }
+                    break;
+                case R.id.action_history:
+                    Fragment historyFragment = getSupportFragmentManager().findFragmentByTag(AppConfig.FRAGMENT_HISTORY_TAG);
+                    if (historyFragment != null) {
+                        getSupportFragmentManager().beginTransaction()
+                                .show(historyFragment)
+                                .commit();
+                    } else {
+                        onHistoryScreen();
+                    }
+                    break;
+                case R.id.action_notifications:
+                    Fragment notificationsFragment = getSupportFragmentManager().findFragmentByTag(AppConfig.FRAGMENT_NOTIFICATION_LIST_TAG);
+                    if (notificationsFragment != null) {
+                        getSupportFragmentManager().beginTransaction()
+                                .show(notificationsFragment)
+                                .commit();
+                    } else {
+                        onNotificationListScreen();
+                    }
+                    break;
+            }
+            return true;
+        });*/
     }
 
     @Override
     public void onDebtListScreen() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_container, new DebtListFragment())
+                .replace(R.id.main_container, new DebtListFragment(), AppConfig.FRAGMENT_DEBT_LIST_TAG)
                 .addToBackStack(null)
                 .commit();
     }
@@ -178,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
     @Override
     public void onHistoryScreen() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_container, new HistoryFragment())
+                .replace(R.id.main_container, new HistoryFragment(), AppConfig.FRAGMENT_HISTORY_TAG)
                 .addToBackStack(null)
                 .commit();
     }
@@ -190,9 +222,9 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
     }
 
     @Override
-    public void onRequestScreen() {
+    public void onNotificationListScreen() {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.main_container, new RequestListFragment())
+                .replace(R.id.main_container, new RequestListFragment(), AppConfig.FRAGMENT_NOTIFICATION_LIST_TAG)
                 .addToBackStack(null)
                 .commit();
     }

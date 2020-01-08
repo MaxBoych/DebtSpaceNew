@@ -1,6 +1,6 @@
 package com.example.debtspace.models;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -15,10 +15,10 @@ public class GroupDebt extends Debt {
 
     @SuppressWarnings("unchecked")
     public GroupDebt(Map<String, Object> map) {
-        this.name = (String) map.get(Configuration.NAME_KEY);
-        this.debt = (String) map.get(Configuration.DEBT_KEY);
-        this.date = (String) map.get(Configuration.DATE_KEY);
-        this.members = (List<String>) map.get(Configuration.MEMBERS_KEY);
+        this.name = (String) map.get(AppConfig.NAME_KEY);
+        this.debt = (String) map.get(AppConfig.DEBT_KEY);
+        this.date = (String) map.get(AppConfig.DATE_KEY);
+        this.members = (List<String>) map.get(AppConfig.MEMBERS_KEY);
     }
 
     public GroupDebt(String id, String name, String debt, String date, List<String> members) {

@@ -23,14 +23,13 @@
                 android:textSize="24sp" />
 
             <Button
-                style="@style/buttonText"
-                android:drawableStart="@drawable/ic_search"
                 android:id="@+id/button_to_user_search"
-                android:padding="8dp"
+                style="@style/buttonText"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_gravity="end"
-                />
+                android:drawableStart="@drawable/ic_search"
+                android:padding="8dp" />
         </android.widget.Toolbar>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -40,8 +39,7 @@
             android:layout_below="@id/notification_toolbar"
             android:layout_marginBottom="56dp"
             android:clipToPadding="false"
-            android:paddingBottom="72dp">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:paddingBottom="72dp" />
 
         <ProgressBar
             android:id="@+id/debt_list_progress_bar"
@@ -62,11 +60,11 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_create_group_debt"
-        android:src="@drawable/ic_group_add"
         android:layout_width="56dp"
         android:layout_height="56dp"
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="80dp"
-        android:elevation="4dp"/>
+        android:elevation="4dp"
+        android:src="@drawable/ic_group_add" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

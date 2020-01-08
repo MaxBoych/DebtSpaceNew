@@ -8,12 +8,12 @@
     <string name="error">Les données saisies ne sont pas correctes</string>
     <string name="first_name">Prénom</string>
     <string name="history">Histoire</string>
-    <string name="home">Accueil</string>
+    <string name="debts">Dettes</string>
     <string name="last_name">Nom de famille</string>
     <string name="notifications">Notifications</string>
     <string name="password">Mot de passe</string>
     <string name="reject">Rejeter</string>
-    <string name="settings">Paramètres</string>
+    <string name="profile">Profil</string>
     <string name="account">Compte</string>
     <string name="support">Soutien</string>
     <string name="language">La langue</string>
@@ -42,4 +42,5 @@
     <string name="cancel">Annuler</string>
     <string name="create_group">Créer un groupe</string>
     <string name="change_image" translatable="false">Changer l\'image</string>
+    <string name="back">Retour</string>
 </resources>

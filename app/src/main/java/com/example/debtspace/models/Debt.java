@@ -17,6 +17,12 @@ public class Debt implements Comparable<Debt> {
         this.date = date;
     }
 
+    public Debt(DebtBond debtBond) {
+        this.user = new User(debtBond.getUsername());
+        this.debt = debtBond.getDebt();
+        this.date = debtBond.getDate();
+    }
+
     public void setUriImage(Uri uri) {
         uriImage = uri;
     }

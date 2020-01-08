@@ -16,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.viewmodels.FriendRequestViewModel;
 import com.example.debtspace.models.User;
 
@@ -35,8 +35,8 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
 
     public FriendRequestDialog newInstance(User user) {
         Bundle args = new Bundle();
-        args.putString(Configuration.NAME_KEY, user.getFirstName() + " " + user.getLastName());
-        args.putString(Configuration.USERNAME_KEY, user.getUsername());
+        args.putString(AppConfig.NAME_KEY, user.getFirstName() + " " + user.getLastName());
+        args.putString(AppConfig.USERNAME_KEY, user.getUsername());
         FriendRequestDialog fragment = new FriendRequestDialog();
         fragment.setArguments(args);
 
@@ -55,9 +55,9 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
         mCancel = view.findViewById(R.id.friend_request_cancel);
         mProgressBar = view.findViewById(R.id.request_progress_bar);
 
-        String name = Objects.requireNonNull(getArguments()).getString(Configuration.NAME_KEY);
+        String name = Objects.requireNonNull(getArguments()).getString(AppConfig.NAME_KEY);
         mUserName.setText(name);
-        String username = Objects.requireNonNull(getArguments()).getString(Configuration.USERNAME_KEY);
+        String username = Objects.requireNonNull(getArguments()).getString(AppConfig.USERNAME_KEY);
         mUserUsername.setText(username);
 
         initViewModel();

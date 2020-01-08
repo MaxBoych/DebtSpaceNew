@@ -13,11 +13,10 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.models.HistoryItem;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemViewHolder> {
@@ -76,7 +75,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
             holder.debt.setText(val);
             debtBackground.setColor(ContextCompat.getColor(mContext, R.color.red));
         } else if (debtValue == 0) {
-            holder.debt.setText(Configuration.DEFAULT_DEBT_VALUE);
+            holder.debt.setText(AppConfig.DEFAULT_DEBT_VALUE);
             debtBackground.setColor(Color.GRAY);
         } else {
             String val = Double.toString(-debtValue);

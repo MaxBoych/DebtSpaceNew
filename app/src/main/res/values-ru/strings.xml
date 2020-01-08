@@ -8,12 +8,12 @@
     <string name="error">Введённые данные не корректны</string>
     <string name="first_name">Имя</string>
     <string name="history">История</string>
-    <string name="home">Главная</string>
+    <string name="debts">Долги</string>
     <string name="last_name">Фамилия</string>
     <string name="notifications">Уведомления</string>
     <string name="password">Пароль</string>
     <string name="reject">Отклонить</string>
-    <string name="settings">Настройки</string>
+    <string name="profile">Профиль</string>
     <string name="account">Аккаунт</string>
     <string name="support">Техническая поддержка</string>
     <string name="language">Язык</string>
@@ -42,4 +42,5 @@
     <string name="add_friend">Добавить друга</string>
     <string name="cancel">Отмена</string>
     <string name="create_group">Создать группу</string>
+    <string name="back">Назад</string>
 </resources>

@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center"
         android:text="@string/new_group_debt"
-        android:textSize="20sp"
-        android:layout_marginBottom="8dp"/>
+        android:textSize="20sp" />
 
     <LinearLayout
         android:id="@+id/group_debt_data"
@@ -28,7 +28,7 @@
             android:id="@+id/group_debt_image"
             android:layout_width="56dp"
             android:layout_height="56dp"
-            android:layout_marginStart="16dp"/>
+            android:layout_marginStart="16dp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -37,48 +37,48 @@
             android:orientation="vertical">
 
             <EditText
-                style="@style/editAuth"
-                android:background="@drawable/rounded_light"
-                android:layout_margin="4dp"
                 android:id="@+id/group_debt_name"
+                style="@style/editAuth"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
+                android:layout_margin="4dp"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_light"
                 android:hint="@string/group_name"
-                android:textSize="16sp"
                 android:paddingHorizontal="16dp"
+                android:textSize="16sp"
                 tools:ignore="NestedWeights"
                 tools:targetApi="o" />
 
             <EditText
-                style="@style/editAuth"
-                android:background="@drawable/rounded_light"
-                android:layout_margin="4dp"
                 android:id="@+id/group_debt_debt"
+                style="@style/editAuth"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_gravity="center"
+                android:layout_margin="4dp"
                 android:layout_weight="1"
-                android:paddingHorizontal="16dp"
+                android:background="@drawable/rounded_light"
                 android:hint="@string/group_debt"
+                android:paddingHorizontal="16dp"
                 android:textSize="16sp"
-                tools:targetApi="o"/>
+                tools:targetApi="o" />
         </LinearLayout>
     </LinearLayout>
 
     <EditText
-        style="@style/editAuth"
-        android:background="@drawable/rounded_light"
-        android:layout_margin="4dp"
         android:id="@+id/group_debt_search"
+        style="@style/editAuth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/group_debt_data"
+        android:layout_margin="4dp"
+        android:background="@drawable/rounded_light"
         android:hint="@string/user_search"
-        android:textSize="12sp"
         android:paddingHorizontal="8dp"
         android:paddingVertical="4dp"
+        android:textSize="12sp"
         tools:targetApi="o" />
 
     <LinearLayout
@@ -104,13 +104,13 @@
     </LinearLayout>
 
     <Button
-        android:background="@drawable/rounded_dark"
+        android:id="@+id/button_submit"
         style="@style/buttonAuth"
         android:layout_width="300dp"
-        android:id="@+id/button_submit"
         android:layout_below="@id/group_debt_lists"
         android:layout_centerHorizontal="true"
         android:layout_gravity="bottom"
+        android:background="@drawable/rounded_dark"
         android:text="@string/create_group" />
 
     <ProgressBar

@@ -2,8 +2,8 @@ package com.example.debtspace.utilities;
 
 import android.util.Log;
 
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.models.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -13,7 +13,7 @@ public class FirebaseUtilities {
 
     public static void findUserByUsername(String username, OnFindUserListener onFindUserListener) {
         FirebaseFirestore.getInstance()
-                .collection(Configuration.USERS_COLLECTION_NAME)
+                .collection(AppConfig.USERS_COLLECTION_NAME)
                 .document(username)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -21,15 +21,15 @@ public class FirebaseUtilities {
                         User user = documentSnapshot.toObject(User.class);
                         onFindUserListener.onSuccessful(user);
                     } else {
-                        Log.w(Configuration.APPLICATION_LOG_TAG, ErrorsConfiguration.WARNING_USER_DOES_NOT_EXIST + username);
+                        Log.w(AppConfig.APPLICATION_LOG_TAG, ErrorsConfig.WARNING_USER_DOES_NOT_EXIST + username);
                         onFindUserListener.onDoesNotExist();
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    onFindUserListener.onFailure(ErrorsConfiguration.ERROR_FIND_USER + username);
+                    onFindUserListener.onFailure(ErrorsConfig.ERROR_FIND_USER + username);
                 });
     }
 

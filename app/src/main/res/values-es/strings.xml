@@ -8,12 +8,12 @@
     <string name="error">Los datos ingresados ​​no son correctos</string>
     <string name="first_name">Nombre de pila</string>
     <string name="history">Historia</string>
-    <string name="home">Casa</string>
+    <string name="debts">Deudas</string>
     <string name="last_name">Apellido</string>
     <string name="notifications">Notificaciones</string>
     <string name="password">Contraseña</string>
     <string name="reject">Rechazar</string>
-    <string name="settings">Configuraciones</string>
+    <string name="profile">Perfil</string>
     <string name="account">Cuenta</string>
     <string name="support">Apoyo</string>
     <string name="language">Idioma</string>
@@ -42,4 +42,5 @@
     <string name="add_friend">Añadir amigo</string>
     <string name="cancel">Cancelar</string>
     <string name="create_group">Crea un grupo</string>
+    <string name="back">Volver</string>
 </resources>

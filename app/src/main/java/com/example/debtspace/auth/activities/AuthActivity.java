@@ -15,6 +15,7 @@ import com.example.debtspace.auth.fragments.SignInFragment;
 import com.example.debtspace.auth.fragments.SignUpFragment;
 import com.example.debtspace.auth.interfaces.OnAuthStateChangeListener;
 import com.example.debtspace.auth.repositories.AuthRepository;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.activities.MainActivity;
 import com.example.debtspace.main.fragments.NetworkLostDialog;
 
@@ -40,7 +41,7 @@ public class AuthActivity extends AppCompatActivity implements OnAuthStateChange
         DebtSpaceApplication.from(getApplicationContext())
                 .getNetworkState()
                 .observe(this, networkState -> {
-                    if (networkState == com.example.debtspace.config.Configuration.NetworkState.LOST) {
+                    if (networkState == AppConfig.NetworkState.LOST) {
                         onNetworkLostScreen();
                     }
                 });

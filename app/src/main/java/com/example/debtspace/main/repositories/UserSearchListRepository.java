@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.models.User;
 import com.google.firebase.firestore.CollectionReference;
@@ -32,9 +32,9 @@ public class UserSearchListRepository {
     public UserSearchListRepository(Context context) {
         mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mStorage = DebtSpaceApplication.from(context).getStorage();
-        mUsersStorage = mStorage.child(Configuration.USERS_COLLECTION_NAME);
+        mUsersStorage = mStorage.child(AppConfig.USERS_COLLECTION_NAME);
         mUsername = DebtSpaceApplication.from(context).getUsername();
-        mUsers = mDatabase.collection(Configuration.USERS_COLLECTION_NAME);
+        mUsers = mDatabase.collection(AppConfig.USERS_COLLECTION_NAME);
 
         mList = new ArrayList<>();
         mSize = 0;
@@ -42,7 +42,7 @@ public class UserSearchListRepository {
     }
 
     public void getUsersBySubstring(String string, OnDownloadDataListListener<User> listener) {
-        mUsers.orderBy(Configuration.USERNAME_FIELD_NAME)
+        mUsers.orderBy(AppConfig.USERNAME_FIELD_NAME)
                 .startAt(string.trim())
                 .endAt(string.trim() + "\uf8ff")
                 .get()
@@ -63,16 +63,16 @@ public class UserSearchListRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.d(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.d(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_USERS_FOR_SEARCH);
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_USERS_FOR_SEARCH);
                 });
     }
 
     /*private void checkFriendsAndMyself(List<User> users, OnDownloadDataListListener<User> listener) {
-        mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
                 .document(mUsername)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(documents -> {
                     Set<String> set = new HashSet<>();
@@ -93,9 +93,9 @@ public class UserSearchListRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.d(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.d(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_CHECK_FRIENDS_IN_SEARCH);
+                    listener.onFailure(ErrorsConfig.ERROR_CHECK_FRIENDS_IN_SEARCH);
                 });
     }*/
 
@@ -112,15 +112,15 @@ public class UserSearchListRepository {
                         useDefaultImage(user, listener);
                     } else {
                         if (e.getMessage() != null) {
-                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                            Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                         }
-                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_USER_IMAGE + user.getUsername());
+                        listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_USER_IMAGE + user.getUsername());
                     }
                 });
     }
 
     private void useDefaultImage(User user, OnDownloadDataListListener<User> listener) {
-        mUsersStorage.child(Configuration.DEFAULT_IMAGE_VALUE)
+        mUsersStorage.child(AppConfig.DEFAULT_IMAGE_VALUE)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
                     user.setUriImage(uri);
@@ -128,9 +128,9 @@ public class UserSearchListRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_DEFAULT_USER_IMAGE + user.getUsername());
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_DEFAULT_USER_IMAGE + user.getUsername());
                 });
     }
 

@@ -24,7 +24,7 @@
         android:id="@+id/notification_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/notification_toolbar"/>
+        android:layout_below="@id/notification_toolbar" />
 
     <ProgressBar
         android:id="@+id/notification_list_progress_bar"

@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.adapters.GroupDebtAddedListAdapter;
 import com.example.debtspace.main.adapters.GroupDebtFoundListAdapter;
 import com.example.debtspace.main.interfaces.OnImageSharingListener;
@@ -58,10 +58,10 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
 
     public GroupDebtFragment newInstance(GroupDebt debt) {
         Bundle args = new Bundle();
-        args.putString(Configuration.ID_KEY, debt.getId());
-        args.putString(Configuration.NAME_KEY, debt.getName());
-        args.putString(Configuration.DEBT_KEY, debt.getDebt());
-        args.putStringArrayList(Configuration.MEMBERS_KEY, new ArrayList<>(debt.getMembers()));
+        args.putString(AppConfig.ID_KEY, debt.getId());
+        args.putString(AppConfig.NAME_KEY, debt.getName());
+        args.putString(AppConfig.DEBT_KEY, debt.getDebt());
+        args.putStringArrayList(AppConfig.MEMBERS_KEY, new ArrayList<>(debt.getMembers()));
         GroupDebtFragment fragment = new GroupDebtFragment();
         fragment.setArguments(args);
 
@@ -93,10 +93,10 @@ public class GroupDebtFragment extends Fragment implements View.OnClickListener,
 
         initViewModel();
         if (getArguments() != null) {
-            mID = getArguments().getString(Configuration.ID_KEY);
-            mName.setText(getArguments().getString(Configuration.NAME_KEY));
-            mDebt.setText(getArguments().getString(Configuration.DEBT_KEY));
-            mViewModel.downloadAddedList(getArguments().getStringArrayList(Configuration.MEMBERS_KEY), mID);
+            mID = getArguments().getString(AppConfig.ID_KEY);
+            mName.setText(getArguments().getString(AppConfig.NAME_KEY));
+            mDebt.setText(getArguments().getString(AppConfig.DEBT_KEY));
+            mViewModel.downloadAddedList(getArguments().getStringArrayList(AppConfig.MEMBERS_KEY), mID);
             mSubmit.setText(getString(R.string.update_group));
             mIsCreate = false;
         } else {

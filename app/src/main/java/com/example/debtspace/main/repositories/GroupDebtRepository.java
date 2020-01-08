@@ -6,8 +6,8 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
@@ -47,9 +47,9 @@ public class GroupDebtRepository {
     }
 
     public void downloadFoundListData(OnDownloadDataListListener<User> listener) {
-        mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
                 .document(mUsername)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(documents -> {
                     List<String> users = new ArrayList<>();
@@ -62,9 +62,9 @@ public class GroupDebtRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_SINGLE_DEBTS);
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_SINGLE_DEBTS);
                 });
     }
 
@@ -90,14 +90,14 @@ public class GroupDebtRepository {
                 public void onFailure(String errorMessage) {
                     readinessCheck(users, listener);
 
-                    Log.e(Configuration.APPLICATION_LOG_TAG, errorMessage);
+                    Log.e(AppConfig.APPLICATION_LOG_TAG, errorMessage);
                 }
             });
         }
     }
 
     private void downloadFriendImage(User user, List<User> users, OnDownloadDataListListener<User> listener) {
-        mStorage.child(Configuration.USERS_COLLECTION_NAME)
+        mStorage.child(AppConfig.USERS_COLLECTION_NAME)
                 .child(user.getUsername())
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
@@ -111,16 +111,16 @@ public class GroupDebtRepository {
                         useDefaultUserImage(user, users, listener);
                     } else {
                         if (e.getMessage() != null) {
-                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                            Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                         }
-                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_USER_IMAGE + user.getUsername());
+                        listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_USER_IMAGE + user.getUsername());
                     }
                 });
     }
 
     private void useDefaultUserImage(User user, List<User> users, OnDownloadDataListListener<User> listener) {
-        mStorage.child(Configuration.USERS_COLLECTION_NAME)
-                .child(Configuration.DEFAULT_IMAGE_VALUE)
+        mStorage.child(AppConfig.USERS_COLLECTION_NAME)
+                .child(AppConfig.DEFAULT_IMAGE_VALUE)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
                     user.setUriImage(uri);
@@ -129,9 +129,9 @@ public class GroupDebtRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_DEFAULT_USER_IMAGE + user.getUsername());
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_DEFAULT_USER_IMAGE + user.getUsername());
                 });
     }
 
@@ -144,46 +144,46 @@ public class GroupDebtRepository {
 
     public void uploadGroup(String groupName, String debt,
                             List<String> members, Uri uri, OnUpdateDataListener listener) {
-        String groupID = mDatabase.collection(Configuration.GROUP_DEBTS_COLLECTION_NAME)
+        String groupID = mDatabase.collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
                 .document()
                 .getId();
         members.add(mUsername);
         Map<String, Object> groupData = new HashMap<>();
-        groupData.put(Configuration.NAME_KEY, groupName);
-        groupData.put(Configuration.DEBT_KEY, debt);
+        groupData.put(AppConfig.NAME_KEY, groupName);
+        groupData.put(AppConfig.DEBT_KEY, debt);
         @SuppressLint("SimpleDateFormat")
-        String date = new SimpleDateFormat(Configuration.PATTERN_DATE).format(Calendar.getInstance().getTime());
-        groupData.put(Configuration.DATE_KEY, date);
-        groupData.put(Configuration.MEMBERS_KEY, members);
+        String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
+        groupData.put(AppConfig.DATE_KEY, date);
+        groupData.put(AppConfig.MEMBERS_KEY, members);
 
-        mDatabase.collection(Configuration.GROUP_DEBTS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
                 .document(groupID)
                 .set(groupData)
                 .addOnSuccessListener(aVoid ->
                         uploadGroupDataToMembers(groupID, members, uri, listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_GROUP + groupID);
+                    listener.onFailure(ErrorsConfig.ERROR_UPLOAD_GROUP + groupID);
                 });
     }
 
     public void updateGroup(String groupID, String groupName, String debt,
                             List<String> members, OnUpdateDataListener listener) {
         members.add(mUsername);
-        mDatabase.collection(Configuration.GROUP_DEBTS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
                 .document(groupID)
-                .update(Configuration.NAME_KEY, groupName,
-                        Configuration.DEBT_KEY, debt,
-                        Configuration.MEMBERS_KEY, members)
+                .update(AppConfig.NAME_KEY, groupName,
+                        AppConfig.DEBT_KEY, debt,
+                        AppConfig.MEMBERS_KEY, members)
                 .addOnSuccessListener(aVoid ->
                         listener.onUpdateSuccessful())
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPDATE_GROUP + groupID);
+                    listener.onFailure(ErrorsConfig.ERROR_UPDATE_GROUP + groupID);
                 });
     }
 
@@ -191,9 +191,9 @@ public class GroupDebtRepository {
                                           Uri uri, OnUpdateDataListener listener) {
         mSize = users.size();
         for (String username : users) {
-            mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
+            mDatabase.collection(AppConfig.USERS_COLLECTION_NAME)
                     .document(username)
-                    .update(Configuration.GROUPS_FIELD_NAME, FieldValue.arrayUnion(groupID))
+                    .update(AppConfig.GROUPS_FIELD_NAME, FieldValue.arrayUnion(groupID))
                     .addOnSuccessListener(aVoid -> {
                         mCount++;
                         if (mCount == mSize) {
@@ -206,29 +206,29 @@ public class GroupDebtRepository {
                     })
                     .addOnFailureListener(e -> {
                         if (e.getMessage() != null) {
-                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                            Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                         }
-                        listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_GROUP_DATA_TO_MEMBERS + groupID);
+                        listener.onFailure(ErrorsConfig.ERROR_UPLOAD_GROUP_DATA_TO_MEMBERS + groupID);
                     });
         }
     }
 
     private void uploadImage(String groupID, Uri uri, OnUpdateDataListener listener) {
-        mStorage.child(Configuration.GROUP_DEBTS_COLLECTION_NAME)
+        mStorage.child(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
                 .child(groupID)
                 .putFile(uri)
                 .addOnSuccessListener(taskSnapshot ->
                         listener.onUpdateSuccessful())
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_GROUP_IMAGE + groupID);
+                    listener.onFailure(ErrorsConfig.ERROR_UPLOAD_GROUP_IMAGE + groupID);
                 });
     }
 
     public void downloadGroupImage(String groupID, OnDownloadDataListener<Uri> listener) {
-        mStorage.child(Configuration.GROUP_DEBTS_COLLECTION_NAME)
+        mStorage.child(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
                 .child(groupID)
                 .getDownloadUrl()
                 .addOnSuccessListener(listener::onDownloadSuccessful)
@@ -238,22 +238,22 @@ public class GroupDebtRepository {
                         useDefaultGroupImage(groupID, listener);
                     } else {
                         if (e.getMessage() != null) {
-                            Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                            Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                         }
-                        listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_GROUP_IMAGE + groupID);
+                        listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_GROUP_IMAGE + groupID);
                     }
                 });
     }
 
     private void useDefaultGroupImage(String groupID, OnDownloadDataListener<Uri> listener) {
-        mStorage.child(Configuration.GROUP_DEBTS_COLLECTION_NAME).child(Configuration.DEFAULT_IMAGE_VALUE)
+        mStorage.child(AppConfig.GROUP_DEBTS_COLLECTION_NAME).child(AppConfig.DEFAULT_IMAGE_VALUE)
                 .getDownloadUrl()
                 .addOnSuccessListener(listener::onDownloadSuccessful)
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DOWNLOAD_DEFAULT_GROUP_IMAGE + groupID);
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_DEFAULT_GROUP_IMAGE + groupID);
                 });
     }
 }

@@ -16,7 +16,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.viewmodels.RequestConfirmViewModel;
 import com.example.debtspace.models.User;
 
@@ -37,8 +37,8 @@ public class RequestConfirmDialog extends DialogFragment implements View.OnClick
         Bundle args = new Bundle();
         RequestConfirmDialog fragment = new RequestConfirmDialog();
 
-        args.putString(Configuration.NAME_KEY, user.getFirstName() + " " + user.getLastName());
-        args.putString(Configuration.USERNAME_KEY, user.getUsername());
+        args.putString(AppConfig.NAME_KEY, user.getFirstName() + " " + user.getLastName());
+        args.putString(AppConfig.USERNAME_KEY, user.getUsername());
         fragment.setArguments(args);
 
         return fragment;
@@ -56,9 +56,9 @@ public class RequestConfirmDialog extends DialogFragment implements View.OnClick
         mReject = view.findViewById(R.id.request_reject);
         mProgressBar = view.findViewById(R.id.request_progress_bar);
 
-        String name = Objects.requireNonNull(getArguments()).getString(Configuration.NAME_KEY);
+        String name = Objects.requireNonNull(getArguments()).getString(AppConfig.NAME_KEY);
         mName.setText(name);
-        String username = getArguments().getString(Configuration.USERNAME_KEY);
+        String username = getArguments().getString(AppConfig.USERNAME_KEY);
         mUsername.setText(username);
 
         initViewModel();

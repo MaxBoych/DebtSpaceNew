@@ -20,14 +20,13 @@
             android:textSize="24sp" />
 
         <Button
-            style="@style/buttonText"
-            android:drawableStart="@drawable/ic_exit"
             android:id="@+id/button_sign_out"
-            android:padding="8dp"
+            style="@style/buttonText"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_gravity="end"
-            />
+            android:drawableStart="@drawable/ic_exit"
+            android:padding="8dp" />
     </Toolbar>
 
     <LinearLayout
@@ -47,9 +46,9 @@
             android:layout_margin="8dp"/>
 
         <LinearLayout
-            android:layout_marginStart="8dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
             android:orientation="vertical">
 
             <TextView
@@ -75,8 +74,8 @@
                 <TextView
                     android:id="@+id/profile_total_debt_value"
                     style="@style/debt"
-                    android:layout_marginStart="80dp"
-                    android:layout_centerVertical="true"/>
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="80dp" />
             </RelativeLayout>
         </LinearLayout>
     </LinearLayout>

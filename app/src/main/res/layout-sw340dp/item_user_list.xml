@@ -2,11 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    android:background="@drawable/rounded_light"
     android:elevation="4dp"
     android:orientation="vertical"
-    android:layout_margin="8dp"
-    android:padding="8dp"
-    android:background="@drawable/rounded_light">
+    android:padding="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/item_user_search_list"
@@ -14,9 +14,9 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/user_image"

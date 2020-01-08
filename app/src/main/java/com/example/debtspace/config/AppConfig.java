@@ -1,6 +1,6 @@
 package com.example.debtspace.config;
 
-public class Configuration {
+public class AppConfig {
 
     public enum AuthStageState {
         SUCCESS,
@@ -49,10 +49,15 @@ public class Configuration {
 
     public enum NetworkState {
         AVAILABLE,
-        LOST
+        LOST,
+        NONE
     }
 
     public final static String APPLICATION_LOG_TAG = "#DS";
+
+    public final static String FRAGMENT_DEBT_LIST_TAG = "fragment_debt_list";
+    public final static String FRAGMENT_HISTORY_TAG = "fragment_history";
+    public final static String FRAGMENT_NOTIFICATION_LIST_TAG = "fragment_notification_list";
 
     public final static String USERS_COLLECTION_NAME = "users";
     public final static String DEBTS_COLLECTION_NAME = "debts";

@@ -48,23 +48,23 @@
             android:orientation="horizontal">
 
             <Button
-                android:background="@drawable/rounded_dark"
-                style="@style/buttonAuth"
                 android:id="@+id/request_accept"
+                style="@style/buttonAuth"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@drawable/rounded_dark"
                 android:text="@string/accept"
                 android:textSize="24sp" />
 
             <Button
-                style="@style/buttonText"
-                android:textColor="@color/Dark"
                 android:id="@+id/request_reject"
+                style="@style/buttonText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/reject"
+                android:textColor="@color/Dark"
                 android:textSize="24sp" />
         </LinearLayout>
     </RelativeLayout>

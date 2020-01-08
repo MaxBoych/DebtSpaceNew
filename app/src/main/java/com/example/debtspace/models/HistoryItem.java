@@ -1,6 +1,6 @@
 package com.example.debtspace.models;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 
 import java.util.Map;
 
@@ -13,10 +13,10 @@ public class HistoryItem implements Comparable<HistoryItem> {
     private String comment;
 
     public HistoryItem(Map<String, Object> map, String username) {
-        debt = (String) map.get(Configuration.DEBT_KEY);
-        name = (String) map.get(Configuration.NAME_KEY);
-        comment = (String) map.get(Configuration.COMMENT_KEY);
-        date = (String) map.get(Configuration.DATE_KEY);
+        debt = (String) map.get(AppConfig.DEBT_KEY);
+        name = (String) map.get(AppConfig.NAME_KEY);
+        comment = (String) map.get(AppConfig.COMMENT_KEY);
+        date = (String) map.get(AppConfig.DATE_KEY);
         this.username = username;
     }
 

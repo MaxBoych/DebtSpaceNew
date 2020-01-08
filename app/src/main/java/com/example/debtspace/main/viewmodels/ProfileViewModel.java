@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.main.repositories.ProfileRepository;
@@ -18,7 +18,7 @@ import java.util.List;
 public class ProfileViewModel extends ViewModel {
 
     private User mUser;
-    private MutableLiveData<Configuration.ProfileLoadStageState> mState;
+    private MutableLiveData<AppConfig.ProfileLoadStageState> mState;
     private String mErrorMessage;
     private Uri mUri;
 
@@ -28,8 +28,8 @@ public class ProfileViewModel extends ViewModel {
         mUser = new User();
 
         mState = new MutableLiveData<>();
-        mState.setValue(Configuration.ProfileLoadStageState.NONE);
-        mErrorMessage = Configuration.DEFAULT_ERROR_VALUE;
+        mState.setValue(AppConfig.ProfileLoadStageState.NONE);
+        mErrorMessage = AppConfig.DEFAULT_ERROR_VALUE;
     }
 
     public void setContext(Context context) {
@@ -37,13 +37,13 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public void downloadUserData() {
-        mState.setValue(Configuration.ProfileLoadStageState.PROGRESS);
+        mState.setValue(AppConfig.ProfileLoadStageState.PROGRESS);
         new ProfileRepository(mContext).downloadUserData(new OnFindUserListener() {
 
             @Override
             public void onSuccessful(User user) {
                 setUser(user);
-                mState.setValue(Configuration.ProfileLoadStageState.SUCCESS_LOAD_DATA);
+                mState.setValue(AppConfig.ProfileLoadStageState.SUCCESS_LOAD_DATA);
             }
 
             @Override
@@ -52,24 +52,24 @@ public class ProfileViewModel extends ViewModel {
             @Override
             public void onFailure(String errorMessage) {
                 setErrorMessage(errorMessage);
-                mState.setValue(Configuration.ProfileLoadStageState.FAIL);
+                mState.setValue(AppConfig.ProfileLoadStageState.FAIL);
             }
         });
     }
 
     public void downloadUserImage() {
-        mState.setValue(Configuration.ProfileLoadStageState.PROGRESS);
+        mState.setValue(AppConfig.ProfileLoadStageState.PROGRESS);
         new ProfileRepository(mContext).downloadImage(new OnDownloadDataListListener<Uri>() {
             @Override
             public void onDownloadSuccessful(List<Uri> list) {
                 setUri(list.get(0));
-                mState.setValue(Configuration.ProfileLoadStageState.SUCCESS_LOAD_IMAGE);
+                mState.setValue(AppConfig.ProfileLoadStageState.SUCCESS_LOAD_IMAGE);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 setErrorMessage(errorMessage);
-                mState.setValue(Configuration.ProfileLoadStageState.FAIL);
+                mState.setValue(AppConfig.ProfileLoadStageState.FAIL);
             }
         });
     }
@@ -94,7 +94,7 @@ public class ProfileViewModel extends ViewModel {
         return mUser;
     }
 
-    public LiveData<Configuration.ProfileLoadStageState> getState() {
+    public LiveData<AppConfig.ProfileLoadStageState> getState() {
         return mState;
     }
 

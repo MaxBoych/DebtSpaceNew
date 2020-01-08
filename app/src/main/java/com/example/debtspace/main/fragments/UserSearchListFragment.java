@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,6 +91,12 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
                     mProgressBar.setVisibility(View.GONE);
                     break;
                 case FAIL:
+                    mProgressBar.setVisibility(View.GONE);
+                    Toast.makeText(getContext(),
+                            mViewModel.getErrorMessage().getValue(),
+                            Toast.LENGTH_LONG)
+                            .show();
+                    break;
                 case NONE:
                     mProgressBar.setVisibility(View.GONE);
                     break;

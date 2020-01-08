@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.viewmodels.StrikeViewModel;
 import com.example.debtspace.models.HistoryItem;
 import com.example.debtspace.models.User;
@@ -41,8 +41,8 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
 
     public StrikeDialog newInstance(User user) {
         Bundle args = new Bundle();
-        args.putString(Configuration.NAME_KEY, user.getFirstName() + " " + user.getLastName());
-        args.putString(Configuration.USERNAME_KEY, user.getUsername());
+        args.putString(AppConfig.NAME_KEY, user.getFirstName() + " " + user.getLastName());
+        args.putString(AppConfig.USERNAME_KEY, user.getUsername());
         StrikeDialog fragment = new StrikeDialog();
         fragment.setArguments(args);
         return fragment;
@@ -58,8 +58,8 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
         mStrike = view.findViewById(R.id.strike_button);
         mProgressBar = view.findViewById(R.id.strike_progress_bar);
 
-        mUsername = Objects.requireNonNull(getArguments()).getString(Configuration.USERNAME_KEY);
-        mName.setText(Objects.requireNonNull(getArguments()).getString(Configuration.NAME_KEY));
+        mUsername = Objects.requireNonNull(getArguments()).getString(AppConfig.USERNAME_KEY);
+        mName.setText(Objects.requireNonNull(getArguments()).getString(AppConfig.NAME_KEY));
 
         initViewModel();
         observeLoadState();
@@ -73,7 +73,7 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
     public void onClick(View v) {
         if (v.getId() == R.id.strike_button && !StringUtilities.isEmpty(mBill.getText().toString())) {
             @SuppressLint("SimpleDateFormat")
-            String date = new SimpleDateFormat(Configuration.PATTERN_DATE).format(Calendar.getInstance().getTime());
+            String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
             HistoryItem item = new HistoryItem(mBill.getText().toString(),
                     mComment.getText().toString(), date);
             item.setUsername(mUsername);

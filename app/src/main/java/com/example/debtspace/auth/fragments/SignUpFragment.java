@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.debtspace.R;
 import com.example.debtspace.auth.interfaces.OnAuthStateChangeListener;
 import com.example.debtspace.auth.viewmodels.AuthViewModel;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.ErrorsConfig;
 
 import java.util.Objects;
 
@@ -168,7 +168,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorFirstName() {
-        mFirstName.setError(ErrorsConfiguration.ERROR_FIRST_NAME);
+        mFirstName.setError(ErrorsConfig.ERROR_FIRST_NAME);
         mLastName.setError(null);
         mUsername.setError(null);
         mEmail.setError(null);
@@ -176,7 +176,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorLastName() {
-        mLastName.setError(ErrorsConfiguration.ERROR_LAST_NAME);
+        mLastName.setError(ErrorsConfig.ERROR_LAST_NAME);
         mFirstName.setError(null);
         mUsername.setError(null);
         mEmail.setError(null);
@@ -184,7 +184,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorUsername() {
-        mUsername.setError(ErrorsConfiguration.ERROR_USERNAME);
+        mUsername.setError(ErrorsConfig.ERROR_USERNAME);
         mFirstName.setError(null);
         mLastName.setError(null);
         mEmail.setError(null);
@@ -192,7 +192,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorEmail() {
-        mEmail.setError(ErrorsConfiguration.ERROR_EMAIL);
+        mEmail.setError(ErrorsConfig.ERROR_EMAIL);
         mFirstName.setError(null);
         mLastName.setError(null);
         mUsername.setError(null);
@@ -200,7 +200,7 @@ public class SignUpFragment extends Fragment implements View.OnClickListener {
     }
 
     private void errorPassword() {
-        mPassword.setError(ErrorsConfiguration.ERROR_PASSWORD);
+        mPassword.setError(ErrorsConfig.ERROR_PASSWORD);
         mFirstName.setError(null);
         mLastName.setError(null);
         mUsername.setError(null);

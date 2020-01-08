@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.repositories.UserSearchListRepository;
 import com.example.debtspace.models.User;
@@ -18,21 +18,21 @@ import java.util.List;
 public class UserSearchListViewModel extends ViewModel {
 
     private List<User> mList;
-    private MutableLiveData<Configuration.LoadStageState> mState;
+    private MutableLiveData<AppConfig.LoadStageState> mState;
     private MutableLiveData<String> mErrorMessage;
 
     public UserSearchListViewModel() {
         mList = new ArrayList<>();
         mState = new MutableLiveData<>();
         mErrorMessage = new MutableLiveData<>();
-        mState.setValue(Configuration.LoadStageState.NONE);
-        mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
+        mState.setValue(AppConfig.LoadStageState.NONE);
+        mErrorMessage.setValue(AppConfig.DEFAULT_ERROR_VALUE);
     }
 
     public void downloadUserSearchList(CharSequence s, Context context) {
         String string = s.toString().toLowerCase();
         if (!StringUtilities.isEmpty(string)) {
-            mState.setValue(Configuration.LoadStageState.PROGRESS);
+            mState.setValue(AppConfig.LoadStageState.PROGRESS);
 
             new UserSearchListRepository(context).getUsersBySubstring(string, new OnDownloadDataListListener<User>() {
                 @Override
@@ -43,7 +43,7 @@ public class UserSearchListViewModel extends ViewModel {
                 @Override
                 public void onFailure(String errorMessage) {
                     mErrorMessage.setValue(errorMessage);
-                    mState.setValue(Configuration.LoadStageState.FAIL);
+                    mState.setValue(AppConfig.LoadStageState.FAIL);
                 }
             });
         }
@@ -51,7 +51,7 @@ public class UserSearchListViewModel extends ViewModel {
 
     private void updateList(List<User> list) {
         mList = new ArrayList<>(list);
-        mState.setValue(Configuration.LoadStageState.SUCCESS);
+        mState.setValue(AppConfig.LoadStageState.SUCCESS);
     }
 
     public User getUser(int position) {
@@ -62,7 +62,7 @@ public class UserSearchListViewModel extends ViewModel {
         return mList;
     }
 
-    public LiveData<Configuration.LoadStageState> getLoadState() {
+    public LiveData<AppConfig.LoadStageState> getLoadState() {
         return mState;
     }
 

@@ -5,8 +5,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,35 +30,35 @@ public class FriendRequestRepository {
     private void sendFriendRequest(String username, OnUpdateDataListener listener) {
         Map<String, String> map = new HashMap<>();
         @SuppressLint("SimpleDateFormat")
-        String date = new SimpleDateFormat(Configuration.PATTERN_DATE).format(Calendar.getInstance().getTime());
-        map.put(Configuration.DATE_KEY, date);
+        String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
+        map.put(AppConfig.DATE_KEY, date);
 
-        mDatabase.collection(Configuration.NOTIFICATIONS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME)
                 .document(username)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .document(mUsername)
                 .set(map)
                 .addOnSuccessListener(aVoid ->
                         listener.onUpdateSuccessful())
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_SEND_FRIEND_REQUEST + username);
+                    listener.onFailure(ErrorsConfig.ERROR_SEND_FRIEND_REQUEST + username);
                 });
     }
 
     public void checkExistenceFriends(String username, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
                 .document(mUsername)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(documents -> {
                     boolean doesNotContain = true;
                     for (DocumentSnapshot document : documents) {
                         if (document.exists() && document.getId().equals(username)) {
                             doesNotContain = false;
-                            listener.onFailure(ErrorsConfiguration.ERROR_USER_ALREADY_FRIEND + username);
+                            listener.onFailure(ErrorsConfig.ERROR_USER_ALREADY_FRIEND + username);
                             break;
                         }
                     }
@@ -69,30 +69,30 @@ public class FriendRequestRepository {
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DATA_READING_DEBTS);
+                    listener.onFailure(ErrorsConfig.ERROR_DATA_READING_DEBTS);
                 });
     }
 
     private void checkExistenceRequests(String username, OnUpdateDataListener listener) {
-        mDatabase.collection(Configuration.NOTIFICATIONS_COLLECTION_NAME)
+        mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME)
                 .document(username)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .document(mUsername)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
                     if (documentSnapshot.exists()) {
-                        listener.onFailure(ErrorsConfiguration.ERROR_REQUEST_ALREADY_SENT + username);
+                        listener.onFailure(ErrorsConfig.ERROR_REQUEST_ALREADY_SENT + username);
                     } else {
                         sendFriendRequest(username, listener);
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DATA_READING_NOTIFICATIONS);
+                    listener.onFailure(ErrorsConfig.ERROR_DATA_READING_NOTIFICATIONS);
                 });
     }
 }

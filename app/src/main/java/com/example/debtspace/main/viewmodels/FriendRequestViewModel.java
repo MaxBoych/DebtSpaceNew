@@ -6,24 +6,24 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.main.repositories.FriendRequestRepository;
 
 public class FriendRequestViewModel extends ViewModel {
 
-    private MutableLiveData<Configuration.LoadStageState> mLoadState;
+    private MutableLiveData<AppConfig.LoadStageState> mLoadState;
     private MutableLiveData<String> mErrorMessage;
 
     public FriendRequestViewModel() {
         mLoadState = new MutableLiveData<>();
         mErrorMessage = new MutableLiveData<>();
-        mLoadState.setValue(Configuration.LoadStageState.NONE);
-        mErrorMessage.setValue(Configuration.DEFAULT_ERROR_VALUE);
+        mLoadState.setValue(AppConfig.LoadStageState.NONE);
+        mErrorMessage.setValue(AppConfig.DEFAULT_ERROR_VALUE);
     }
 
     public void sendFriendRequest(String username, Context context) {
-        mLoadState.setValue(Configuration.LoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
         new FriendRequestRepository(context).checkExistenceFriends(username, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
@@ -38,15 +38,15 @@ public class FriendRequestViewModel extends ViewModel {
     }
 
     private void updateStateToSuccess() {
-        mLoadState.setValue(Configuration.LoadStageState.SUCCESS);
+        mLoadState.setValue(AppConfig.LoadStageState.SUCCESS);
     }
 
     private void updateError(String errorMessage) {
         mErrorMessage.setValue(errorMessage);
-        mLoadState.setValue(Configuration.LoadStageState.FAIL);
+        mLoadState.setValue(AppConfig.LoadStageState.FAIL);
     }
 
-    public MutableLiveData<Configuration.LoadStageState> getLoadState() {
+    public MutableLiveData<AppConfig.LoadStageState> getLoadState() {
         return mLoadState;
     }
 

@@ -19,7 +19,6 @@ import com.example.debtspace.main.adapters.DebtListAdapter;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.DebtListViewModel;
 import com.example.debtspace.models.Debt;
-import com.example.debtspace.models.DebtBond;
 import com.example.debtspace.models.GroupDebt;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -128,12 +127,12 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
         mViewModel.getEventState().observe(this, state -> {
             switch (state) {
                 case ADDED:
-                    Debt addedDebt = mViewModel.getAddedDebt();
+                    Debt addedDebt = mViewModel.getChangedDebt();
                     mAdapter.addItemToTop(addedDebt);
                     mEventProgressBar.setVisibility(View.GONE);
                     break;
                 case MODIFIED:
-                    DebtBond changedDebt = mViewModel.getChangedDebt();
+                    Debt changedDebt = mViewModel.getChangedDebt();
                     int modifyIndex = mViewModel.modifyItem(changedDebt);
                     if (modifyIndex != -1) {
                         Debt modifiedDebt = mViewModel.getDebtListItem(0);
@@ -142,8 +141,8 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
                     mEventProgressBar.setVisibility(View.GONE);
                     break;
                 case REMOVED:
-                    DebtBond removedDebt = mViewModel.getChangedDebt();
-                    int removeIndex = mViewModel.removeItem(removedDebt.getUsername());
+                    Debt removedDebt = mViewModel.getChangedDebt();
+                    int removeIndex = mViewModel.removeItem(removedDebt.getUser().getUsername());
                     if (removeIndex != -1) {
                         mAdapter.removeItem(removeIndex);
                     }

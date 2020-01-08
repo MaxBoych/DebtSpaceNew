@@ -5,8 +5,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.debtspace.application.DebtSpaceApplication;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,8 +29,8 @@ public class RequestConfirmRepository {
     public RequestConfirmRepository(Context context) {
         mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mUsername = DebtSpaceApplication.from(context).getUsername();
-        mDebts = mDatabase.collection(Configuration.DEBTS_COLLECTION_NAME);
-        mRequests = mDatabase.collection(Configuration.NOTIFICATIONS_COLLECTION_NAME);
+        mDebts = mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME);
+        mRequests = mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME);
 
         mAmount = 3;
         mCount = 0;
@@ -38,10 +38,10 @@ public class RequestConfirmRepository {
 
     public void acceptFriendRequest(String username, OnUpdateDataListener listener) {
         @SuppressLint("SimpleDateFormat")
-        String date = new SimpleDateFormat(Configuration.PATTERN_DATE).format(Calendar.getInstance().getTime());
+        String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
         Map<String, Object> data = new HashMap<>();
-        data.put(Configuration.DATE_KEY, date);
-        data.put(Configuration.DEBT_KEY, Configuration.DEFAULT_DEBT_VALUE);
+        data.put(AppConfig.DATE_KEY, date);
+        data.put(AppConfig.DEBT_KEY, AppConfig.DEFAULT_DEBT_VALUE);
 
         setData(data, mUsername, username, listener);
         setData(data, username, mUsername, listener);
@@ -51,16 +51,16 @@ public class RequestConfirmRepository {
 
     private void setData(Map<String, Object> data, String toWhom, String fromWhom, OnUpdateDataListener listener) {
         mDebts.document(toWhom)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .document(fromWhom)
                 .set(data)
                 .addOnSuccessListener(aVoid ->
                         readinessCheck(listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_UPLOAD_DEBT_DATA + fromWhom);
+                    listener.onFailure(ErrorsConfig.ERROR_UPLOAD_DEBT_DATA + fromWhom);
                 });
     }
 
@@ -70,16 +70,16 @@ public class RequestConfirmRepository {
 
     private void deleteNotificationData(String username, OnUpdateDataListener listener) {
         mRequests.document(mUsername)
-                .collection(Configuration.FRIENDS_COLLECTION_NAME)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .document(username)
                 .delete()
                 .addOnSuccessListener(aVoid ->
                         readinessCheck(listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_DELETE_REQUEST + username);
+                    listener.onFailure(ErrorsConfig.ERROR_DELETE_REQUEST + username);
                 });
     }
 

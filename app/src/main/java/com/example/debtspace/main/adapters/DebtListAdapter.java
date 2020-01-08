@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
-import com.example.debtspace.config.Configuration;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.Debt;
 import com.example.debtspace.models.GroupDebt;
@@ -82,7 +81,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == Configuration.GROUP_DEBT_TYPE) {
+        if (viewType == AppConfig.GROUP_DEBT_TYPE) {
             View view = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.group_debt, parent, false);
@@ -99,9 +98,9 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getItemViewType(int position) {
         Debt debt = mList.get(position);
         if (debt instanceof GroupDebt) {
-            return Configuration.GROUP_DEBT_TYPE;
+            return AppConfig.GROUP_DEBT_TYPE;
         } else if (debt != null) {
-            return Configuration.DEBT_TYPE;
+            return AppConfig.DEBT_TYPE;
         } else {
             return -1;
         }
@@ -110,7 +109,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
-            case Configuration.GROUP_DEBT_TYPE:
+            case AppConfig.GROUP_DEBT_TYPE:
                 GroupDebt groupDebt = (GroupDebt) mList.get(position);
                 GroupDebtViewHolder groupDebtViewHolder = (GroupDebtViewHolder) holder;
 
@@ -139,7 +138,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 groupDebtViewHolder.total_debt.setText(groupDebt.getDebt());
                 break;
 
-            case Configuration.DEBT_TYPE:
+            case AppConfig.DEBT_TYPE:
                 DebtViewHolder debtViewHolder = (DebtViewHolder) holder;
 
                 Debt debt = mList.get(position);
@@ -254,7 +253,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             if (debt1 instanceof GroupDebt) {
                 continue;
             }
-            Log.d("#DS", debt1.getUser().getUsername());
         }
 
         this.notifyItemMoved(index, 0);

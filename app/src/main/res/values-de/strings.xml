@@ -8,12 +8,12 @@
     <string name="error">Die eingegebenen Daten sind nicht korrekt</string>
     <string name="first_name">Name</string>
     <string name="history">Geschichte</string>
-    <string name="home">"Zuhause "</string>
+    <string name="debts">Schulden</string>
     <string name="last_name">Familienname</string>
     <string name="notifications">Benachrichtigungen</string>
     <string name="password">Passwort</string>
     <string name="reject">Ablehnen</string>
-    <string name="settings">"die Einstellungen "</string>
+    <string name="profile">Profil</string>
     <string name="account">Konto</string>
     <string name="support">Unterstützung</string>
     <string name="language">Sprache</string>
@@ -42,4 +42,5 @@
     <string name="add_friend">Freund hinzufügen</string>
     <string name="cancel">Stornieren</string>
     <string name="create_group">Gruppe erstellen</string>
+    <string name="back">Zurück</string>
 </resources>

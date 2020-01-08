@@ -3,8 +3,8 @@ package com.example.debtspace.auth.repositories;
 import android.util.Log;
 
 import com.example.debtspace.auth.interfaces.OnAuthProgressListener;
-import com.example.debtspace.config.Configuration;
-import com.example.debtspace.config.ErrorsConfiguration;
+import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.models.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserProfileChangeRequest;
@@ -28,9 +28,9 @@ public class AuthRepository {
                         listener.onSuccessful())
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_SIGN_IN);
+                    listener.onFailure(ErrorsConfig.ERROR_SIGN_IN);
                 });
     }
 
@@ -43,26 +43,26 @@ public class AuthRepository {
                         createUser(firstName, lastName, username, listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_SIGN_UP);
+                    listener.onFailure(ErrorsConfig.ERROR_SIGN_UP);
                 });
     }
 
     private void createUser(String firstName, String lastName, String username,
                             OnAuthProgressListener listener) {
 
-        User user = new User(firstName, lastName, username, Configuration.DEFAULT_DEBT_VALUE);
-        mDatabase.collection(Configuration.USERS_COLLECTION_NAME)
+        User user = new User(firstName, lastName, username, AppConfig.DEFAULT_DEBT_VALUE);
+        mDatabase.collection(AppConfig.USERS_COLLECTION_NAME)
                 .document(username)
                 .set(user)
                 .addOnSuccessListener(voidTask ->
                         setDisplayName(username, listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_CREATE_USER);
+                    listener.onFailure(ErrorsConfig.ERROR_CREATE_USER);
                 });
     }
 
@@ -77,9 +77,9 @@ public class AuthRepository {
                         listener.onSuccessful())
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
-                        Log.e(Configuration.APPLICATION_LOG_TAG, e.getMessage());
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfiguration.ERROR_SAVE_USERNAME);
+                    listener.onFailure(ErrorsConfig.ERROR_SAVE_USERNAME);
                 });
     }
 
