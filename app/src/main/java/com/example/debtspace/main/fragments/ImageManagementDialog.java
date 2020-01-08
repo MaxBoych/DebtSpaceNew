@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -83,7 +84,6 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
                     }
                 }
         );
-
         if (getArguments() != null) {
             mImageID = getArguments().getString(Configuration.ID_KEY);
         }
@@ -211,6 +211,7 @@ public class ImageManagementDialog extends DialogFragment implements View.OnClic
         if (mImageUri != null) {
             Glide.with(Objects.requireNonNull(getContext()))
                     .load(mImageUri)
+                    .override(mToolbar.getWidth(), mToolbar.getWidth())
                     .centerCrop()
                     .into(mSelectedImage);
         }

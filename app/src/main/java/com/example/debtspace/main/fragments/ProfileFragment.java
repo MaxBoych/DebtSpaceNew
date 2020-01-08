@@ -1,5 +1,6 @@
 package com.example.debtspace.main.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -141,6 +142,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void setUserData(User user) {
         if (mDoesDataSave) {
             mScore.setText(user.getScore());
@@ -159,13 +161,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             GradientDrawable debtBackground = (GradientDrawable) mScore.getBackground();
             double debtValue = Double.parseDouble(user.getScore());
             if (debtValue < 0) {
-                mScore.setText((int) -debtValue);
+                mScore.setText(Double.toString(-debtValue));
                 debtBackground.setColor(Color.RED);
             } else if (debtValue == 0) {
                 mScore.setText(0);
                 debtBackground.setColor(Color.GRAY);
             } else {
-                mScore.setText((int) debtValue);
+                mScore.setText(Double.toString(debtValue));
                 debtBackground.setColor(Color.GREEN);
             }
 

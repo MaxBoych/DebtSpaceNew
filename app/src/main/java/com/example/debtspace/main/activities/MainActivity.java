@@ -8,9 +8,11 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.example.debtspace.R;
 import com.example.debtspace.application.DebtSpaceApplication;
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
             switch (menuItem.getItemId()) {
                 case R.id.action_profile:
                     onProfileScreen();
+
                     break;
 
                 case R.id.action_home:

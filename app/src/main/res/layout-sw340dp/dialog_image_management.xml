@@ -9,51 +9,45 @@
     android:elevation="4dp"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/buttons_layout"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_below="@id/image_layout"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/selected_image"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"/>
 
         <Button
+            android:layout_below="@id/selected_image"
+            android:layout_width="match_parent"
+            android:gravity="start"
             style="@style/buttonText"
             android:id="@+id/upload_image_button"
             android:textColor="@color/Dark"
             android:padding="16dp"
             android:text="@string/upload_image" />
-    </LinearLayout>
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
-        android:layout_below="@+id/buttons_layout"
+        <com.google.android.material.navigation.NavigationView
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/upload_image_button"
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:fitsSystemWindows="true"
+            app:itemIconTint="@color/colorPrimaryDark"
+            app:itemTextColor="@color/Dark"
+            app:menu="@menu/image_menu"/>
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/image_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:fitsSystemWindows="true"
-        app:itemIconTint="@color/colorPrimaryDark"
-        app:itemTextColor="@color/Dark"
-        app:menu="@menu/image_menu"/>
+        android:layout_centerInParent="true"
+        android:indeterminate="true" />
 
-
-    <RelativeLayout
-        android:id="@+id/image_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center">
-
-        <ImageView
-            android:id="@+id/selected_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/selected_image"
-            android:layout_centerInParent="true" />
-
-        <ProgressBar
-            android:id="@+id/image_progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:indeterminate="true" />
-    </RelativeLayout>
 </RelativeLayout>
