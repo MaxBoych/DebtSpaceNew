@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -158,10 +159,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             GradientDrawable debtBackground = (GradientDrawable) mScore.getBackground();
             double debtValue = Double.parseDouble(user.getScore());
             if (debtValue < 0) {
+                mScore.setText((int) -debtValue);
                 debtBackground.setColor(Color.RED);
             } else if (debtValue == 0) {
+                mScore.setText(0);
                 debtBackground.setColor(Color.GRAY);
             } else {
+                mScore.setText((int) debtValue);
                 debtBackground.setColor(Color.GREEN);
             }
 
@@ -240,7 +244,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        if(menuItem.getItemId() == 2131296512) {
+        if(menuItem.getItemId() == 2131296514) {
             showChangeLanguageDialog();
         }
         return true;
