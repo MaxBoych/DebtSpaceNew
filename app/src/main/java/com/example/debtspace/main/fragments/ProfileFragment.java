@@ -149,10 +149,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             GradientDrawable debtBackground = (GradientDrawable) mScore.getBackground();
             double debtValue = Double.parseDouble(user.getScore());
             if (debtValue < 0) {
+                mScore.setText(Double.toString(-debtValue));
                 debtBackground.setColor(Color.RED);
             } else if (debtValue == 0) {
+                mScore.setText(0);
                 debtBackground.setColor(Color.GRAY);
             } else {
+                mScore.setText(Double.toString(debtValue));
                 debtBackground.setColor(Color.GREEN);
             }
         } else {
