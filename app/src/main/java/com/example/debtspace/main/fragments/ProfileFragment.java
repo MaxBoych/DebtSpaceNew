@@ -52,6 +52,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     private TextView mScore;
     private MenuItem mUsername;
     private ProgressBar mProgressBar;
+    private ProgressBar mEventProgressBar;
 
     private OnMainStateChangeListener mOnMainStateChangeListener;
 
@@ -69,8 +70,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        mImage = view.findViewById(R.id.profile_image);
-        mName = view.findViewById(R.id.profile_name);
+        mImage = view.findViewById(R.id.strike_user_image);
+        mName = view.findViewById(R.id.strike_user_name);
         mScore = view.findViewById(R.id.profile_total_debt_value);
 
         NavigationView navigationView = view.findViewById(R.id.nav_view);
@@ -79,6 +80,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         mUsername.setTitle(DebtSpaceApplication.from(Objects.requireNonNull(getContext())).getUsername());
         navigationView.setNavigationItemSelectedListener(this);
         mProgressBar = view.findViewById(R.id.profile_progress_bar);
+        mEventProgressBar = view.findViewById(R.id.profile_event_progress_bar);
 
         getSavedData();
 
@@ -92,7 +94,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.profile_image) {
+        if (v.getId() == R.id.strike_user_image) {
             mOnMainStateChangeListener.onImageManagementScreen(AppConfig.NONE_ID, this);
         } else if (v.getId() == R.id.button_sign_out) {
             mOnMainStateChangeListener.onAuthScreen();
@@ -109,6 +111,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         mViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
         mViewModel.setContext(getContext());
         observeLoadState();
+        observeEventState();
         mViewModel.downloadUserData();
     }
 
@@ -117,28 +120,61 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             switch (state) {
                 case SUCCESS_LOAD_DATA:
                     setUserData(mViewModel.getUser());
-                    mProgressBar.setVisibility(View.GONE);
+                    setLoadProgressBarVisibility(View.GONE);
                     break;
                 case SUCCESS_LOAD_IMAGE:
                     mUri = mViewModel.getUri();
                     drawImage();
-                    mProgressBar.setVisibility(View.GONE);
+                    setLoadProgressBarVisibility(View.GONE);
                     break;
                 case FAIL:
-                    Toast.makeText(getContext(),
-                            mViewModel.getErrorMessage(),
-                            Toast.LENGTH_LONG)
-                            .show();
-                    mProgressBar.setVisibility(View.GONE);
+                    showError();
+                    setLoadProgressBarVisibility(View.GONE);
                     break;
                 case NONE:
-                    mProgressBar.setVisibility(View.GONE);
+                    setLoadProgressBarVisibility(View.GONE);
                     break;
                 case PROGRESS:
-                    mProgressBar.setVisibility(View.VISIBLE);
+                    setLoadProgressBarVisibility(View.VISIBLE);
                     break;
             }
         });
+    }
+
+    private void showError() {
+        Toast.makeText(getContext(),
+                mViewModel.getErrorMessage(),
+                Toast.LENGTH_LONG)
+                .show();
+    }
+
+    private void setLoadProgressBarVisibility(int view) {
+        mProgressBar.setVisibility(view);
+    }
+
+    private void observeEventState() {
+        mViewModel.getEventState().observe(this, state -> {
+            switch (state) {
+                case MODIFIED:
+                    updateUserData(mViewModel.getUser());
+                    setEventProgressBarVisibility(View.GONE);
+                    break;
+                case PROGRESS:
+                    setEventProgressBarVisibility(View.VISIBLE);
+                    break;
+                case NONE:
+                    setEventProgressBarVisibility(View.GONE);
+                    break;
+                case FAIL:
+                    setEventProgressBarVisibility(View.GONE);
+                    showError();
+                    break;
+            }
+        });
+    }
+
+    private void setEventProgressBarVisibility(int view) {
+        mEventProgressBar.setVisibility(view);
     }
 
     @SuppressLint("SetTextI18n")
@@ -157,6 +193,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         if (mUri == null) {
             mViewModel.downloadUserImage();
         }
+        mViewModel.observeUserDataEvents();
+    }
+
+    private void updateUserData(User user) {
+        setScore(user);
     }
 
     private void setScore(User user) {
@@ -241,7 +282,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        if(menuItem.getItemId() == 2131296514) {
+        if (menuItem.getItemId() == 2131296514) {
             showChangeLanguageDialog();
         }
         return true;

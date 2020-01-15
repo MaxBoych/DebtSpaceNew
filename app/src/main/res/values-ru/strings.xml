@@ -21,7 +21,7 @@
     <string name="sing_in">Вход</string>
     <string name="sing_up">Регистрация</string>
     <string name="strike">Страйк</string>
-    <string name="submit_request">Принять запрос в друзья?</string>
+    <string name="confirm_request">Принять запрос в друзья?</string>
     <string name="total_debt">Общий долг:</string>
     <string name="user_search">Поиск пользователя</string>
     <string name="name">Никнейм</string>

@@ -78,6 +78,7 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.notifyDataSetChanged();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -86,12 +87,14 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     .from(parent.getContext())
                     .inflate(R.layout.group_debt, parent, false);
             return new  GroupDebtViewHolder(view);
-        } else {
+        } else if (viewType == AppConfig.DEBT_TYPE) {
             View view = LayoutInflater
                     .from(parent.getContext())
                     .inflate(R.layout.debt, parent, false);
             return new DebtViewHolder(view);
         }
+
+        return null;
     }
 
     @Override
@@ -198,7 +201,6 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             name = itemView.findViewById(R.id.debt_user_name);
             debt = itemView.findViewById(R.id.debt_user_debt);
 
-
             itemView.setOnClickListener(v -> {
                 if (mOnListItemClickListener != null) {
                     int position = getAdapterPosition();
@@ -260,7 +262,9 @@ public class DebtListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void removeItem(int index) {
-        mList.remove(index);
-        this.notifyItemRemoved(index);
+        if (index != -1) {
+            mList.remove(index);
+            this.notifyItemRemoved(index);
+        }
     }
 }

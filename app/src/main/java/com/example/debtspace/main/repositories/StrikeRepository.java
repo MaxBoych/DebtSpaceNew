@@ -17,6 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 public class StrikeRepository {
 
@@ -78,13 +79,14 @@ public class StrikeRepository {
         updateScore(mUsername, AppConfig.MINUS_STRING + debt, listener);
         updateScore(username, debt, listener);
 
+        String id = UUID.randomUUID().toString();
         HistoryItem historyCurrentUser = new HistoryItem(Double.toString(-debtRequest),
-                item.getComment(), item.getDate());
-        uploadDebt(mUsername, username, historyCurrentUser, listener);
+                item.getComment(), item.getDate(), username);
+        uploadDebt(id, mUsername, username, historyCurrentUser, listener);
 
         HistoryItem historyFriend = new HistoryItem(debt,
-                item.getComment(), item.getDate());
-        uploadDebt(username, mUsername, historyFriend, listener);
+                item.getComment(), item.getDate(), mUsername);
+        uploadDebt(id, username, mUsername, historyFriend, listener);
 
 
     }
@@ -130,22 +132,22 @@ public class StrikeRepository {
 
     }
 
-    private void uploadDebt(String toWhom, String fromWhom, HistoryItem data, OnUpdateDataListener listener) {
+    private void uploadDebt(String id, String toWhom, String fromWhom, HistoryItem item, OnUpdateDataListener listener) {
         FirebaseUtilities.findUserByUsername(fromWhom, new OnFindUserListener() {
             @Override
             public void onSuccessful(User user) {
-                data.setName(user.getFirstName() + " " + user.getLastName());
-                sendDebtToHistory(toWhom, fromWhom, data, listener);
+                item.setName(user.getFirstName() + " " + user.getLastName());
+                sendDebtToHistory(id, toWhom, fromWhom, item, listener);
             }
 
             @Override
             public void onDoesNotExist() {
-                sendDebtToHistory(toWhom, fromWhom, data, listener);
+                sendDebtToHistory(id, toWhom, fromWhom, item, listener);
             }
 
             @Override
             public void onFailure(String errorMessage) {
-                sendDebtToHistory(toWhom, fromWhom, data, listener);
+                sendDebtToHistory(id, toWhom, fromWhom, item, listener);
             }
         });
     }
@@ -156,9 +158,8 @@ public class StrikeRepository {
                 .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .document(fromWhom)
                 .update(updated)
-                .addOnSuccessListener(aVoid -> {
-                    readinessCheck(listener);
-                })
+                .addOnSuccessListener(aVoid ->
+                        readinessCheck(listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
                         Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
@@ -167,16 +168,14 @@ public class StrikeRepository {
                 });
     }
 
-    private void sendDebtToHistory(String toWhom, String fromWhom, HistoryItem data, OnUpdateDataListener listener) {
+    private void sendDebtToHistory(String id, String toWhom, String fromWhom, HistoryItem item, OnUpdateDataListener listener) {
         mDatabase.collection(AppConfig.HISTORY_COLLECTION_NAME)
                 .document(toWhom)
                 .collection(AppConfig.DATES_COLLECTION_NAME)
-                .document(fromWhom)
-                .set(data)
-                .addOnSuccessListener(aVoid -> {
-                    Log.d("#DS", "send to history successful");
-                    readinessCheck(listener);
-                })
+                .document(id)
+                .set(item)
+                .addOnSuccessListener(aVoid ->
+                        readinessCheck(listener))
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
                         Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());

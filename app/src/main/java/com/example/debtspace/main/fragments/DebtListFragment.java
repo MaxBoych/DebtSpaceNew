@@ -82,10 +82,6 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
         mList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
 
         mAdapter = new DebtListAdapter(mList, mViewModel.getDebtList(), getContext());
-        /*mAdapter.setOnLoadMoreListener(() ->
-                mList.post(() ->
-                        mAdapter.notifyDataSetChanged())
-        );*/
         mAdapter.setOnListItemClickListener(position -> {
             Debt item = mViewModel.getDebtListItem(position);
             if (item instanceof GroupDebt) {
@@ -102,66 +98,91 @@ public class DebtListFragment extends Fragment implements View.OnClickListener {
         mViewModel.getLoadState().observe(this, state -> {
             switch (state) {
                 case SUCCESS:
-                    mProgressBar.setVisibility(View.GONE);
-                    mAdapter.updateList(mViewModel.getDebtList());
-                    mViewModel.addListChangeListener();
+                    updateAdapter();
+                    setLoadProgressBarVisibility(View.GONE);
                     break;
                 case NONE:
-                    mProgressBar.setVisibility(View.GONE);
+                    setLoadProgressBarVisibility(View.GONE);
                     break;
                 case FAIL:
-                    mProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),
-                            mViewModel.getErrorMessage().getValue(),
-                            Toast.LENGTH_LONG)
-                            .show();
+                    setLoadProgressBarVisibility(View.GONE);
+                    showError();
                     break;
                 case PROGRESS:
-                    mProgressBar.setVisibility(View.VISIBLE);
+                    setLoadProgressBarVisibility(View.VISIBLE);
                     break;
             }
         });
+    }
+
+    private void updateAdapter() {
+        mAdapter.updateList(mViewModel.getDebtList());
+        mViewModel.observeDebtEvents();
+    }
+
+    private void showError() {
+        Toast.makeText(getContext(),
+                mViewModel.getErrorMessage().getValue(),
+                Toast.LENGTH_LONG)
+                .show();
+    }
+
+    private void setLoadProgressBarVisibility(int view) {
+        mProgressBar.setVisibility(view);
     }
 
     private void observeEventState() {
         mViewModel.getEventState().observe(this, state -> {
             switch (state) {
                 case ADDED:
-                    Debt addedDebt = mViewModel.getChangedDebt();
-                    mAdapter.addItemToTop(addedDebt);
-                    mEventProgressBar.setVisibility(View.GONE);
+                    eventAdded();
+                    setEventProgressBarVisibility(View.GONE);
                     break;
                 case MODIFIED:
-                    Debt changedDebt = mViewModel.getChangedDebt();
-                    int modifyIndex = mViewModel.modifyItem(changedDebt);
-                    if (modifyIndex != -1) {
-                        Debt modifiedDebt = mViewModel.getDebtListItem(0);
-                        mAdapter.setAndMoveItem(modifyIndex, modifiedDebt);
-                    }
-                    mEventProgressBar.setVisibility(View.GONE);
+                    eventModified();
+                    setEventProgressBarVisibility(View.GONE);
                     break;
                 case REMOVED:
-                    Debt removedDebt = mViewModel.getChangedDebt();
-                    int removeIndex = mViewModel.removeItem(removedDebt.getUser().getUsername());
-                    if (removeIndex != -1) {
-                        mAdapter.removeItem(removeIndex);
-                    }
-                    mEventProgressBar.setVisibility(View.GONE);
+                    eventRemoved();
+                    setEventProgressBarVisibility(View.GONE);
                     break;
                 case PROGRESS:
-                    mEventProgressBar.setVisibility(View.VISIBLE);
+                    setEventProgressBarVisibility(View.VISIBLE);
                     break;
                 case NONE:
-                    mEventProgressBar.setVisibility(View.GONE);
+                    setEventProgressBarVisibility(View.GONE);
                     break;
                 case FAIL:
-                    mEventProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),
-                            mViewModel.getErrorMessage().getValue(),
-                            Toast.LENGTH_LONG)
-                            .show();
+                    setEventProgressBarVisibility(View.GONE);
+                    showError();
                     break;
             }
         });
+    }
+
+    private void eventAdded() {
+        Debt addedDebt = mViewModel.getChangedDebt();
+        mAdapter.addItemToTop(addedDebt);
+    }
+
+    private void eventModified() {
+        Debt changedDebt = mViewModel.getChangedDebt();
+        int modifyIndex = mViewModel.modifyItem(changedDebt);
+        if (modifyIndex != -1) {
+            Debt modifiedDebt = mViewModel.getDebtListItem(0);
+            mAdapter.setAndMoveItem(modifyIndex, modifiedDebt);
+        }
+    }
+
+    private void eventRemoved() {
+        Debt removedDebt = mViewModel.getChangedDebt();
+        int removeIndex = mViewModel.removeItem(removedDebt);
+        if (removeIndex != -1) {
+            mAdapter.removeItem(removeIndex);
+        }
+    }
+
+    private void setEventProgressBarVisibility(int view) {
+        mEventProgressBar.setVisibility(view);
     }
 }

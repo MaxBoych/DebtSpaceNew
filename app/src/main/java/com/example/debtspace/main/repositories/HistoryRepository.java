@@ -39,7 +39,8 @@ public class HistoryRepository {
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
                         Map<String, Object> data = document.getData();
-                        items.add(new HistoryItem(data, document.getId()));
+                        String id = document.getId();
+                        items.add(new HistoryItem(id, data));
                     }
                     listener.onDownloadSuccessful(items);
                 })
@@ -61,9 +62,12 @@ public class HistoryRepository {
                     DocumentSnapshot document = change.getDocument();
                     Map<String, Object> data = document.getData();
                     if (data != null) {
-                        HistoryItem item = new HistoryItem(data, document.getId());
+                        String id = document.getId();
+                        HistoryItem item = new HistoryItem(id, data);
                         if (change.getType() == DocumentChange.Type.ADDED) {
                             listener.onAdded(item);
+                        } else {
+                            listener.onRemoved(item);
                         }
                     }
                 }

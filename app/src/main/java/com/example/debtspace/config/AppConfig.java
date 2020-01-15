@@ -56,6 +56,8 @@ public class AppConfig {
     public final static String APPLICATION_LOG_TAG = "#DS";
 
     public final static String FRAGMENT_DEBT_LIST_TAG = "fragment_debt_list";
+    public final static String FRAGMENT_USER_SEARCH_TAG = "fragment_user_search";
+    public final static String FRAGMENT_PROFILE_TAG = "fragment_profile";
     public final static String FRAGMENT_HISTORY_TAG = "fragment_history";
     public final static String FRAGMENT_NOTIFICATION_LIST_TAG = "fragment_notification_list";
 
@@ -71,6 +73,9 @@ public class AppConfig {
     public final static String USERNAME_FIELD_NAME = "username";
     public final static String SCORE_FIELD_NAME = "score";
 
+    public final static String LETTERS_AND_DIGITS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvxyz";
+    public final static int RANDOM_CODE_SIZE = 5;
+    public final static long BATCH_SIZE = 10;
     public final static String DEFAULT_DEBT_VALUE = "0";
     public final static String STRING_DEFAULT = "default";
     public final static String DEFAULT_IMAGE_VALUE = STRING_DEFAULT + ".jpg";
@@ -79,6 +84,8 @@ public class AppConfig {
 
     public final static int DEBT_TYPE = 0;
     public final static int GROUP_DEBT_TYPE = 1;
+    public final static int FRIEND_REQUEST_TYPE = 2;
+    public final static int DEBT_REQUEST_TYPE = 3;
     public final static String NONE_ID = "-1";
     public final static String MINUS_STRING = "-";
 
@@ -95,6 +102,14 @@ public class AppConfig {
     public final static String MEMBERS_KEY = "members";
     public final static String COMMENT_KEY = "comment";
     public final static String DATE_KEY = "date";
+    public final static String DEBT_DATE_KEY = "debtDate";
+    public final static int SEARCH_FILTER_ALL_USERS_ID = 0;
+    public final static int SEARCH_FILTER_FRIENDS_ID = 1;
+    public final static int SEARCH_FILTER_GROUPS_ID = 2;
+    /*public final static String ACTION_KEY = "action";
+    public final static int ACTION_TYPE_SEND_DEBT_REQUEST = 0;
+    public final static int ACTION_TYPE_CONFIRM_DEBT_REQUEST = 1;
+    public final static int ACTION_TYPE_CLEAR_WHOLE_HISTORY = 2;*/
 
     public final static String INTENT_IMAGE_TYPE = "image/*";
     public final static String INTENT_IMAGE_TITLE = "Select image";

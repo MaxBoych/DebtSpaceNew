@@ -1,6 +1,6 @@
 package com.example.debtspace.main.fragments;
 
-import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,25 +19,34 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.debtspace.R;
 import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.StrikeViewModel;
 import com.example.debtspace.models.HistoryItem;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.StringUtilities;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Objects;
+import java.util.UUID;
 
 public class StrikeDialog extends DialogFragment implements View.OnClickListener {
 
     private EditText mBill;
     private Button mStrike;
+    private Button mRemove;
     private TextView mName;
     private TextView mComment;
     private String mUsername;
 
     private StrikeViewModel mViewModel;
     private ProgressBar mProgressBar;
+
+    private OnMainStateChangeListener mOnMainStateChangeListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mOnMainStateChangeListener = (OnMainStateChangeListener) context;
+    }
 
     public StrikeDialog newInstance(User user) {
         Bundle args = new Bundle();
@@ -52,10 +61,11 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_strike, container, false);
-        mName = view.findViewById(R.id.profile_name);
+        mName = view.findViewById(R.id.strike_user_name);
         mComment = view.findViewById(R.id.strike_comment);
         mBill = view.findViewById(R.id.strike_bill);
         mStrike = view.findViewById(R.id.strike_button);
+        mRemove = view.findViewById(R.id.remove_friend_button);
         mProgressBar = view.findViewById(R.id.strike_progress_bar);
 
         mUsername = Objects.requireNonNull(getArguments()).getString(AppConfig.USERNAME_KEY);
@@ -72,12 +82,13 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.strike_button && !StringUtilities.isEmpty(mBill.getText().toString())) {
-            @SuppressLint("SimpleDateFormat")
-            String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
+            String date = StringUtilities.getCurrentDateAndTime();
             HistoryItem item = new HistoryItem(mBill.getText().toString(),
-                    mComment.getText().toString(), date);
-            item.setUsername(mUsername);
+                    mComment.getText().toString(), date, mUsername);
             doStrike(item);
+        } else if (v.getId() == R.id.remove_friend_button) {
+            mOnMainStateChangeListener.onFriendRemovalScreen(mName.getText().toString(), mUsername);
+            dismiss();
         }
     }
 

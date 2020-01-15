@@ -15,6 +15,7 @@ import com.example.debtspace.main.repositories.HistoryRepository;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 public class HistoryViewModel extends ViewModel {
 
@@ -25,7 +26,7 @@ public class HistoryViewModel extends ViewModel {
     private MutableLiveData<AppConfig.EventStageState> mEventState;
     private MutableLiveData<String> mErrorMessage;
 
-    private HistoryItem mAddedRequest;
+    private HistoryItem mChangedRequest;
 
     public HistoryViewModel() {
         mList = new ArrayList<>();
@@ -91,7 +92,7 @@ public class HistoryViewModel extends ViewModel {
 
     private void notifyAdded(HistoryItem item) {
         mEventState.setValue(AppConfig.EventStageState.PROGRESS);
-        mAddedRequest = item;
+        mChangedRequest = item;
         boolean doesNotExist = addItemToTop(item);
         if (doesNotExist) {
             mEventState.setValue(AppConfig.EventStageState.ADDED);
@@ -103,7 +104,7 @@ public class HistoryViewModel extends ViewModel {
     private boolean addItemToTop(HistoryItem item) {
         if (mList != null) {
             for (HistoryItem i : mList) {
-                if (i.getDate().equals(item.getDate()) && i.getUsername().equals(item.getUsername())) {
+                if (i.getId().equals(item.getId())) {
                     return false;
                 }
             }
@@ -112,9 +113,32 @@ public class HistoryViewModel extends ViewModel {
         return true;
     }
 
+    public int removeItem(HistoryItem item) {
+        if (mList != null) {
+            ListIterator<HistoryItem> iterator = mList.listIterator();
+            while (iterator.hasNext()) {
+                int index = iterator.nextIndex();
+                HistoryItem i = iterator.next();
+                if (i.getId().equals(item.getId())) {
+                    iterator.remove();
+                    return index;
+                }
+            }
+        }
+        return -1;
+    }
+
     private void notifyEventFailure(String errorMessage) {
         mErrorMessage.setValue(errorMessage);
         mEventState.setValue(AppConfig.EventStageState.FAIL);
+    }
+
+    public void clearViewModel() {
+        mList.clear();
+    }
+
+    public HistoryItem getHistoryItem(int position) {
+        return mList.get(position);
     }
 
     public List<HistoryItem> getList() {
@@ -129,8 +153,8 @@ public class HistoryViewModel extends ViewModel {
         return mEventState;
     }
 
-    public HistoryItem getAddedRequest() {
-        return mAddedRequest;
+    public HistoryItem getChangedRequest() {
+        return mChangedRequest;
     }
 
     public LiveData<String> getErrorMessage() {

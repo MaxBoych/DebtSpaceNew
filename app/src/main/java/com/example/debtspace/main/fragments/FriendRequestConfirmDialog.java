@@ -18,11 +18,11 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.debtspace.R;
 import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.viewmodels.RequestConfirmViewModel;
-import com.example.debtspace.models.User;
+import com.example.debtspace.models.FriendRequest;
 
 import java.util.Objects;
 
-public class RequestConfirmDialog extends DialogFragment implements View.OnClickListener {
+public class FriendRequestConfirmDialog extends DialogFragment implements View.OnClickListener {
 
     private TextView mName;
     private TextView mUsername;
@@ -33,12 +33,12 @@ public class RequestConfirmDialog extends DialogFragment implements View.OnClick
 
     private ProgressBar mProgressBar;
 
-    public RequestConfirmDialog newInstance(User user) {
+    public FriendRequestConfirmDialog newInstance(FriendRequest request) {
         Bundle args = new Bundle();
-        RequestConfirmDialog fragment = new RequestConfirmDialog();
+        FriendRequestConfirmDialog fragment = new FriendRequestConfirmDialog();
 
-        args.putString(AppConfig.NAME_KEY, user.getFirstName() + " " + user.getLastName());
-        args.putString(AppConfig.USERNAME_KEY, user.getUsername());
+        args.putString(AppConfig.NAME_KEY, request.getName());
+        args.putString(AppConfig.USERNAME_KEY, request.getUsername());
         fragment.setArguments(args);
 
         return fragment;
@@ -48,13 +48,13 @@ public class RequestConfirmDialog extends DialogFragment implements View.OnClick
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.dialog_request_confirm, container, false);
+        View view = inflater.inflate(R.layout.dialog_friend_request_confirm, container, false);
 
-        mName = view.findViewById(R.id.request_name);
-        mUsername = view.findViewById(R.id.request_username);
+        mName = view.findViewById(R.id.user_name);
+        mUsername = view.findViewById(R.id.user_username);
         mAccept = view.findViewById(R.id.request_accept);
         mReject = view.findViewById(R.id.request_reject);
-        mProgressBar = view.findViewById(R.id.request_progress_bar);
+        mProgressBar = view.findViewById(R.id.progress_bar);
 
         String name = Objects.requireNonNull(getArguments()).getString(AppConfig.NAME_KEY);
         mName.setText(name);

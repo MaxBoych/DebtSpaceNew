@@ -1,6 +1,5 @@
 package com.example.debtspace.main.repositories;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -14,15 +13,15 @@ import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.FirebaseUtilities;
+import com.example.debtspace.utilities.StringUtilities;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.StorageException;
 import com.google.firebase.storage.StorageReference;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,8 @@ import java.util.Map;
 public class GroupDebtRepository {
 
     private FirebaseFirestore mDatabase;
+    private CollectionReference mGroups;
+    private CollectionReference mUsers;
     private StorageReference mStorage;
     private String mUsername;
 
@@ -39,8 +40,11 @@ public class GroupDebtRepository {
     public GroupDebtRepository(Context context) {
         mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mStorage = DebtSpaceApplication.from(context).getStorage();
-
         mUsername = DebtSpaceApplication.from(context).getUsername();
+        mGroups = mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
+                .document(mUsername)
+                .collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME);
+        mUsers = mDatabase.collection(AppConfig.USERS_COLLECTION_NAME);
 
         mSize = 0;
         mCount = 0;
@@ -151,13 +155,11 @@ public class GroupDebtRepository {
         Map<String, Object> groupData = new HashMap<>();
         groupData.put(AppConfig.NAME_KEY, groupName);
         groupData.put(AppConfig.DEBT_KEY, debt);
-        @SuppressLint("SimpleDateFormat")
-        String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
+        String date = StringUtilities.getCurrentDateAndTime();
         groupData.put(AppConfig.DATE_KEY, date);
         groupData.put(AppConfig.MEMBERS_KEY, members);
 
-        mDatabase.collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
-                .document(groupID)
+        mGroups.document(groupID)
                 .set(groupData)
                 .addOnSuccessListener(aVoid ->
                         uploadGroupDataToMembers(groupID, members, uri, listener))
@@ -167,16 +169,31 @@ public class GroupDebtRepository {
                     }
                     listener.onFailure(ErrorsConfig.ERROR_UPLOAD_GROUP + groupID);
                 });
+
+
+        /*mDatabase.collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
+                .document(groupID)
+                .set(groupData)
+                .addOnSuccessListener(aVoid ->
+                        uploadGroupDataToMembers(groupID, members, uri, listener))
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfig.ERROR_UPLOAD_GROUP + groupID);
+                });*/
     }
 
     public void updateGroup(String groupID, String groupName, String debt,
                             List<String> members, OnUpdateDataListener listener) {
         members.add(mUsername);
-        mDatabase.collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
-                .document(groupID)
+        String date = StringUtilities.getCurrentDateAndTime();
+
+        mGroups.document(groupID)
                 .update(AppConfig.NAME_KEY, groupName,
                         AppConfig.DEBT_KEY, debt,
-                        AppConfig.MEMBERS_KEY, members)
+                        AppConfig.MEMBERS_KEY, members,
+                        AppConfig.DATE_KEY, date)
                 .addOnSuccessListener(aVoid ->
                         listener.onUpdateSuccessful())
                 .addOnFailureListener(e -> {
@@ -191,8 +208,7 @@ public class GroupDebtRepository {
                                           Uri uri, OnUpdateDataListener listener) {
         mSize = users.size();
         for (String username : users) {
-            mDatabase.collection(AppConfig.USERS_COLLECTION_NAME)
-                    .document(username)
+            mUsers.document(username)
                     .update(AppConfig.GROUPS_FIELD_NAME, FieldValue.arrayUnion(groupID))
                     .addOnSuccessListener(aVoid -> {
                         mCount++;

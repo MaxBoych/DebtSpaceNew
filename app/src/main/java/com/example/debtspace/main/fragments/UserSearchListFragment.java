@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.adapters.UserSearchListAdapter;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.UserSearchListViewModel;
@@ -29,6 +30,12 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
     private EditText mUserSearch;
     private RecyclerView mList;
     private UserSearchListAdapter mAdapter;
+    private TextWatcher mTextWatcher;
+    private int mFilterID;
+
+    /*private Button mAllUsers;
+    private Button mFriends;
+    private Button mGroups;*/
 
     private UserSearchListViewModel mViewModel;
     private ProgressBar mProgressBar;
@@ -52,8 +59,14 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
         mUserSearch = view.findViewById(R.id.user_search_field);
         mProgressBar = view.findViewById(R.id.user_search_list_progress_bar);
 
+        /*mAllUsers = view.findViewById(R.id.all_users_button);
+        mFriends = view.findViewById(R.id.friends_button);
+        mGroups = view.findViewById(R.id.groups_button);*/
+
         initViewModel();
 
+        view.findViewById(R.id.all_users_button).setOnClickListener(this);
+        view.findViewById(R.id.friends_button).setOnClickListener(this);
         view.findViewById(R.id.button_to_debt_list).setOnClickListener(this);
 
         return view;
@@ -61,8 +74,10 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.button_to_debt_list) {
-            mOnMainStateChangeListener.onDebtListScreen();
+        if (v.getId() == R.id.all_users_button) {
+            addTextChangedListener(AppConfig.SEARCH_FILTER_ALL_USERS_ID);
+        } else if (v.getId() == R.id.friends_button) {
+            addTextChangedListener(AppConfig.SEARCH_FILTER_FRIENDS_ID);
         }
     }
 
@@ -70,14 +85,16 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
         mViewModel = ViewModelProviders.of(this).get(UserSearchListViewModel.class);
         initAdapter();
         observeLoadState();
-        textChangeListen();
+        addTextChangedListener(AppConfig.SEARCH_FILTER_ALL_USERS_ID);
     }
 
     private void initAdapter() {
         mAdapter = new UserSearchListAdapter(mViewModel.getList(), getContext());
         mAdapter.setOnListItemClickListener(position -> {
-            User user = mViewModel.getUser(position);
-            mOnMainStateChangeListener.onFriendRequestScreen(user);
+            if (mFilterID == AppConfig.SEARCH_FILTER_ALL_USERS_ID) {
+                User user = mViewModel.getUser(position);
+                mOnMainStateChangeListener.onFriendRequestScreen(user);
+            }
         });
         mList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
         mList.setAdapter(mAdapter);
@@ -87,7 +104,7 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
         mViewModel.getLoadState().observe(this, state -> {
             switch (state) {
                 case SUCCESS:
-                    mAdapter.updateList(mViewModel.getList());
+                    mAdapter.updateList(mViewModel.getList(), mViewModel.getFilterID());
                     mProgressBar.setVisibility(View.GONE);
                     break;
                 case FAIL:
@@ -107,19 +124,22 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
         });
     }
 
-    private void textChangeListen() {
-
-        mUserSearch.addTextChangedListener(new TextWatcher() {
+    private void addTextChangedListener(int filterID) {
+        mFilterID = filterID;
+        mUserSearch.removeTextChangedListener(mTextWatcher);
+        mTextWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mViewModel.downloadUserSearchList(s, getContext());
+                mViewModel.downloadUserSearchList(filterID, s, getContext());
             }
 
             @Override
             public void afterTextChanged(Editable s) {}
-        });
+        };
+        mUserSearch.addTextChangedListener(mTextWatcher);
+        mUserSearch.setText(mUserSearch.getText());
     }
 }

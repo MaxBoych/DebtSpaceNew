@@ -7,9 +7,14 @@
     <string name="accept">Accept</string>
     <string name="reject">Reject</string>
     <string name="send_request">Send a request?</string>
-    <string name="submit_request">Accept the friend request?</string>
+    <string name="remove_friend">Do you want to remove a friend?</string>
+    <string name="remove_debt">Notify a friend that you want to cancel this debt?</string>
+    <string name="remove_debt_confirm">Do you want to remove this debt?</string>
+    <string name="confirmation_code_message">Enter the characters below to confirm:</string>
+    <string name="confirm_request">Accept the friend request?</string>
     <string name="user_search">User search</string>
     <string name="yes">Yes</string>
+    <string name="clear">Clear</string>
     <string name="cancel">Cancel</string>
 
     <string name="user_full_name" translatable="false">%1$s %2$s</string>
@@ -52,6 +57,9 @@
     <string name="group_name">Group name</string>
     <string name="group_debt">Group debt</string>
     <string name="add_friend">Add friend</string>
+    <string name="all_users">All users</string>
+    <string name="friends">Friends</string>
+    <string name="groups">Groups</string>
     <string name="back">Back</string>
 
     <!-- Network -->

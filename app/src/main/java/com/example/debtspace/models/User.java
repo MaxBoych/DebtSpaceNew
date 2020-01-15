@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class User {
+public class User implements Comparable<User> {
 
     String firstName;
     String lastName;
@@ -68,5 +68,14 @@ public class User {
 
     public List<String> getGroups() {
         return groups;
+    }
+
+    public String getFullName() {
+        return firstName + " " + lastName;
+    }
+
+    @Override
+    public int compareTo(User o) {
+        return this.username.compareTo(o.username);
     }
 }

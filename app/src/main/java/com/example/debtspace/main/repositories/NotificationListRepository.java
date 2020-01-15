@@ -9,7 +9,9 @@ import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
-import com.example.debtspace.models.Request;
+import com.example.debtspace.models.DebtRequest;
+import com.example.debtspace.models.FriendRequest;
+import com.example.debtspace.models.Notification;
 import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.FirebaseUtilities;
 import com.google.firebase.firestore.CollectionReference;
@@ -22,40 +24,52 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
-public class RequestListRepository {
+public class NotificationListRepository {
 
     private FirebaseFirestore mDatabase;
-    private CollectionReference mRequests;
+    private CollectionReference mFriendRequests;
+    private CollectionReference mDebtRequests;
     private StorageReference mStorage;
     private StorageReference mUsersStorage;
     private String mUsername;
 
-    private List<Request> mList;
+    private List<Notification> mList;
     private int mSize;
     private int mCount;
 
-    public RequestListRepository(Context context) {
+    public NotificationListRepository(Context context) {
         mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mStorage = DebtSpaceApplication.from(context).getStorage();
         mUsersStorage = mStorage.child(AppConfig.USERS_COLLECTION_NAME);
         mUsername = DebtSpaceApplication.from(context).getUsername();
-        mRequests = mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME)
+        mFriendRequests = mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME)
                 .document(mUsername)
                 .collection(AppConfig.FRIENDS_COLLECTION_NAME);
+        mDebtRequests = mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME)
+                .document(mUsername)
+                .collection(AppConfig.DEBTS_COLLECTION_NAME);
 
         mList = new ArrayList<>();
         mSize = 0;
         mCount = 0;
     }
 
-    public void downloadRequestList(OnDownloadDataListListener<Request> listener) {
-        mRequests.get()
+    public void downloadRequestList(OnDownloadDataListListener<Notification> listener) {
+        downloadFriendRequests(listener);
+    }
+
+    private void downloadFriendRequests(OnDownloadDataListListener<Notification> listener) {
+        mFriendRequests.get()
                 .addOnSuccessListener(documents -> {
                     if (documents.isEmpty()) {
                         listener.onDownloadSuccessful(mList);
                     }
                     mSize = documents.size();
+                    if (mSize == 0) {
+                        downloadDebtRequests(listener);
+                    }
                     for (DocumentSnapshot document : documents) {
                         Map<String, Object> data = document.getData();
                         if (data != null) {
@@ -66,17 +80,17 @@ public class RequestListRepository {
 
                                 @Override
                                 public void onSuccessful(User user) {
-                                    downloadImage(new Request(user, date), listener);
+                                    downloadImage(new FriendRequest(user, date), listener);
                                 }
 
                                 @Override
                                 public void onDoesNotExist() {
-                                    readinessCheck(listener);
+                                    readinessCheck(listener, false);
                                 }
 
                                 @Override
                                 public void onFailure(String errorMessage) {
-                                    readinessCheck(listener);
+                                    readinessCheck(listener, false);
                                 }
                             });
                         }
@@ -90,20 +104,46 @@ public class RequestListRepository {
                 });
     }
 
-    private void readinessCheck(OnDownloadDataListListener<Request> listener) {
+    private void downloadDebtRequests(OnDownloadDataListListener<Notification> listener) {
+        mDebtRequests.get()
+                .addOnSuccessListener(documents -> {
+                    if (documents.isEmpty()) {
+                        listener.onDownloadSuccessful(mList);
+                    }
+                    mSize = documents.size();
+                    mCount = 0;
+                    for (DocumentSnapshot document : documents) {
+                        DebtRequest request = document.toObject(DebtRequest.class);
+                        mList.add(request);
+                        readinessCheck(listener, true);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_REQUESTS);
+                });
+    }
+
+    private void readinessCheck(OnDownloadDataListListener<Notification> listener, boolean isReady) {
         mCount++;
         if (mCount == mSize) {
-            listener.onDownloadSuccessful(mList);
+            if (isReady) {
+                listener.onDownloadSuccessful(mList);
+            } else {
+                downloadDebtRequests(listener);
+            }
         }
     }
 
-    private void downloadImage(Request request, OnDownloadDataListListener<Request> listener) {
+    private void downloadImage(FriendRequest request, OnDownloadDataListListener<Notification> listener) {
         mUsersStorage.child(request.getUsername())
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
-                    request.setUriImage(uri);
+                    request.setImageUri(uri);
                     mList.add(request);
-                    readinessCheck(listener);
+                    readinessCheck(listener, false);
                 })
                 .addOnFailureListener(e -> {
                     int errorCode = ((StorageException) e).getErrorCode();
@@ -118,13 +158,13 @@ public class RequestListRepository {
                 });
     }
 
-    private void useDefaultImage(Request request, OnDownloadDataListListener<Request> listener) {
+    private void useDefaultImage(FriendRequest request, OnDownloadDataListListener<Notification> listener) {
         mUsersStorage.child(AppConfig.DEFAULT_IMAGE_VALUE)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
-                    request.setUriImage(uri);
+                    request.setImageUri(uri);
                     mList.add(request);
-                    readinessCheck(listener);
+                    readinessCheck(listener, false);
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
@@ -134,8 +174,13 @@ public class RequestListRepository {
                 });
     }
 
-    public void observeEvents(OnDatabaseEventListener<Request> listener) {
-        mRequests.addSnapshotListener((query, e) -> {
+    public void observeNotificationEvents(OnDatabaseEventListener<Notification> listener) {
+        observeFriendRequestEvents(listener);
+        observeDebtRequestEvents(listener);
+    }
+
+    private void observeFriendRequestEvents(OnDatabaseEventListener<Notification> listener) {
+        mFriendRequests.addSnapshotListener((query, e) -> {
             if (e != null && e.getMessage() != null) {
                 Log.d(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                 listener.onFailure(ErrorsConfig.ERROR_DATA_READING_NOTIFICATIONS);
@@ -152,7 +197,7 @@ public class RequestListRepository {
 
                                 @Override
                                 public void onSuccessful(User user) {
-                                    downloadImageForEvent(new Request(user, date), listener);
+                                    downloadImageForEvent(new FriendRequest(user, date), listener);
                                 }
 
                                 @Override
@@ -165,7 +210,7 @@ public class RequestListRepository {
                                 }
                             });
                         } else if (change.getType() == DocumentChange.Type.REMOVED) {
-                            listener.onRemoved(new Request(username));
+                            listener.onRemoved(new FriendRequest(username));
                         }
                     }
                 }
@@ -173,11 +218,49 @@ public class RequestListRepository {
         });
     }
 
-    private void downloadImageForEvent(Request request, OnDatabaseEventListener<Request> listener) {
+    private void observeDebtRequestEvents(OnDatabaseEventListener<Notification> listener) {
+        mDebtRequests.addSnapshotListener((query, e) -> {
+            if (e != null && e.getMessage() != null) {
+                Log.d(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
+                listener.onFailure(ErrorsConfig.ERROR_DATA_READING_NOTIFICATIONS);
+            } else if (query != null) {
+                for (DocumentChange change : query.getDocumentChanges()) {
+                    DocumentSnapshot document = change.getDocument();
+                    Map<String, Object> data = document.getData();
+                    if (data != null) {
+                        String id = document.getId();
+                        String username = (String) data.get(AppConfig.USERNAME_KEY);
+                        if (change.getType() == DocumentChange.Type.ADDED) {
+                            FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
+
+                                @Override
+                                public void onSuccessful(User user) {
+                                    listener.onAdded(new DebtRequest(id, user, data));
+                                }
+
+                                @Override
+                                public void onDoesNotExist() {
+                                }
+
+                                @Override
+                                public void onFailure(String errorMessage) {
+                                    listener.onFailure(errorMessage);
+                                }
+                            });
+                        } else if (change.getType() == DocumentChange.Type.REMOVED) {
+                            listener.onRemoved(new DebtRequest(id));
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void downloadImageForEvent(FriendRequest request, OnDatabaseEventListener<Notification> listener) {
         mUsersStorage.child(request.getUsername())
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
-                    request.setUriImage(uri);
+                    request.setImageUri(uri);
                     listener.onAdded(request);
                 })
                 .addOnFailureListener(e -> {
@@ -193,11 +276,11 @@ public class RequestListRepository {
                 });
     }
 
-    private void useDefaultImageForEvent(Request request, OnDatabaseEventListener<Request> listener) {
+    private void useDefaultImageForEvent(FriendRequest request, OnDatabaseEventListener<Notification> listener) {
         mUsersStorage.child(AppConfig.DEFAULT_IMAGE_VALUE)
                 .getDownloadUrl()
                 .addOnSuccessListener(uri -> {
-                    request.setUriImage(uri);
+                    request.setImageUri(uri);
                     listener.onAdded(request);
                 })
                 .addOnFailureListener(e -> {

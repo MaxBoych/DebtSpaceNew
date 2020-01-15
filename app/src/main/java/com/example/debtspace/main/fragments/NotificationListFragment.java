@@ -16,18 +16,19 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
-import com.example.debtspace.main.adapters.RequestListAdapter;
+import com.example.debtspace.main.adapters.NotificationListAdapter;
 import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
-import com.example.debtspace.main.viewmodels.RequestListViewModel;
-import com.example.debtspace.models.Request;
-import com.example.debtspace.models.User;
+import com.example.debtspace.main.viewmodels.NotificationListViewModel;
+import com.example.debtspace.models.DebtRequest;
+import com.example.debtspace.models.FriendRequest;
+import com.example.debtspace.models.Notification;
 
-public class RequestListFragment extends Fragment {
+public class NotificationListFragment extends Fragment {
 
     private RecyclerView mList;
-    private RequestListAdapter mAdapter;
+    private NotificationListAdapter mAdapter;
 
-    private RequestListViewModel mViewModel;
+    private NotificationListViewModel mViewModel;
 
     private ProgressBar mProgressBar;
     private ProgressBar mEventProgressBar;
@@ -57,7 +58,7 @@ public class RequestListFragment extends Fragment {
     }
 
     private void initViewModel() {
-        mViewModel = ViewModelProviders.of(this).get(RequestListViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(NotificationListViewModel.class);
         mViewModel.setContext(getContext());
         initAdapter();
         observeLoadState();
@@ -66,10 +67,16 @@ public class RequestListFragment extends Fragment {
     }
 
     private void initAdapter() {
-        mAdapter = new RequestListAdapter(mViewModel.getList(), getContext());
+        mAdapter = new NotificationListAdapter(mViewModel.getList(), getContext());
         mAdapter.setOnListItemClickListener(position -> {
-            User item = mViewModel.getRequest(position);
-            mOnMainStateChangeListener.onRequestConfirmScreen(item);
+            Notification notification = mViewModel.getNotification(position);
+            if (notification instanceof FriendRequest) {
+                FriendRequest request = (FriendRequest) notification;
+                mOnMainStateChangeListener.onRequestConfirmScreen(request);
+            } else if (notification instanceof DebtRequest) {
+                DebtRequest request = (DebtRequest) notification;
+                mOnMainStateChangeListener.onDebtRemovalConfirmScreen(request);
+            }
         });
         mList.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
         mList.setAdapter(mAdapter);
@@ -80,8 +87,8 @@ public class RequestListFragment extends Fragment {
             switch (state) {
                 case SUCCESS:
                     mAdapter.updateList(mViewModel.getList());
+                    mViewModel.observeNotificationEvents();
                     mProgressBar.setVisibility(View.GONE);
-                    mViewModel.addListChangeListener();
                     break;
                 case FAIL:
                     mProgressBar.setVisibility(View.GONE);
@@ -104,13 +111,13 @@ public class RequestListFragment extends Fragment {
         mViewModel.getEventState().observe(this, state -> {
             switch (state) {
                 case ADDED:
-                    Request addedRequest = mViewModel.getChangedRequest();
+                    Notification addedRequest = mViewModel.getChangedRequest();
                     mAdapter.addItemToTop(addedRequest);
                     mEventProgressBar.setVisibility(View.GONE);
                     break;
                 case REMOVED:
-                    Request removedRequest = mViewModel.getChangedRequest();
-                    int index = mViewModel.removeItem(removedRequest.getUsername());
+                    Notification removedRequest = mViewModel.getChangedRequest();
+                    int index = mViewModel.removeItem(removedRequest);
                     mAdapter.removeItem(index);
                     mEventProgressBar.setVisibility(View.GONE);
                     break;

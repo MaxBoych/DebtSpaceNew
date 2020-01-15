@@ -14,18 +14,22 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
 import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.HistoryItem;
+import com.example.debtspace.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemViewHolder> {
+
+    private OnListItemClickListener mOnListItemClickListener;
+
     private List<HistoryItem> mList;
     Context mContext;
 
     public HistoryAdapter(List<HistoryItem> store, Context context) {
         if (store != null) {
-            //Collections.sort(store);
             mList = new ArrayList<>(store);
         }
         mContext = context;
@@ -44,7 +48,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
             debt = itemView.findViewById(R.id.history_user_debt);
             comment = itemView.findViewById(R.id.history_comment);
             date = itemView.findViewById(R.id.history_date);
+
+            itemView.setOnClickListener(v -> {
+                if (mOnListItemClickListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        mOnListItemClickListener.onItemClicked(position);
+                    }
+                }
+            });
         }
+    }
+
+    public void setOnListItemClickListener(OnListItemClickListener listener) {
+        mOnListItemClickListener = listener;
     }
 
     @NonNull
@@ -68,6 +85,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         //RelativeLayout.LayoutParams Params = (RelativeLayout.LayoutParams) holder.itemView.getLayoutParams();
         //Params.bottomMargin = 40;
 
+        //holder.debt.setBackgroundResource(R.drawable.rounded_corner);
         GradientDrawable debtBackground = (GradientDrawable) holder.debt.getBackground();
         double debtValue = Double.parseDouble(item.getDebt());
         if (debtValue > 0) {
@@ -94,8 +112,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ItemView
         this.notifyItemInserted(0);
     }
 
+    public void removeItem(int index) {
+        if (index != -1) {
+            mList.remove(index);
+            this.notifyItemRemoved(index);
+        }
+    }
+
     public void updateList(List<HistoryItem> list) {
         mList = new ArrayList<>(list);
+        this.notifyDataSetChanged();
+    }
+
+    public void clearAdapter() {
+        mList.clear();
         this.notifyDataSetChanged();
     }
 }

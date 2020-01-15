@@ -1,6 +1,5 @@
 package com.example.debtspace.main.repositories;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -8,11 +7,10 @@ import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
+import com.example.debtspace.utilities.StringUtilities;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +30,12 @@ public class RequestConfirmRepository {
         mDebts = mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME);
         mRequests = mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME);
 
-        mAmount = 3;
         mCount = 0;
     }
 
     public void acceptFriendRequest(String username, OnUpdateDataListener listener) {
-        @SuppressLint("SimpleDateFormat")
-        String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
+        mAmount = 3;
+        String date = StringUtilities.getCurrentDateAndTime();
         Map<String, Object> data = new HashMap<>();
         data.put(AppConfig.DATE_KEY, date);
         data.put(AppConfig.DEBT_KEY, AppConfig.DEFAULT_DEBT_VALUE);
@@ -65,6 +62,7 @@ public class RequestConfirmRepository {
     }
 
     public void rejectFriendRequest(String username, OnUpdateDataListener listener) {
+        mAmount = 1;
         deleteNotificationData(username, listener);
     }
 
@@ -79,7 +77,7 @@ public class RequestConfirmRepository {
                     if (e.getMessage() != null) {
                         Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
                     }
-                    listener.onFailure(ErrorsConfig.ERROR_DELETE_REQUEST + username);
+                    listener.onFailure(ErrorsConfig.ERROR_DELETE_FRIEND_REQUEST + username);
                 });
     }
 

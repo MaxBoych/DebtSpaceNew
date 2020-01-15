@@ -2,10 +2,10 @@ package com.example.debtspace.main.adapters;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.debtspace.R;
+import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnListItemClickListener;
 import com.example.debtspace.models.User;
 
@@ -24,6 +25,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAdapter.UserSearchListViewHolder> {
 
     private List<User> mList;
+    private int mFilterID;
     private Context mContext;
 
     private OnListItemClickListener mOnListItemClickListener;
@@ -81,19 +83,22 @@ public class UserSearchListAdapter extends RecyclerView.Adapter<UserSearchListAd
             name = itemView.findViewById(R.id.user_name);
             username = itemView.findViewById(R.id.user_username);
 
-            itemView.setOnClickListener(v -> {
-                if (mOnListItemClickListener != null) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION) {
-                        mOnListItemClickListener.onItemClicked(position);
+            if (mFilterID == AppConfig.SEARCH_FILTER_ALL_USERS_ID) {
+                itemView.setOnClickListener(v -> {
+                    if (mOnListItemClickListener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            mOnListItemClickListener.onItemClicked(position);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
-    public void updateList(List<User> list) {
+    public void updateList(List<User> list, int filterID) {
         mList = new ArrayList<>(list);
+        mFilterID = filterID;
         this.notifyDataSetChanged();
     }
 }

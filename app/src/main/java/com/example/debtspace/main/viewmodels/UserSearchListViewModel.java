@@ -13,6 +13,7 @@ import com.example.debtspace.models.User;
 import com.example.debtspace.utilities.StringUtilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UserSearchListViewModel extends ViewModel {
@@ -20,6 +21,8 @@ public class UserSearchListViewModel extends ViewModel {
     private List<User> mList;
     private MutableLiveData<AppConfig.LoadStageState> mState;
     private MutableLiveData<String> mErrorMessage;
+
+    private int mFilterID;
 
     public UserSearchListViewModel() {
         mList = new ArrayList<>();
@@ -29,12 +32,12 @@ public class UserSearchListViewModel extends ViewModel {
         mErrorMessage.setValue(AppConfig.DEFAULT_ERROR_VALUE);
     }
 
-    public void downloadUserSearchList(CharSequence s, Context context) {
+    public void downloadUserSearchList(int filterID, CharSequence s, Context context) {
         String string = s.toString().toLowerCase();
         if (!StringUtilities.isEmpty(string)) {
             mState.setValue(AppConfig.LoadStageState.PROGRESS);
-
-            new UserSearchListRepository(context).getUsersBySubstring(string, new OnDownloadDataListListener<User>() {
+            mFilterID = filterID;
+            new UserSearchListRepository(context).getUsersBySubstring(filterID, string, new OnDownloadDataListListener<User>() {
                 @Override
                 public void onDownloadSuccessful(List<User> list) {
                     updateList(list);
@@ -50,6 +53,7 @@ public class UserSearchListViewModel extends ViewModel {
     }
 
     private void updateList(List<User> list) {
+        Collections.sort(list);
         mList = new ArrayList<>(list);
         mState.setValue(AppConfig.LoadStageState.SUCCESS);
     }
@@ -68,5 +72,9 @@ public class UserSearchListViewModel extends ViewModel {
 
     public LiveData<String> getErrorMessage() {
         return mErrorMessage;
+    }
+
+    public int getFilterID() {
+        return mFilterID;
     }
 }

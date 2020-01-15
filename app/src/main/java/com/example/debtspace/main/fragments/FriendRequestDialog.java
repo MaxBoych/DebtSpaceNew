@@ -49,16 +49,18 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
 
         View view = inflater.inflate(R.layout.dialog_friend_request, container, false);
 
-        mUserName = view.findViewById(R.id.request_name);
-        mUserUsername = view.findViewById(R.id.request_username);
-        mYes = view.findViewById(R.id.friend_request_yes);
-        mCancel = view.findViewById(R.id.friend_request_cancel);
-        mProgressBar = view.findViewById(R.id.request_progress_bar);
+        mUserName = view.findViewById(R.id.user_name);
+        mUserUsername = view.findViewById(R.id.user_username);
+        mYes = view.findViewById(R.id.yes_button);
+        mCancel = view.findViewById(R.id.cancel_button);
+        mProgressBar = view.findViewById(R.id.progress_bar);
 
-        String name = Objects.requireNonNull(getArguments()).getString(AppConfig.NAME_KEY);
-        mUserName.setText(name);
-        String username = Objects.requireNonNull(getArguments()).getString(AppConfig.USERNAME_KEY);
-        mUserUsername.setText(username);
+        if (getArguments() != null) {
+            String name = getArguments().getString(AppConfig.NAME_KEY);
+            mUserName.setText(name);
+            String username = getArguments().getString(AppConfig.USERNAME_KEY);
+            mUserUsername.setText(username);
+        }
 
         initViewModel();
 
@@ -70,9 +72,9 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.friend_request_yes) {
+        if (v.getId() == R.id.yes_button) {
             sendFriendRequest(mUserUsername.getText().toString());
-        } else if (v.getId() == R.id.friend_request_cancel) {
+        } else if (v.getId() == R.id.cancel_button) {
             dismiss();
         }
     }
@@ -94,27 +96,35 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
         mViewModel.getLoadState().observe(this, state -> {
             switch (state) {
                 case SUCCESS:
-                    mProgressBar.setVisibility(View.GONE);
+                    setLoadProgressBarVisibility(View.GONE);
                     dismiss();
                     break;
                 case FAIL:
-                    mProgressBar.setVisibility(View.GONE);
-                    Toast.makeText(getContext(),
-                            mViewModel.getErrorMessage().getValue(),
-                            Toast.LENGTH_LONG)
-                            .show();
+                    setLoadProgressBarVisibility(View.GONE);
+                    showError();
                     break;
                 case NONE:
-                    mProgressBar.setVisibility(View.GONE);
+                    setLoadProgressBarVisibility(View.GONE);
                     break;
                 case PROGRESS:
-                    mProgressBar.setVisibility(View.VISIBLE);
+                    setLoadProgressBarVisibility(View.VISIBLE);
                     break;
             }
         });
     }
 
+    private void showError() {
+        Toast.makeText(getContext(),
+                mViewModel.getErrorMessage().getValue(),
+                Toast.LENGTH_LONG)
+                .show();
+    }
+
     private void sendFriendRequest(String username) {
-        mViewModel.sendFriendRequest(username, getContext());
+        mViewModel.sendFriendRequest(username);
+    }
+
+    private void setLoadProgressBarVisibility(int view) {
+        mProgressBar.setVisibility(view);
     }
 }

@@ -30,6 +30,8 @@ import java.util.Objects;
 public class DebtListRepository {
 
     private FirebaseFirestore mDatabase;
+    private CollectionReference mUsers;
+    private CollectionReference mDebts;
     private StorageReference mStorage;
     private String mUsername;
 
@@ -41,6 +43,8 @@ public class DebtListRepository {
         mDatabase = DebtSpaceApplication.from(context).getDatabase();
         mStorage = DebtSpaceApplication.from(context).getStorage();
         mUsername = DebtSpaceApplication.from(context).getUsername();
+        mUsers = mDatabase.collection(AppConfig.USERS_COLLECTION_NAME);
+        mDebts = mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME);
 
         mList = new ArrayList<>();
     }
@@ -59,9 +63,13 @@ public class DebtListRepository {
         });
     }
 
-    public void observeDebtEvents(OnDatabaseEventListener<DebtBond> listener) {
-        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
-                .document(mUsername)
+    public void observeDebtEvents(OnDatabaseEventListener<Debt> listener) {
+        observeSingleDebtEvents(listener);
+        observeGroupDebtEvents(listener);
+    }
+
+    private void observeSingleDebtEvents(OnDatabaseEventListener<Debt> listener) {
+        mDebts.document(mUsername)
                 .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .addSnapshotListener((query, e) -> {
                     if (e != null) {
@@ -77,13 +85,23 @@ public class DebtListRepository {
                                 DebtBond debtBond = new DebtBond(document.getId(), data);
                                 switch (change.getType()) {
                                     case ADDED:
-                                        listener.onAdded(debtBond);
+                                        transformToDebt(debtBond, new OnDownloadDataListener<Debt>() {
+                                            @Override
+                                            public void onDownloadSuccessful(Debt object) {
+                                                listener.onAdded(object);
+                                            }
+
+                                            @Override
+                                            public void onFailure(String errorMessage) {
+                                                listener.onFailure(errorMessage);
+                                            }
+                                        });
                                         break;
                                     case MODIFIED:
-                                        listener.onModified(debtBond);
+                                        listener.onModified(new Debt(debtBond));
                                         break;
                                     case REMOVED:
-                                        listener.onRemoved(debtBond);
+                                        listener.onRemoved(new Debt(debtBond));
                                         break;
                                 }
                             }
@@ -92,7 +110,39 @@ public class DebtListRepository {
                 });
     }
 
-    public void transformToDebt(DebtBond debtBond, OnDownloadDataListener<Debt> listener) {
+    private void observeGroupDebtEvents(OnDatabaseEventListener<Debt> listener) {
+        mDebts.document(mUsername)
+                .collection(AppConfig.GROUP_DEBTS_COLLECTION_NAME)
+                .addSnapshotListener((query, e) -> {
+                    if (e != null) {
+                        if (e.getMessage() != null) {
+                            Log.e(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
+                        }
+                        listener.onFailure(ErrorsConfig.ERROR_DATA_READING);
+                    } else if (query != null) {
+                        for (DocumentChange change : query.getDocumentChanges()) {
+                            DocumentSnapshot document = change.getDocument();
+                            Map<String, Object> data = document.getData();
+                            if (data != null) {
+                                GroupDebt groupDebt = new GroupDebt(data, document.getId());
+                                switch (change.getType()) {
+                                    case ADDED:
+                                        listener.onAdded(groupDebt);
+                                        break;
+                                    case MODIFIED:
+                                        listener.onModified(groupDebt);
+                                        break;
+                                    case REMOVED:
+                                        listener.onRemoved(groupDebt);
+                                        break;
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void transformToDebt(DebtBond debtBond, OnDownloadDataListener<Debt> listener) {
         String username = debtBond.getUsername();
         FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
             @Override
@@ -118,8 +168,7 @@ public class DebtListRepository {
     }
 
     private void downloadGroupsIDs(OnDownloadDataListListener<String> listener) {
-        mDatabase.collection(AppConfig.USERS_COLLECTION_NAME)
-                .document(mUsername)
+        mUsers.document(mUsername)
                 .get()
                 .addOnSuccessListener(document -> {
                     @SuppressWarnings("unchecked")
@@ -136,8 +185,7 @@ public class DebtListRepository {
     }
 
     private void downloadSingleDebts(OnDownloadDataListListener<Debt> listener) {
-        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
-                .document(mUsername)
+        mDebts.document(mUsername)
                 .collection(AppConfig.FRIENDS_COLLECTION_NAME)
                 .get()
                 .addOnSuccessListener(documents -> {
@@ -203,11 +251,10 @@ public class DebtListRepository {
         for (String id : groupIDs) {
             collRef.document(id)
                     .get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        Map<String, Object> data = documentSnapshot.getData();
+                    .addOnSuccessListener(document -> {
+                        Map<String, Object> data = document.getData();
                         if (data != null) {
-                            GroupDebt groupDebt = new GroupDebt(data);
-                            groupDebt.setID(id);
+                            GroupDebt groupDebt = new GroupDebt(data, document.getId());
                             downloadGroupImage(groupDebt, listener);
                         }
                     })

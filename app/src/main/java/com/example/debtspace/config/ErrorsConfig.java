@@ -29,6 +29,8 @@ public class ErrorsConfig {
     public final static String ERROR_MINIMUM_MEMBERS = "At least " + (AppConfig.MINIMUM_GROUP_MEMBERS + 1) + " members of the group are required (including you)";
 
     public final static String ERROR_DOWNLOAD_SINGLE_DEBTS = "Cannot download single debts";
+    public final static String ERROR_SEND_DEBT_REQUEST = "Cannot send debt request. Username: ";
+    public final static String ERROR_CLEAR_WHOLE_HISTORY = "Cannot clear whole history";
     public final static String ERROR_DOWNLOAD_USER_IMAGE = "Cannot download user image. Username: ";
     public final static String ERROR_DOWNLOAD_DEFAULT_USER_IMAGE = "Cannot download default user image. Username: ";
     public final static String ERROR_UPLOAD_DEBT_DATA = "Cannot upload debt data. Username: ";
@@ -39,10 +41,12 @@ public class ErrorsConfig {
     public final static String ERROR_USER_ALREADY_FRIEND = "This user is already a friend. Username: ";
     public final static String ERROR_REQUEST_ALREADY_SENT = "Friend request has already been sent to this user. Username: ";
     public final static String ERROR_DOWNLOAD_USER_DATA = "Cannot download user data. Username: ";
+    public final static String ERROR_REMOVE_FRIEND = "Cannot remove friend. Username: ";
 
     public final static String ERROR_DOWNLOAD_HISTORY = "Cannot download history";
 
-    public final static String ERROR_DELETE_REQUEST = "Cannot delete request. Username: ";
+    public final static String ERROR_DELETE_FRIEND_REQUEST = "Cannot delete friend request. Username: ";
+    public final static String ERROR_DELETE_DEBT_REQUEST = "Cannot delete debt request. id: ";
     public final static String ERROR_DOWNLOAD_REQUESTS = "Cannot download requests";
     public final static String ERROR_UPLOAD_REQUESTS = "Cannot upload requests. Username: ";
 

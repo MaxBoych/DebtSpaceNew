@@ -21,7 +21,7 @@
     <string name="sing_in">Einloggen</string>
     <string name="sing_up">"Registrierung "</string>
     <string name="strike">"Streik "</string>
-    <string name="submit_request">"Freundschaftsanfrage annehmen? "</string>
+    <string name="confirm_request">"Freundschaftsanfrage annehmen? "</string>
     <string name="total_debt">"Gesamtschulden: "</string>
     <string name="user_search">"Benutzersuche "</string>
     <string name="name">Nutzername</string>

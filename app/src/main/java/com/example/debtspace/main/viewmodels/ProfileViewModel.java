@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.debtspace.config.AppConfig;
+import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
 import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.main.repositories.ProfileRepository;
@@ -18,7 +19,8 @@ import java.util.List;
 public class ProfileViewModel extends ViewModel {
 
     private User mUser;
-    private MutableLiveData<AppConfig.ProfileLoadStageState> mState;
+    private MutableLiveData<AppConfig.ProfileLoadStageState> mLoadState;
+    private MutableLiveData<AppConfig.EventStageState> mEventState;
     private String mErrorMessage;
     private Uri mUri;
 
@@ -27,8 +29,10 @@ public class ProfileViewModel extends ViewModel {
     public ProfileViewModel() {
         mUser = new User();
 
-        mState = new MutableLiveData<>();
-        mState.setValue(AppConfig.ProfileLoadStageState.NONE);
+        mLoadState = new MutableLiveData<>();
+        mLoadState.setValue(AppConfig.ProfileLoadStageState.NONE);
+        mEventState = new MutableLiveData<>();
+        mEventState.setValue(AppConfig.EventStageState.NONE);
         mErrorMessage = AppConfig.DEFAULT_ERROR_VALUE;
     }
 
@@ -36,14 +40,40 @@ public class ProfileViewModel extends ViewModel {
         mContext = context;
     }
 
+    public void observeUserDataEvents() {
+        new ProfileRepository(mContext).observeUserDataEvents(new OnDatabaseEventListener<User>() {
+            @Override
+            public void onAdded(User object) {}
+
+            @Override
+            public void onModified(User object) {
+                setUser(object);
+                setEventState(AppConfig.EventStageState.MODIFIED);
+            }
+
+            @Override
+            public void onRemoved(User object) {}
+
+            @Override
+            public void onFailure(String errorMessage) {
+                setErrorMessage(errorMessage);
+                setEventState(AppConfig.EventStageState.FAIL);
+            }
+        });
+    }
+
+    private void setEventState(AppConfig.EventStageState state) {
+        mEventState.setValue(state);
+    }
+
     public void downloadUserData() {
-        mState.setValue(AppConfig.ProfileLoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.ProfileLoadStageState.PROGRESS);
         new ProfileRepository(mContext).downloadUserData(new OnFindUserListener() {
 
             @Override
             public void onSuccessful(User user) {
                 setUser(user);
-                mState.setValue(AppConfig.ProfileLoadStageState.SUCCESS_LOAD_DATA);
+                setLoadState(AppConfig.ProfileLoadStageState.SUCCESS_LOAD_DATA);
             }
 
             @Override
@@ -52,24 +82,24 @@ public class ProfileViewModel extends ViewModel {
             @Override
             public void onFailure(String errorMessage) {
                 setErrorMessage(errorMessage);
-                mState.setValue(AppConfig.ProfileLoadStageState.FAIL);
+                setLoadState(AppConfig.ProfileLoadStageState.FAIL);
             }
         });
     }
 
     public void downloadUserImage() {
-        mState.setValue(AppConfig.ProfileLoadStageState.PROGRESS);
+        mLoadState.setValue(AppConfig.ProfileLoadStageState.PROGRESS);
         new ProfileRepository(mContext).downloadImage(new OnDownloadDataListListener<Uri>() {
             @Override
             public void onDownloadSuccessful(List<Uri> list) {
                 setUri(list.get(0));
-                mState.setValue(AppConfig.ProfileLoadStageState.SUCCESS_LOAD_IMAGE);
+                setLoadState(AppConfig.ProfileLoadStageState.SUCCESS_LOAD_IMAGE);
             }
 
             @Override
             public void onFailure(String errorMessage) {
                 setErrorMessage(errorMessage);
-                mState.setValue(AppConfig.ProfileLoadStageState.FAIL);
+                setLoadState(AppConfig.ProfileLoadStageState.FAIL);
             }
         });
     }
@@ -95,10 +125,18 @@ public class ProfileViewModel extends ViewModel {
     }
 
     public LiveData<AppConfig.ProfileLoadStageState> getState() {
-        return mState;
+        return mLoadState;
+    }
+
+    public LiveData<AppConfig.EventStageState> getEventState() {
+        return mEventState;
     }
 
     public String getErrorMessage() {
         return mErrorMessage;
+    }
+
+    private void setLoadState(AppConfig.ProfileLoadStageState state) {
+        mLoadState.setValue(state);
     }
 }

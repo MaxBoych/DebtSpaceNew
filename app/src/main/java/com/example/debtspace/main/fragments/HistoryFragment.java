@@ -1,5 +1,6 @@
 package com.example.debtspace.main.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
@@ -15,16 +17,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.debtspace.R;
 import com.example.debtspace.main.adapters.HistoryAdapter;
+import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
+import com.example.debtspace.main.interfaces.OnPassSignalListener;
 import com.example.debtspace.main.viewmodels.HistoryViewModel;
 import com.example.debtspace.models.HistoryItem;
 
-public class HistoryFragment extends Fragment {
+public class HistoryFragment extends Fragment implements View.OnClickListener, OnPassSignalListener {
 
     private RecyclerView mList;
     private HistoryAdapter mAdapter;
     private HistoryViewModel mViewModel;
     private ProgressBar mProgressBar;
     private ProgressBar mEventProgressBar;
+
+    private OnMainStateChangeListener mOnMainStateChangeListener;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mOnMainStateChangeListener = (OnMainStateChangeListener) context;
+    }
 
     @Nullable
     @Override
@@ -40,6 +52,13 @@ public class HistoryFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.clear_button) {
+            mOnMainStateChangeListener.onHistoryRemovalScreen(this);
+        }
+    }
+
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(HistoryViewModel.class);
         mViewModel.setContext(getContext());
@@ -51,7 +70,13 @@ public class HistoryFragment extends Fragment {
 
     private void initAdapter() {
         mAdapter = new HistoryAdapter(mViewModel.getList(), getContext());
+
         mList.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        mAdapter.setOnListItemClickListener(position -> {
+            HistoryItem item = mViewModel.getHistoryItem(position);
+            mOnMainStateChangeListener.onDebtRemovalScreen(item);
+        });
+
         mList.setAdapter(mAdapter);
     }
 
@@ -84,8 +109,14 @@ public class HistoryFragment extends Fragment {
         mViewModel.getEventState().observe(this, state -> {
             switch (state) {
                 case ADDED:
-                    HistoryItem addedRequest = mViewModel.getAddedRequest();
+                    HistoryItem addedRequest = mViewModel.getChangedRequest();
                     mAdapter.addItemToTop(addedRequest);
+                    mEventProgressBar.setVisibility(View.GONE);
+                    break;
+                case REMOVED:
+                    HistoryItem removedRequest = mViewModel.getChangedRequest();
+                    int index = mViewModel.removeItem(removedRequest);
+                    mAdapter.removeItem(index);
                     mEventProgressBar.setVisibility(View.GONE);
                     break;
                 case PROGRESS:
@@ -103,5 +134,15 @@ public class HistoryFragment extends Fragment {
                     break;
             }
         });
+    }
+
+    @Override
+    public void onPass() {
+        clearHistory();
+    }
+
+    private void clearHistory() {
+        mViewModel.clearViewModel();
+        mAdapter.clearAdapter();
     }
 }

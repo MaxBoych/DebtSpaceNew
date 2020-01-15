@@ -1,6 +1,5 @@
 package com.example.debtspace.main.repositories;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -8,11 +7,10 @@ import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnUpdateDataListener;
+import com.example.debtspace.utilities.StringUtilities;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,8 +27,7 @@ public class FriendRequestRepository {
 
     private void sendFriendRequest(String username, OnUpdateDataListener listener) {
         Map<String, String> map = new HashMap<>();
-        @SuppressLint("SimpleDateFormat")
-        String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
+        String date = StringUtilities.getCurrentDateAndTime();
         map.put(AppConfig.DATE_KEY, date);
 
         mDatabase.collection(AppConfig.NOTIFICATIONS_COLLECTION_NAME)

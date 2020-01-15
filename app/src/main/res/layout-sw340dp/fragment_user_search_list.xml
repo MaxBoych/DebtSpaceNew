@@ -31,11 +31,40 @@
             android:text="@string/back" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/filter_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_search_control_panel"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/all_users_button"
+            android:layout_weight="1"
+            android:text="@string/all_users"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/friends_button"
+            android:layout_weight="1"
+            android:text="@string/friends"/>
+
+        <!--<Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/groups_button"
+            android:layout_weight="1"
+            android:text="@string/groups"/>-->
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/user_search_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/user_search_control_panel" />
+        android:layout_below="@id/filter_buttons" />
 
     <ProgressBar
         android:id="@+id/user_search_list_progress_bar"

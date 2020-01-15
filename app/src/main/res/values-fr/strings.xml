@@ -21,7 +21,7 @@
     <string name="sing_in">se connecter</string>
     <string name="sing_up">S\'inscrire</string>
     <string name="strike">La grève</string>
-    <string name="submit_request">Accepter la demande d\'ami?</string>
+    <string name="confirm_request">Accepter la demande d\'ami?</string>
     <string name="total_debt">Dette totale:</string>
     <string name="user_search">Recherche d\'utilisateurs</string>
     <string name="name">Nom d\'utilisateur</string>

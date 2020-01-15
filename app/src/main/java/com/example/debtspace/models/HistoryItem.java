@@ -6,24 +6,45 @@ import java.util.Map;
 
 public class HistoryItem implements Comparable<HistoryItem> {
 
+    private String id;
     private String debt;
     private String name;
     private String username;
     private String date;
     private String comment;
 
-    public HistoryItem(Map<String, Object> map, String username) {
+    public HistoryItem() {}
+
+    public HistoryItem(String id, Map<String, Object> map) {
+        this.id = id;
         debt = (String) map.get(AppConfig.DEBT_KEY);
         name = (String) map.get(AppConfig.NAME_KEY);
         comment = (String) map.get(AppConfig.COMMENT_KEY);
         date = (String) map.get(AppConfig.DATE_KEY);
-        this.username = username;
+        username = (String) map.get(AppConfig.USERNAME_KEY);
     }
 
-    public HistoryItem(String debt, String comment, String date) {
+    public HistoryItem(String id, String debt, String comment, String date, String username) {
+        this.id = id;
         this.debt = debt;
         this.comment = comment;
         this.date = date;
+        this.username = username;
+    }
+
+    public HistoryItem(String debt, String comment, String date, String username) {
+        this.debt = debt;
+        this.comment = comment;
+        this.date = date;
+        this.username = username;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setName(String name) {

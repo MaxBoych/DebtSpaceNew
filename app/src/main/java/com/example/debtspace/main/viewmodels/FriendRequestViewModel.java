@@ -15,6 +15,8 @@ public class FriendRequestViewModel extends ViewModel {
     private MutableLiveData<AppConfig.LoadStageState> mLoadState;
     private MutableLiveData<String> mErrorMessage;
 
+    private Context mContext;
+
     public FriendRequestViewModel() {
         mLoadState = new MutableLiveData<>();
         mErrorMessage = new MutableLiveData<>();
@@ -22,9 +24,13 @@ public class FriendRequestViewModel extends ViewModel {
         mErrorMessage.setValue(AppConfig.DEFAULT_ERROR_VALUE);
     }
 
-    public void sendFriendRequest(String username, Context context) {
+    public void setContext(Context context) {
+        mContext = context;
+    }
+
+    public void sendFriendRequest(String username) {
         mLoadState.setValue(AppConfig.LoadStageState.PROGRESS);
-        new FriendRequestRepository(context).checkExistenceFriends(username, new OnUpdateDataListener() {
+        new FriendRequestRepository(mContext).checkExistenceFriends(username, new OnUpdateDataListener() {
             @Override
             public void onUpdateSuccessful() {
                 updateStateToSuccess();

@@ -21,7 +21,7 @@
     <string name="sing_in">Registrarse</string>
     <string name="sing_up">Regístrate</string>
     <string name="strike">Strike</string>
-    <string name="submit_request">Aceptar la solicitud de amistad?</string>
+    <string name="confirm_request">Aceptar la solicitud de amistad?</string>
     <string name="total_debt">Deuda total:</string>
     <string name="user_search">Búsqueda de usuarios</string>
     <string name="name">Nombre de usuario</string>

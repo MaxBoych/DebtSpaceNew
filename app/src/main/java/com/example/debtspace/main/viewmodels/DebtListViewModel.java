@@ -9,10 +9,8 @@ import androidx.lifecycle.ViewModel;
 import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.main.interfaces.OnDatabaseEventListener;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
-import com.example.debtspace.main.interfaces.OnDownloadDataListener;
 import com.example.debtspace.main.repositories.DebtListRepository;
 import com.example.debtspace.models.Debt;
-import com.example.debtspace.models.DebtBond;
 import com.example.debtspace.models.GroupDebt;
 
 import java.util.ArrayList;
@@ -72,21 +70,21 @@ public class DebtListViewModel extends ViewModel {
         mLoadState.setValue(AppConfig.LoadStageState.FAIL);
     }
 
-    public void addListChangeListener() {
-        new DebtListRepository(mContext).observeDebtEvents(new OnDatabaseEventListener<DebtBond>() {
+    public void observeDebtEvents() {
+        new DebtListRepository(mContext).observeDebtEvents(new OnDatabaseEventListener<Debt>() {
 
             @Override
-            public void onAdded(DebtBond object) {
-                added(object);
+            public void onAdded(Debt object) {
+                notifyAdded(object);
             }
 
             @Override
-            public void onModified(DebtBond object) {
+            public void onModified(Debt object) {
                 notifyModified(object);
             }
 
             @Override
-            public void onRemoved(DebtBond object) {
+            public void onRemoved(Debt object) {
                 notifyRemoved(object);
             }
 
@@ -97,21 +95,26 @@ public class DebtListViewModel extends ViewModel {
         });
     }
 
-    private void added(DebtBond debtBond) {
+    private void notifyAdded(Debt debt) {
         mEventState.setValue(AppConfig.EventStageState.PROGRESS);
-        //mChangedDebt = debtBond;
-        transformToDebt(debtBond);
+        mChangedDebt = debt;
+        boolean doesNotExist = addItemToTop(debt);
+        if (doesNotExist) {
+            mEventState.setValue(AppConfig.EventStageState.ADDED);
+        } else {
+            mEventState.setValue(AppConfig.EventStageState.NONE);
+        }
     }
 
-    private void notifyModified(DebtBond debtBond) {
+    private void notifyModified(Debt debt) {
         mEventState.setValue(AppConfig.EventStageState.PROGRESS);
-        mChangedDebt = new Debt(debtBond);
+        mChangedDebt = debt;
         mEventState.setValue(AppConfig.EventStageState.MODIFIED);
     }
 
-    private void notifyRemoved(DebtBond debtBond) {
+    private void notifyRemoved(Debt debt) {
         mEventState.setValue(AppConfig.EventStageState.PROGRESS);
-        mChangedDebt = new Debt(debtBond);
+        mChangedDebt = debt;
         mEventState.setValue(AppConfig.EventStageState.REMOVED);
     }
 
@@ -120,7 +123,7 @@ public class DebtListViewModel extends ViewModel {
         mEventState.setValue(AppConfig.EventStageState.FAIL);
     }
 
-    private void transformToDebt(DebtBond debtBond) {
+    /*private void transformToDebt(DebtBond debtBond) {
         new DebtListRepository(mContext).transformToDebt(debtBond, new OnDownloadDataListener<Debt>() {
             @Override
             public void onDownloadSuccessful(Debt object) {
@@ -132,9 +135,9 @@ public class DebtListViewModel extends ViewModel {
                 notifyEventFailure(errorMessage);
             }
         });
-    }
+    }*/
 
-    private void notifyAdded(Debt debt) {
+    /*private void notifyAdded(Debt debt) {
         mChangedDebt = debt;
         boolean doesNotExist = addItemToTop(debt);
         if (doesNotExist) {
@@ -142,52 +145,97 @@ public class DebtListViewModel extends ViewModel {
         } else {
             mEventState.setValue(AppConfig.EventStageState.NONE);
         }
-    }
+    }*/
 
     private boolean addItemToTop(Debt debt) {
         if (mList != null) {
-            for (Debt d : mList) {
-                if (!(d instanceof GroupDebt)) {
-                    if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
-                        return false;
+            if (debt instanceof GroupDebt) {
+                for (Debt d : mList) {
+                    if (d instanceof GroupDebt) {
+                        if (((GroupDebt) d).getId().equals(((GroupDebt) debt).getId())) {
+                            return false;
+                        }
+                    }
+                }
+            } else {
+                for (Debt d : mList) {
+                    if (!(d instanceof GroupDebt)) {
+                        if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
+                            return false;
+                        }
                     }
                 }
             }
+
             mList.add(0, debt);
+            return true;
         }
-        return true;
+
+        return false;
     }
 
     public int modifyItem(Debt debt) {
         if (mList != null) {
             ListIterator<Debt> iterator = mList.listIterator();
-            while (iterator.hasNext()) {
-                int index = iterator.nextIndex();
-                Debt d = iterator.next();
-                if (d instanceof GroupDebt) {
-                    continue;
+            if (debt instanceof GroupDebt) {
+                while (iterator.hasNext()) {
+                    int index = iterator.nextIndex();
+                    Debt d = iterator.next();
+                    if (d instanceof GroupDebt) {
+                        if (((GroupDebt) d).getId().equals(((GroupDebt) debt).getId())) {
+                            ((GroupDebt) d).setName(((GroupDebt) debt).getName());
+                            d.setDebt(debt.getDebt());
+                            ((GroupDebt) d).setMembers(((GroupDebt) debt).getMembers());
+                            d.setDate(debt.getDate());
+                            iterator.remove();
+                            mList.add(0, d);
+                            return index;
+                        }
+                    }
                 }
-                if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
-                    d.setDebt(debt.getDebt());
-                    d.setDate(debt.getDate());
-                    iterator.remove();
-                    mList.add(0, d);
-                    return index;
+            } else {
+                while (iterator.hasNext()) {
+                    int index = iterator.nextIndex();
+                    Debt d = iterator.next();
+                    if (!(d instanceof GroupDebt)) {
+                        if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
+                            d.setDebt(debt.getDebt());
+                            d.setDate(debt.getDate());
+                            iterator.remove();
+                            mList.add(0, d);
+                            return index;
+                        }
+                    }
                 }
             }
         }
         return -1;
     }
 
-    public int removeItem(String username) {
+    public int removeItem(Debt debt) {
         if (mList != null) {
             ListIterator<Debt> iterator = mList.listIterator();
-            while (iterator.hasNext()) {
-                int index = iterator.nextIndex();
-                Debt debt = iterator.next();
-                if (debt.getUser().getUsername().equals(username)) {
-                    iterator.remove();
-                    return index;
+            if (debt instanceof GroupDebt) {
+                while (iterator.hasNext()) {
+                    int index = iterator.nextIndex();
+                    Debt d = iterator.next();
+                    if (d instanceof GroupDebt) {
+                        if (((GroupDebt) d).getId().equals(((GroupDebt) debt).getId())) {
+                            iterator.remove();
+                            return index;
+                        }
+                    }
+                }
+            } else {
+                while (iterator.hasNext()) {
+                    int index = iterator.nextIndex();
+                    Debt d = iterator.next();
+                    if (!(d instanceof GroupDebt)) {
+                        if (d.getUser().getUsername().equals(debt.getUser().getUsername())) {
+                            iterator.remove();
+                            return index;
+                        }
+                    }
                 }
             }
         }

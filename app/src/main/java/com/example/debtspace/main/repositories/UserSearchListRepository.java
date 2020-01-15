@@ -7,7 +7,9 @@ import com.example.debtspace.application.DebtSpaceApplication;
 import com.example.debtspace.config.AppConfig;
 import com.example.debtspace.config.ErrorsConfig;
 import com.example.debtspace.main.interfaces.OnDownloadDataListListener;
+import com.example.debtspace.main.interfaces.OnFindUserListener;
 import com.example.debtspace.models.User;
+import com.example.debtspace.utilities.FirebaseUtilities;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,7 +43,18 @@ public class UserSearchListRepository {
         mCount = 0;
     }
 
-    public void getUsersBySubstring(String string, OnDownloadDataListListener<User> listener) {
+    public void getUsersBySubstring(int filterID, String string, OnDownloadDataListListener<User> listener) {
+        switch (filterID) {
+            case AppConfig.SEARCH_FILTER_ALL_USERS_ID:
+                getAllUsers(string, listener);
+                break;
+            case AppConfig.SEARCH_FILTER_FRIENDS_ID:
+                getFriends(string, listener);
+                break;
+        }
+    }
+
+    private void getAllUsers(String string, OnDownloadDataListListener<User> listener) {
         mUsers.orderBy(AppConfig.USERNAME_FIELD_NAME)
                 .startAt(string.trim())
                 .endAt(string.trim() + "\uf8ff")
@@ -56,10 +69,57 @@ public class UserSearchListRepository {
                     }
 
                     mSize = users.size();
+                    if (mSize == 0) {
+                        listener.onDownloadSuccessful(mList);
+                    }
                     for (User user : users) {
                         downloadImage(user, listener);
                     }
-                    //checkFriendsAndMyself(users, listener);
+                })
+                .addOnFailureListener(e -> {
+                    if (e.getMessage() != null) {
+                        Log.d(AppConfig.APPLICATION_LOG_TAG, e.getMessage());
+                    }
+                    listener.onFailure(ErrorsConfig.ERROR_DOWNLOAD_USERS_FOR_SEARCH);
+                });
+    }
+
+    private void getFriends(String string, OnDownloadDataListListener<User> listener) {
+        mDatabase.collection(AppConfig.DEBTS_COLLECTION_NAME)
+                .document(mUsername)
+                .collection(AppConfig.FRIENDS_COLLECTION_NAME)
+                .get()
+                .addOnSuccessListener(documents -> {
+                    List<String> usernames = new ArrayList<>();
+                    for (DocumentSnapshot document : documents) {
+                        String username = document.getId();
+                        if (username.contains(string)) {
+                            usernames.add(username);
+                        }
+                    }
+                    mSize = usernames.size();
+                    if (mSize == 0) {
+                        listener.onDownloadSuccessful(mList);
+                    }
+                    for (String username : usernames) {
+                            FirebaseUtilities.findUserByUsername(username, new OnFindUserListener() {
+
+                                @Override
+                                public void onSuccessful(User user) {
+                                    downloadImage(user, listener);
+                                }
+
+                                @Override
+                                public void onDoesNotExist() {
+                                    downloadImage(new User(username), listener);
+                                }
+
+                                @Override
+                                public void onFailure(String errorMessage) {
+                                    downloadImage(new User(username), listener);
+                                }
+                            });
+                        }
                 })
                 .addOnFailureListener(e -> {
                     if (e.getMessage() != null) {
@@ -137,9 +197,17 @@ public class UserSearchListRepository {
     private void readinessCheck(User user, OnDownloadDataListListener<User> listener) {
         mList.add(user);
         mCount++;
-        Log.d("#DS", "check " + mCount + " " + mSize);
         if (mCount == mSize) {
             listener.onDownloadSuccessful(mList);
         }
     }
+
+    /*private void debtReadinessCheck(Debt debt, OnDownloadDataListListener<Debt> listener) {
+        mList.add(debt);
+        mCount++;
+        Log.d("#DS", "check " + mCount + " " + mSize);
+        if (mCount == mSize) {
+            listener.onDownloadSuccessful((List<Debt>) mList);
+        }
+    }*/
 }

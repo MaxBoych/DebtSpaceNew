@@ -1,7 +1,12 @@
 package com.example.debtspace.utilities;
 
+import android.annotation.SuppressLint;
 import android.util.Patterns;
 
+import com.example.debtspace.config.AppConfig;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.regex.Pattern;
 
 public class StringUtilities {
@@ -19,5 +24,21 @@ public class StringUtilities {
 
     public static boolean isEmpty(String string) {
         return string.isEmpty();
+    }
+
+    public static String getCurrentDateAndTime() {
+        @SuppressLint("SimpleDateFormat")
+        String date = new SimpleDateFormat(AppConfig.PATTERN_DATE).format(Calendar.getInstance().getTime());
+        return date;
+    }
+
+    public static String getRandomString(int n) {
+        String AlphaNumericString = AppConfig.LETTERS_AND_DIGITS;
+        StringBuilder sb = new StringBuilder(n);
+        for (int i = 0; i < n; i++) {
+            int index = (int) (AlphaNumericString.length() * Math.random());
+            sb.append(AlphaNumericString.charAt(index));
+        }
+        return sb.toString();
     }
 }
