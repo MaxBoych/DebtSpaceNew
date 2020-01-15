@@ -63,7 +63,6 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
 
         view.findViewById(R.id.all_users_button).setOnClickListener(this);
         view.findViewById(R.id.friends_button).setOnClickListener(this);
-        view.findViewById(R.id.button_to_debt_list).setOnClickListener(this);
 
         return view;
     }

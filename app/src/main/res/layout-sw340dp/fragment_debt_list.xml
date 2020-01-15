@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/debt_space_pattern">
+        android:background="@color/whiteBlue">
 
         <android.widget.Toolbar
             android:id="@+id/notification_toolbar"
