@@ -90,8 +90,7 @@
         android:fitsSystemWindows="true"
         app:itemIconTint="@color/colorPrimaryDark"
         app:itemTextColor="@color/Dark"
-        app:menu="@menu/draw_menu" >
-    </com.google.android.material.navigation.NavigationView>
+        app:menu="@menu/draw_menu"/>
 
     <ProgressBar
         android:id="@+id/profile_progress_bar"

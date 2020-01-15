@@ -8,13 +8,13 @@
     android:elevation="4dp"
     android:orientation="vertical">
 
-    <Button
+    <!--<Button
         android:id="@+id/remove_friend_button"
         android:layout_width="100dp"
         android:layout_height="40dp"
         android:layout_marginStart="280dp"
         android:textColor="@color/red"
-        android:text="Remove"/>
+        android:text="Remove"/>-->
 
     <LinearLayout
         android:id="@+id/profile_resume"

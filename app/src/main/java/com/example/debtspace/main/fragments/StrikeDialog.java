@@ -32,7 +32,7 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
 
     private EditText mBill;
     private Button mStrike;
-    private Button mRemove;
+    //private Button mRemove;
     private TextView mName;
     private TextView mComment;
     private String mUsername;
@@ -65,12 +65,13 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
         mComment = view.findViewById(R.id.strike_comment);
         mBill = view.findViewById(R.id.strike_bill);
         mStrike = view.findViewById(R.id.strike_button);
-        mRemove = view.findViewById(R.id.remove_friend_button);
+        //mRemove = view.findViewById(R.id.remove_friend_button);
         mProgressBar = view.findViewById(R.id.strike_progress_bar);
 
         mUsername = Objects.requireNonNull(getArguments()).getString(AppConfig.USERNAME_KEY);
         mName.setText(Objects.requireNonNull(getArguments()).getString(AppConfig.NAME_KEY));
 
+        initViewModel();
         initViewModel();
         observeLoadState();
 
@@ -86,10 +87,10 @@ public class StrikeDialog extends DialogFragment implements View.OnClickListener
             HistoryItem item = new HistoryItem(mBill.getText().toString(),
                     mComment.getText().toString(), date, mUsername);
             doStrike(item);
-        } else if (v.getId() == R.id.remove_friend_button) {
+        } /*else if (v.getId() == R.id.remove_friend_button) {
             mOnMainStateChangeListener.onFriendRemovalScreen(mName.getText().toString(), mUsername);
             dismiss();
-        }
+        }*/
     }
 
     @Override
