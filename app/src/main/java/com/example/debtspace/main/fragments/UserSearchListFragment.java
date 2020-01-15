@@ -23,7 +23,7 @@ import com.example.debtspace.main.interfaces.OnMainStateChangeListener;
 import com.example.debtspace.main.viewmodels.UserSearchListViewModel;
 import com.example.debtspace.models.User;
 
-public class UserSearchListFragment extends Fragment implements View.OnClickListener {
+public class UserSearchListFragment extends Fragment {
 
     private EditText mUserSearch;
     private RecyclerView mList;
@@ -53,16 +53,7 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
 
         initViewModel();
 
-        view.findViewById(R.id.button_to_debt_list).setOnClickListener(this);
-
         return view;
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.button_to_debt_list) {
-            mOnMainStateChangeListener.onDebtListScreen();
-        }
     }
 
     private void initViewModel() {

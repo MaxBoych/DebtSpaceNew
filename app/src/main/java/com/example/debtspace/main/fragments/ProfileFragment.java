@@ -249,7 +249,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        if(menuItem.getItemId() == 2131296514) {
+        if(menuItem.getItemId() == R.id.nav_lang) {
             showChangeLanguageDialog();
         }
         return true;

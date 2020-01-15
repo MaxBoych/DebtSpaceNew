@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/whiteBlue">
+        android:background="@drawable/debt_space_pattern">
 
         <android.widget.Toolbar
             android:id="@+id/notification_toolbar"
@@ -40,7 +40,7 @@
             android:layout_below="@id/notification_toolbar"
             android:layout_marginBottom="56dp"
             android:clipToPadding="false"
-            android:paddingBottom="72dp">
+            android:paddingBottom="80dp">
         </androidx.recyclerview.widget.RecyclerView>
 
         <ProgressBar
