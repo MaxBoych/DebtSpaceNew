@@ -89,6 +89,7 @@ public class FriendRequestDialog extends DialogFragment implements View.OnClickL
 
     private void initViewModel() {
         mViewModel = ViewModelProviders.of(this).get(FriendRequestViewModel.class);
+        mViewModel.setContext(getContext());
         observeLoadState();
     }
 

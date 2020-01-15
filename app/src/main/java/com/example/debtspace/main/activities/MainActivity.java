@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
                     switchScreen(new ProfileFragment(), AppConfig.FRAGMENT_PROFILE_TAG);
                     break;
                 case R.id.action_debts:
-                    hideUserSearch();
+                    hideUserSearchAndGroupDebt();
                     switchScreen(new DebtListFragment(), AppConfig.FRAGMENT_DEBT_LIST_TAG);
                     break;
                 case R.id.action_history:
@@ -121,14 +121,21 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
         });
     }
 
-    private void hideUserSearch() {
+    private void hideUserSearchAndGroupDebt() {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
+
         Fragment searchFragment = getSupportFragmentManager().findFragmentByTag(AppConfig.FRAGMENT_USER_SEARCH_TAG);
         if (searchFragment != null) {
             transaction.hide(searchFragment);
             transaction.remove(searchFragment);
         }
+        Fragment groupFragment = getSupportFragmentManager().findFragmentByTag(AppConfig.FRAGMENT_GROUP_DEBT_TAG);
+        if (groupFragment != null) {
+            transaction.hide(groupFragment);
+            transaction.remove(groupFragment);
+        }
+
         transaction.commit();
     }
 
@@ -174,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnMainStateChange
     @Override
     public void onGroupDebtScreen() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.main_container, new GroupDebtFragment())
+                .add(R.id.main_container, new GroupDebtFragment(), AppConfig.FRAGMENT_GROUP_DEBT_TAG)
                 .addToBackStack(null)
                 .commit();
     }

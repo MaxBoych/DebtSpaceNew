@@ -43,4 +43,11 @@
     <string name="cancel">Cancelar</string>
     <string name="create_group">Crea un grupo</string>
     <string name="back">Volver</string>
+    <string name="all_users">Todos los usuarios</string>
+    <string name="clear">Claro</string>
+    <string name="confirmation_code_message">Ingrese los caracteres a continuación para confirmar:</string>
+    <string name="friends">Amigos</string>
+    <string name="remove_debt">¿Notificar a un amigo que desea cancelar esta deuda?</string>
+    <string name="remove_debt_confirm">¿Quieres eliminar esta deuda?</string>
+    <string name="remove_friend">¿Quieres eliminar a un amigo?</string>
 </resources>

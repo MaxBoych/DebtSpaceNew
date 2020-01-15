@@ -43,4 +43,11 @@
     <string name="cancel">Отмена</string>
     <string name="create_group">Создать группу</string>
     <string name="back">Назад</string>
+    <string name="all_users">Все пользователи</string>
+    <string name="clear">Очистить</string>
+    <string name="confirmation_code_message">Введите символы ниже для подтверждения:</string>
+    <string name="friends">Друзья</string>
+    <string name="remove_debt">Уведомить друга о желании отменить этот долг?</string>
+    <string name="remove_debt_confirm">Вы хотите удалить этот долг?</string>
+    <string name="remove_friend">Вы хотите удалить друга?</string>
 </resources>

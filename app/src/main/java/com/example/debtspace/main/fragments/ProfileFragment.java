@@ -95,7 +95,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.strike_user_image) {
+        if (v.getId() == R.id.profile_image) {
             mOnMainStateChangeListener.onImageManagementScreen(AppConfig.NONE_ID, this);
         } else if (v.getId() == R.id.button_sign_out) {
             mOnMainStateChangeListener.onAuthScreen();

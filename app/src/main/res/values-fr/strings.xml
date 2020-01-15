@@ -43,4 +43,11 @@
     <string name="create_group">Créer un groupe</string>
     <string name="change_image" translatable="false">Changer l\'image</string>
     <string name="back">Retour</string>
+    <string name="all_users">Tous les utilisateurs</string>
+    <string name="clear">Claire</string>
+    <string name="confirmation_code_message">Saisissez les caractères ci-dessous pour confirmer:</string>
+    <string name="friends">Copains</string>
+    <string name="remove_debt">Avertissez un ami que vous souhaitez annuler cette dette?</string>
+    <string name="remove_debt_confirm">Voulez-vous supprimer cette dette?</string>
+    <string name="remove_friend">Voulez-vous supprimer un ami?</string>
 </resources>

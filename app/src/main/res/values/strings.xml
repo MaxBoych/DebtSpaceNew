@@ -59,7 +59,7 @@
     <string name="add_friend">Add friend</string>
     <string name="all_users">All users</string>
     <string name="friends">Friends</string>
-    <string name="groups">Groups</string>
+    <string name="groups" translatable="false">Groups</string>
     <string name="back">Back</string>
 
     <!-- Network -->

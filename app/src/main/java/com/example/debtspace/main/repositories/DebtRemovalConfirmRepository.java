@@ -73,6 +73,13 @@ public class DebtRemovalConfirmRepository {
         double debtCurrentUser = lastDebt - debtRequest;
         double debtFriend = -lastDebt + debtRequest;
 
+        /*if (debtRequest > 0) {
+
+        } else {
+            double debtCurrentUser = lastDebt + debtRequest;
+            double debtFriend = -lastDebt - debtRequest;
+        }*/
+
         Map<String, Object> updatedCurrentUser = new HashMap<>();
         updatedCurrentUser.put(AppConfig.DEBT_KEY, Double.toString(debtCurrentUser));
         updatedCurrentUser.put(AppConfig.DATE_KEY, request.getDate());

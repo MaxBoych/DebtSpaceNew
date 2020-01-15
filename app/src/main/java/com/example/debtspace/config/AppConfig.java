@@ -57,6 +57,7 @@ public class AppConfig {
 
     public final static String FRAGMENT_DEBT_LIST_TAG = "fragment_debt_list";
     public final static String FRAGMENT_USER_SEARCH_TAG = "fragment_user_search";
+    public final static String FRAGMENT_GROUP_DEBT_TAG = "fragment_group_debt";
     public final static String FRAGMENT_PROFILE_TAG = "fragment_profile";
     public final static String FRAGMENT_HISTORY_TAG = "fragment_history";
     public final static String FRAGMENT_NOTIFICATION_LIST_TAG = "fragment_notification_list";

@@ -44,7 +44,7 @@ public class DebtSpaceApplication extends Application {
     }
 
     public static DebtSpaceApplication from(Context context) {
-        return (DebtSpaceApplication) context.getApplicationContext();
+        return (DebtSpaceApplication)context.getApplicationContext();
     }
 
     public FirebaseAuth getAuth() {

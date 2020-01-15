@@ -43,4 +43,11 @@
     <string name="cancel">Stornieren</string>
     <string name="create_group">Gruppe erstellen</string>
     <string name="back">Zurück</string>
+    <string name="all_users">Alle Nutzer</string>
+    <string name="clear">klar</string>
+    <string name="confirmation_code_message">Geben Sie zur Bestätigung die folgenden Zeichen ein:</string>
+    <string name="friends">Freunde</string>
+    <string name="remove_debt">Benachrichtigen Sie einen Freund, dass Sie diese Schulden stornieren möchten?</string>
+    <string name="remove_debt_confirm">Möchten Sie diese Schulden entfernen?</string>
+    <string name="remove_friend">Möchten Sie einen Freund entfernen?</string>
 </resources>
