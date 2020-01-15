@@ -70,8 +70,8 @@ public class DebtRemovalConfirmRepository {
         double lastDebt = Double.parseDouble(Objects.requireNonNull(data.get(AppConfig.DEBT_KEY)).toString());
         double debtRequest = Double.parseDouble(debt);
 
-        double debtCurrentUser = lastDebt - debtRequest;
-        double debtFriend = -lastDebt + debtRequest;
+        double debtCurrentUser = lastDebt + debtRequest;
+        double debtFriend = -lastDebt - debtRequest;
 
         /*if (debtRequest > 0) {
 
