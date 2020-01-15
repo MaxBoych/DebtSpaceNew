@@ -59,10 +59,6 @@ public class UserSearchListFragment extends Fragment implements View.OnClickList
         mUserSearch = view.findViewById(R.id.user_search_field);
         mProgressBar = view.findViewById(R.id.user_search_list_progress_bar);
 
-        /*mAllUsers = view.findViewById(R.id.all_users_button);
-        mFriends = view.findViewById(R.id.friends_button);
-        mGroups = view.findViewById(R.id.groups_button);*/
-
         initViewModel();
 
         view.findViewById(R.id.all_users_button).setOnClickListener(this);

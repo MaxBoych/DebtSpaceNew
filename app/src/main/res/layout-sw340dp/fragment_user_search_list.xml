@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/whiteBlue"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/debt_space_pattern">
 
     <LinearLayout
         android:id="@+id/user_search_control_panel"
@@ -12,52 +12,14 @@
         android:orientation="horizontal">
 
         <EditText
-            android:id="@+id/user_search_field"
             style="@style/editAuth"
-            android:layout_width="296dp"
-            android:layout_gravity="center"
             android:layout_margin="8dp"
             android:layout_marginEnd="96dp"
+            android:layout_gravity="center"
             android:background="@drawable/rounded_light"
-            android:hint="@string/user_search" />
-
-        <Button
-            android:id="@+id/button_to_debt_list"
-            style="@style/buttonAuth"
-            android:layout_width="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_margin="8dp"
-            android:background="@drawable/rounded_dark"
-            android:text="@string/back" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/filter_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/user_search_control_panel"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/all_users_button"
-            android:layout_weight="1"
-            android:text="@string/all_users"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/friends_button"
-            android:layout_weight="1"
-            android:text="@string/friends"/>
-
-        <!--<Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/groups_button"
-            android:layout_weight="1"
-            android:text="@string/groups"/>-->
+            android:id="@+id/user_search_field"
+            android:layout_width="match_parent"
+            android:hint="@string/user_search"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

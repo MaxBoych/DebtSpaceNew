@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,8 +71,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        mImage = view.findViewById(R.id.strike_user_image);
-        mName = view.findViewById(R.id.strike_user_name);
+        mImage = view.findViewById(R.id.profile_image);
+        mName = view.findViewById(R.id.profile_name);
         mScore = view.findViewById(R.id.profile_total_debt_value);
 
         NavigationView navigationView = view.findViewById(R.id.nav_view);
