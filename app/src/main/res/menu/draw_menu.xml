@@ -13,12 +13,12 @@
 
     <item  android:title="@string/settingsSet">
         <menu>
-            <item android:id="@+id/nav_sound"
-                android:title="@string/language"
-                android:icon="@drawable/help"/>
             <item android:id="@+id/nav_lang"
-                android:title="@string/support"
+                android:title="@string/language"
                 android:icon="@drawable/ic_language"/>
+            <item android:id="@+id/nav_sup"
+                android:title="@string/support"
+                android:icon="@drawable/help"/>
         </menu>
     </item>
 </menu>
